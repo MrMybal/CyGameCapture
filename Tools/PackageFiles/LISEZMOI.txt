@@ -1,0 +1,152 @@
+===============================================================================
+ CyGameCapture - dossier de test
+===============================================================================
+
+Tout ce qu'il faut pour installer et essayer, sans rien compiler.
+
+Ce dossier contient l'add-on ReShade, le plugin OBS, deux applications de test
+(Direct3D 11 et Direct3D 12) qui se comportent comme un petit jeu, les outils de
+verification, et le plugin Unreal.
+
+
+-------------------------------------------------------------------------------
+ EN CINQ MINUTES
+-------------------------------------------------------------------------------
+
+  1. Fermer OBS s'il est ouvert.
+
+  2. Double-cliquer sur   Installer-le-plugin-OBS.cmd
+     (copie le plugin dans %ProgramData%\obs-studio\plugins, aucun droit
+      administrateur necessaire)
+
+  3. Double-cliquer sur   Installer-les-scenes-OBS-de-test.cmd
+     (ajoute deux collections de scenes pretes a l'emploi ; ne touche a aucune
+      de vos collections existantes)
+
+  4. Double-cliquer sur   Test-1-D3D11.cmd
+     Une fenetre s'ouvre avec une scene animee et un faux ATH (barres et
+     reticule). Elle publie trois flux Spout en meme temps.
+
+  5. Ouvrir OBS, puis menu  Collection de scenes > CyGameCapture Test D3D11
+     Vous devez voir trois sources : la scene propre (sans ATH), le depth en
+     niveaux de gris, et l'ATH seul decoupe sur du noir.
+     Elles sont disposees en mosaique pour un canevas 1920x1080. Si le votre a
+     une autre taille, tirez-les simplement a la souris.
+
+  6. Refaire avec  Test-2-D3D12.cmd  et la collection D3D12.
+
+Quand vous avez fini :  Desinstaller-le-plugin-OBS.cmd  remet tout en place.
+
+
+-------------------------------------------------------------------------------
+ CE QUE VOUS DEVRIEZ VOIR
+-------------------------------------------------------------------------------
+
+L'application de test dessine :
+
+    scene propre  ->  image finale  ->  + ATH par dessus
+
+Ce que la fenetre affiche, c'est l'image finale avec l'ATH. Les trois flux
+envoyes a OBS sont :
+
+  Clean   la scene AVANT que l'ATH soit dessine dessus.
+          C'est l'interet principal du projet : enregistrer le jeu sans
+          interface, alors que le joueur voit l'interface normalement.
+
+  Depth   le tampon de profondeur, linearise et publie en 16 bits par canal.
+          Les objets proches sont sombres, le fond clair. Reglages dans
+          l'overlay ReShade (onglet Capture) : le plan lointain depend du jeu.
+
+  HUD     l'interface seule, obtenue en soustrayant la scene propre de l'image
+          finale. Le masque est dans le canal alpha : dans OBS la source
+          apparait sur fond transparent / noir.
+
+Les deux applications font aussi de la RESOLUTION DYNAMIQUE : la scene est rendue
+dans une partie seulement d'un tampon de taille fixe, comme le font les moteurs
+qui ajustent leur resolution en cours de jeu. Les flux, eux, gardent une taille
+stable : la zone rendue est mise a l'echelle. L'overlay ReShade affiche la zone
+reellement rendue a cote de la resolution du flux, et elle varie en permanence.
+
+
+-------------------------------------------------------------------------------
+ DANS UN VRAI JEU
+-------------------------------------------------------------------------------
+
+Voir  Addon-ReShade\LISEZMOI-installer-dans-un-jeu.txt
+
+En resume : installer ReShade 6.8.0 **version avec support des add-ons** pour le
+jeu, puis copier CyGameCaptureRS.addon64 a cote de l'executable. Touche Origine
+(Home) pour ouvrir l'overlay, onglet "CyGameCaptureRS - Buffer Inspector",
+choisir un tampon, "Use As Capture Source".
+
+
+-------------------------------------------------------------------------------
+ ENREGISTRER PLUSIEURS TAMPONS A LA FOIS
+-------------------------------------------------------------------------------
+
+Dans les proprietes de chaque source CyGameCapture :
+
+  - cocher "Enregistrer ce buffer"
+  - choisir l'encodage :
+      * Encodeur materiel        pour ce qui sera regarde
+      * Sans perte RGB 8 bits    exact au bit, et le SEUL qui garde l'alpha,
+                                 donc le seul utilisable pour l'ATH isole
+      * Sans perte 16 bits       pour le depth
+  - cliquer "Demarrer l'enregistrement de tous les buffers coches"
+
+Tous les tampons coches demarrent ensemble, un fichier chacun, alignes image
+par image. Les fichiers vont par defaut dans  %USERPROFILE%\Videos\CyGameCapture
+
+Attention : les modes sans perte ecrivent gros. Comptez environ 100 Mo pour
+20 secondes de 720p en RGB sans perte.
+
+
+-------------------------------------------------------------------------------
+ VERIFIER
+-------------------------------------------------------------------------------
+
+  Lister-les-flux.cmd
+      Affiche les senders Spout presents, leur taille, leur format, et l'index
+      de frame que chacun publie. Les flux d'une meme frame portent le meme
+      index : c'est ce qui garantit que les enregistrements sont alignes.
+
+  Analyser-un-enregistrement.cmd  <fichier.mkv>
+      Dit ce qui a REELLEMENT survecu dans un fichier : format de pixel, nombre
+      de bits, nombre de niveaux distincts, presence d'un canal alpha.
+      Utile pour verifier qu'un depth n'a pas ete ecrase en 8 bits, ou qu'un
+      masque d'ATH n'a pas ete jete.
+
+
+-------------------------------------------------------------------------------
+ CE QU'IL FAUT AVOIR
+-------------------------------------------------------------------------------
+
+  - Windows 10 ou 11, 64 bits
+  - OBS Studio 29.1.3 (teste avec celle-la ; une autre version majeure de
+    libobs refusera de charger le plugin, c'est une securite d'OBS)
+  - Pour un vrai jeu : ReShade 6.8.0, version AVEC support des add-ons
+
+Les applications de test n'ont besoin de rien d'autre : ReShade est deja fourni
+a cote d'elles.
+
+
+-------------------------------------------------------------------------------
+ CONTENU
+-------------------------------------------------------------------------------
+
+  Addon-ReShade\           l'add-on a copier dans un jeu
+  Plugin-OBS\              le plugin OBS (installe par le script)
+  Applications-de-test\    les deux "jeux" de test, ReShade inclus
+  Outils\                  listage des flux, analyse d'un enregistrement
+  Scenes-OBS\              collections de scenes pretes a importer
+  Plugin-Unreal\           le plugin Unreal Engine, une version par moteur
+  Documentation\           documentation complete et licences tierces
+
+
+-------------------------------------------------------------------------------
+ PORTEE
+-------------------------------------------------------------------------------
+
+CyGameCapture ne vise que les applications ou ReShade s'utilise normalement.
+Il ne contient rien pour contourner un anti-triche ou un blocage de ReShade :
+une application qui bloque ReShade est simplement non supportee.

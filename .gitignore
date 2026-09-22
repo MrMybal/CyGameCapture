@@ -1,0 +1,42 @@
+# Build outputs
+build/
+bin/
+dist/
+*.user
+*.suo
+.vs/
+*.log
+*.log[0-9]
+
+# Local tools and working material
+.cyrevision/
+.claude/
+output/
+
+# Test captures written by the receiver test tool, wherever it was started from
+cygc_frame_*.bmp
+
+# ReShade next to the test applications: installed locally, never versioned
+Tests/**/ReShade.log
+Tests/**/dxgi.dll
+
+# Import libraries generated from the locally installed OBS / FFmpeg
+# (Tools/GenerateObsImportLib.cmd, Tools/GenerateFFmpegImportLibs.cmd)
+CyGameCaptureOBS/ThirdParty/obs-studio/lib/
+Tests/CyGameCaptureVideoProbe/ThirdParty/ffmpeg/lib/
+
+# Unreal Engine: everything the editor and the build tools generate
+**/Binaries/
+**/Intermediate/
+**/Saved/
+**/DerivedDataCache/
+**/*.sln
+**/.vsconfig
+
+# The host project reaches the plugin through a junction to CyGameCaptureUE/ (see its README);
+# the plugin is versioned once, there
+CyGameCaptureUEHost/Plugins/CyGameCaptureUE/
+
+# Python bytecode (Tools/*.py)
+__pycache__/
+*.pyc

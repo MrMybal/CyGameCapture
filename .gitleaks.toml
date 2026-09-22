@@ -1,0 +1,21 @@
+# Secret scanning for this repository, so the check before a publication is always the same one:
+#
+#   %LOCALAPPDATA%\Programs\gitleaks\gitleaks.exe dir . --config .gitleaks.toml --redact
+#
+# It uses gitleaks' own rules and only skips what is never committed (see .gitignore): build outputs,
+# the packaged release and local tooling. A run without findings is not a proof that there is none.
+title = "CyGameCapture"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Build outputs, packaged release and local tooling (all git-ignored)"
+paths = [
+    '''^build/''',
+    '''^bin/''',
+    '''^dist/''',
+    '''^output/''',
+    '''^\.cyrevision/''',
+    '''^\.git/''',
+]

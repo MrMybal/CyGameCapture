@@ -1,0 +1,7 @@
+// CyGameCapture — the application icon, included from each binary's own .rc file.
+//
+// The path is resolved through the resource compiler's include directories, which the
+// CyGameCaptureBranding CMake target adds to every binary that links it.
+#include "CyGameCaptureBranding.h"
+
+IDI_CYGAMECAPTURE ICON "CyGameCapture.ico"

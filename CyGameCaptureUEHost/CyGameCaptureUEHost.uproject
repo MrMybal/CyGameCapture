@@ -1,0 +1,20 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.5",
+	"Category": "",
+	"Description": "Host project used to build, test and benchmark the CyGameCaptureUE plugin.",
+	"Modules": [
+		{
+			"Name": "CyGameCaptureUEHost",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [ "Engine", "CyGameCaptureUE" ]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "CyGameCaptureUE",
+			"Enabled": true
+		}
+	]
+}

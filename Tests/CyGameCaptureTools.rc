@@ -1,0 +1,3 @@
+// CyGameCapture test tools — the application icon only; compiled into each test executable.
+#include <winres.h>
+#include "CyGameCaptureIcon.rc2"

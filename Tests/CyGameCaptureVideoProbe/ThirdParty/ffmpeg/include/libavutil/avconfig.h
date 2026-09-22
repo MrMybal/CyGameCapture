@@ -1,0 +1,6 @@
+/* FFmpeg generates this from its configure script; these are the values of a normal x86-64 build. */
+#ifndef AVUTIL_AVCONFIG_H
+#define AVUTIL_AVCONFIG_H
+#define AV_HAVE_BIGENDIAN 0
+#define AV_HAVE_FAST_UNALIGNED 1
+#endif

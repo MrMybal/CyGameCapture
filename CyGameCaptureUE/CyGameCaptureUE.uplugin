@@ -1,0 +1,26 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.1.0",
+	"FriendlyName": "CyGameCaptureUE",
+	"Description": "Multi-stream Spout2 sender & receiver for Unreal Engine (render targets, scene captures, game viewport). Part of the CyGameCapture ecosystem. GPU-first, no engine modification.",
+	"Category": "Rendering",
+	"CreatedBy": "Cyberalien",
+	"CreatedByURL": "https://github.com/MrMybal",
+	"DocsURL": "https://github.com/MrMybal/CyGameCapture/tree/main/CyGameCaptureUE",
+	"MarketplaceURL": "",
+	"SupportURL": "https://github.com/MrMybal/CyGameCapture/issues",
+	"EngineVersion": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"SupportedTargetPlatforms": [ "Win64" ],
+	"Modules": [
+		{
+			"Name": "CyGameCaptureUE",
+			"Type": "Runtime",
+			"LoadingPhase": "PostConfigInit"
+		}
+	]
+}

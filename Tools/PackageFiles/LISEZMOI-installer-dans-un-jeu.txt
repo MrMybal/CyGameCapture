@@ -1,0 +1,164 @@
+===============================================================================
+ CyGameCaptureRS - installer l'add-on dans un jeu
+===============================================================================
+
+1. Installer ReShade
+-------------------------------------------------------------------------------
+
+Telecharger ReShade 6.8.0 sur https://reshade.me et choisir, a l'installation,
+la version **AVEC support des add-ons** (le bouton est explicite : les versions
+ordinaires refusent les add-ons externes).
+
+L'installer pour le jeu comme d'habitude, en choisissant l'API du jeu
+(DirectX 10/11/12).
+
+La version compte : l'add-on cible l'API add-on numero 20, celle de ReShade
+6.8.0. Une version plus ancienne (6.7.x = API 18) ne le chargera pas.
+
+
+2. Copier l'add-on
+-------------------------------------------------------------------------------
+
+Copier  CyGameCaptureRS.addon64  a cote de l'executable du jeu, la ou ReShade a
+mis son dxgi.dll / d3d11.dll.
+
+Copier aussi  CyGameCaptureAI.exe  dans le meme dossier : c'est lui qui fait
+tourner l'assistant IA (voir plus bas). Sans lui, tout le reste marche.
+
+Si vous preferez le ranger ailleurs, indiquez le dossier dans ReShade.ini :
+
+    [ADDON]
+    AddonPath=.\chemin\vers\le\dossier
+
+Le fichier .pdb n'est pas necessaire ; il ne sert qu'a obtenir des piles
+d'appel lisibles si quelque chose plante.
+
+
+3. Verifier
+-------------------------------------------------------------------------------
+
+Lancer le jeu, puis regarder ReShade.log a cote de l'executable. Vous devez y
+trouver :
+
+    Registered add-on "CyGameCaptureRS" ... using ReShade API version 20.
+    [CyGameCaptureRS] Add-on initialized ...
+    [CyGameCaptureRS] Renderer: D3D11 (Spout output available)
+
+Si le log dit que le renderer n'est pas supporte, c'est que le jeu utilise une
+API que l'add-on ne gere pas encore (seuls D3D10, D3D11 et D3D12 le sont).
+
+
+4. Choisir un tampon
+-------------------------------------------------------------------------------
+
+Touche Origine (Home) pour ouvrir l'overlay ReShade. La fenetre
+"CyGameCaptureRS - Buffer Inspector" s'ouvre avec lui.
+
+L'interface est en anglais par defaut : le menu a cote du logo, en haut de la
+fenetre, la passe en francais (choix garde dans ReShade.ini, Language=fr).
+L'assistant IA repond alors en francais lui aussi. Le bouton "About" (A
+propos) affiche la licence et l'adresse du code source.
+
+  - onglet Buffer Inspector : la liste des cibles de rendu ecrites pendant la
+    derniere frame. Les filtres en haut reduisent la liste (ecrit cette frame,
+    cibles couleur, depth, resolution par rapport au back buffer, format).
+  - parcourir avec Precedent / Suivant, les fleches Gauche / Droite, ou en
+    cliquant. L'apercu GPU est a droite.
+  - "Use As Capture Source" envoie ce tampon vers OBS.
+  - "Add As Extra Stream" en envoie un deuxieme en meme temps.
+  - sur un tampon de profondeur le bouton devient "Use As Depth Stream".
+  - "Isolate HUD Against Stream 1" apparait quand le flux 1 capture deja la
+    scene propre : selectionnez alors l'image finale (souvent le back buffer).
+
+Le bon tampon pour "le jeu sans interface", c'est en general la derniere cible
+de rendu couleur ecrite AVANT que l'interface soit dessinee. Le Timeline
+(onglet du meme nom) aide a la reperer : il montre l'ordre des ecritures.
+
+Beaucoup de jeux (Unreal Engine 4 par exemple) dessinent leur interface
+directement dans l'image finale : aucun tampon ne la contient sans interface.
+Le curseur "Moment of the frame" lit alors le tampon a un instant de la frame
+(apres son ecriture numero K), avant que l'interface soit dessinee.
+
+
+5. L'assistant IA (le plus simple)
+-------------------------------------------------------------------------------
+
+En haut de l'onglet Buffer Inspector, section "AI Assistant" :
+
+  1. afficher dans le jeu une scene ou l'interface est VISIBLE ;
+  2. choisir le client IA (Claude Code, Codex ou OpenCode, deja installe et
+     connecte sur ce PC) ;
+  3. cliquer "Find the setting that removes the game's interface" ;
+  4. la fenetre de discussion "CyGameCapture - AI Assistant" s'ouvre ; une a
+     deux minutes plus tard, la reponse s'affiche avec la proposition :
+     "Show" pour la voir dans l'apercu, "Apply" pour l'envoyer vers OBS, ou
+     "Apply, and send the interface alone too" pour avoir en plus l'interface
+     seule sur un deuxieme flux ;
+  5. ensuite, repondre dans la discussion ("il reste les sous-titres", "et
+     l'interface seule ?"...). "Attach the current frame" joint des images de
+     la frame actuelle au message ; Ctrl+Entree ou "Send" pour envoyer ;
+     "New discussion" pour recommencer.
+
+Rien n'est applique sans votre clic. Ce qui part vers le fournisseur de l'IA,
+avec VOTRE compte : de petites images de la frame et la liste des tampons.
+Aucune cle n'est stockee par CyGameCapture. Tout ce qui a ete envoye et recu
+reste lisible dans  %LOCALAPPDATA%\CyGameCapture\AI\<jeu>  (prompt.txt,
+answer.txt, picture_NN.png).
+
+Reglages facultatifs dans ReShade.ini :
+
+    AIClient            auto | claude | codex | opencode
+    AIModel             modele a utiliser (defaut : celui du client)
+    AIClientPath        chemin du .exe du client s'il n'est pas trouve
+    AILanguage          fr | en, si l'assistant doit repondre dans une autre
+                        langue que celle de l'interface
+
+Limite actuelle : jeux D3D11 uniquement (comme le curseur "Moment of the frame").
+
+Rien n'est devine a votre place : si un profil enregistre ne retrouve pas son
+tampon, l'add-on le dit et attend une selection manuelle plutot que de prendre
+un autre tampon en silence.
+
+
+6. Reglages (ReShade.ini, section [CYGAMECAPTURE])
+-------------------------------------------------------------------------------
+
+    Language            en | fr, langue de l'interface
+    SenderName          nom du sender Spout (defaut CyGameCaptureRS::<jeu>)
+    ViewToggleKey       touche pour afficher le tampon choisi dans le jeu
+                        (defaut 121 = F10 ; 0 pour desactiver)
+    StandaloneWindow    afficher la fenetre autonome avec l'overlay (defaut 1)
+    Verbose             journaliser chaque ressource creee / detruite
+
+    DepthFarPlane       distance mappee au blanc pour le depth (defaut 1000)
+    DepthReversed       le depth vaut 1 au plan proche (frequent aujourd'hui)
+    DepthLogarithmic    depth reparti logarithmiquement
+    DepthUpsideDown     depth stocke a l'envers
+
+    HudThreshold        en dessous de cette difference, c'est de la scene
+    HudSoftness         difference a partir de laquelle le masque est opaque
+
+Les quatre reglages de depth dependent du jeu et ne peuvent pas etre devinus de
+l'exterieur. Ils ont exactement le sens des RESHADE_DEPTH_* de ReShade : si vous
+avez deja fait marcher un shader de profondeur ReShade sur ce jeu, les memes
+valeurs marchent ici. Ils se reglent aussi en direct dans l'onglet Capture.
+
+
+-------------------------------------------------------------------------------
+ PORTEE
+-------------------------------------------------------------------------------
+
+CyGameCapture ne vise que les applications ou ReShade s'utilise normalement.
+Il ne contient rien pour contourner un anti-triche, une protection, ou un
+blocage de ReShade, ni pour se cacher ou s'injecter ailleurs. Une application
+qui bloque ReShade est simplement non supportee.
+
+
+-------------------------------------------------------------------------------
+ LICENCE
+-------------------------------------------------------------------------------
+
+Copyright (C) 2026 Cyberalien. Logiciel libre sous licence GNU Affero General
+Public License, version 3 ou ulterieure (LICENSE.txt), fourni SANS AUCUNE
+GARANTIE. Code source : https://github.com/MrMybal/CyGameCapture
+Les licences des composants tiers sont fournies avec le paquet.
