@@ -64,7 +64,7 @@ VSOut VSMain(uint id : SV_VertexID)
 	}
 
 	bool FullscreenPass::Create(device *device, const char *hlsl, const char *pixel_entry,
-		uint32_t input_count, uint32_t constant_dwords, format render_target_format, std::string &error)
+		uint32_t input_count, uint32_t constant_dwords, format render_target_format, std::string &error, uint8_t color_write_mask)
 	{
 		Destroy();
 
@@ -87,6 +87,7 @@ VSOut VSMain(uint id : SV_VertexID)
 		render_target_format_ = render_target_format;
 		input_count_ = input_count;
 		constant_dwords_ = constant_dwords;
+		color_write_mask_ = color_write_mask;
 
 		// --- pipeline layout ----------------------------------------------------------------------
 		const descriptor_range srv_range = [input_count]() {
@@ -94,7 +95,7 @@ VSOut VSMain(uint id : SV_VertexID)
 			range.binding = 0;
 			range.dx_register_index = 0;
 			range.dx_register_space = 0;
-			range.count = input_count;
+			range.count = input_count != 0 ? input_count : 1;
 			range.visibility = shader_stage::pixel;
 			range.type = descriptor_type::shader_resource_view;
 			return range;
@@ -159,6 +160,7 @@ VSOut VSMain(uint id : SV_VertexID)
 		pixel_shader.code_size = pixel_bytecode.size();
 
 		blend_desc blend = {};   // defaults: no blending, write all channels
+		blend.render_target_write_mask[0] = color_write_mask;
 
 		rasterizer_desc rasterizer = {};
 		rasterizer.cull_mode = cull_mode::none;   // the fullscreen triangle has no meaningful winding
@@ -220,12 +222,13 @@ VSOut VSMain(uint id : SV_VertexID)
 		const resource_view *inputs, uint32_t input_count,
 		const void *constants, uint32_t constant_dwords, uint32_t width, uint32_t height) const
 	{
-		if (cmd == nullptr || pipeline_ == 0 || target == 0 || inputs == nullptr || input_count != input_count_)
+		if (cmd == nullptr || pipeline_ == 0 || target == 0 || (input_count != 0 && inputs == nullptr) || input_count != input_count_)
 			return;
 
 		render_pass_render_target_desc render_target = {};
 		render_target.view = target;
-		render_target.load_op = render_pass_load_op::discard;   // every pixel is written by the pass
+		// Partial-channel passes must preserve the channels excluded by their write mask.
+		render_target.load_op = color_write_mask_ == 0xF ? render_pass_load_op::discard : render_pass_load_op::load;
 		render_target.store_op = render_pass_store_op::store;
 
 		cmd->begin_render_pass(1, &render_target, nullptr);
@@ -242,7 +245,8 @@ VSOut VSMain(uint id : SV_VertexID)
 		srv_update.count = input_count;
 		srv_update.type = descriptor_type::shader_resource_view;
 		srv_update.descriptors = inputs;
-		cmd->push_descriptors(shader_stage::pixel, layout_, 0, srv_update);
+		if (input_count != 0)
+			cmd->push_descriptors(shader_stage::pixel, layout_, 0, srv_update);
 
 		descriptor_table_update sampler_update = {};
 		sampler_update.binding = 0;

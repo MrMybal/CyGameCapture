@@ -170,7 +170,7 @@ namespace
 				out_rgba8[destination + 0] = static_cast<uint8_t>(((packed >> 0) & 0x3FFu) >> 2);
 				out_rgba8[destination + 1] = static_cast<uint8_t>(((packed >> 10) & 0x3FFu) >> 2);
 				out_rgba8[destination + 2] = static_cast<uint8_t>(((packed >> 20) & 0x3FFu) >> 2);
-				out_rgba8[destination + 3] = 0xFF;
+				out_rgba8[destination + 3] = static_cast<uint8_t>(((packed >> 30) & 0x3u) * 85u);
 			}
 		}
 
@@ -378,7 +378,13 @@ int main(int argc, char **argv)
 		}
 		const double n = static_cast<double>(pixels.size() / 4);
 		const std::string path = out_dir + "\\cygc_frame_" + std::to_string(received) + ".bmp";
-		WriteBmp(path, pixels.data(), receiver.GetSenderWidth(), receiver.GetSenderHeight());
+		if (!WriteBmp(path, pixels.data(), receiver.GetSenderWidth(), receiver.GetSenderHeight()))
+		{
+			fprintf(stderr, "ERROR: could not write %s (create the output directory first)\n", path.c_str());
+			receiver.ReleaseReceiver();
+			receiver.CloseDirectX11();
+			return 1;
+		}
 		if (is_16bit)
 			printf("Frame %d: checksum=%016llx 16-bit R min=%u max=%u mean=%.1f (%.4f..%.4f) -> %s\n", received,
 				static_cast<unsigned long long>(checksum), depth_min, depth_max, depth_mean,

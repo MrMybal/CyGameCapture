@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+* Fix invisible scene streams and previews when a game writes valid RGB with zero alpha (observed in Stray).
+  Colour streams now force opaque alpha without modifying RGB; isolated HUD masks are preserved.
+  The Capture tab offers an advanced option to retain the source alpha.
+* The D3D11 test application supports `--zero-alpha --ten-bit --fixed-frame` for this regression.
+  The receiver reports the actual two-bit alpha of R10G10B10A2 streams and fails on unwritable frame dumps.
+
 ## 0.1.0 - 2026-09-22
 
 First release.

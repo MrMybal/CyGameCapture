@@ -110,6 +110,9 @@ than its sources, a version that does not match `Version.hpp`, or a symbol file 
    the capture buttons and "show selected buffer in game" all use the moment chosen here.
 4. **Show selected buffer in game** (checkbox, or the **F10** hotkey) replaces what the player sees with the selected buffer:
    play without HUD / UI. Works when the buffer has the back buffer size and a copy-compatible format (a scaling / conversion pass is planned).
+   Colour streams are opaque by default: some games leave alpha at zero even though their RGB image is complete.
+   **Preserve source alpha (advanced)** in the Capture tab restores the original alpha for an individual colour stream.
+   Isolated HUD streams always retain their transparency mask. The inspector's own preview displays RGB opaquely.
 5. **Capture** tab: status, sender name, resolution, format, FPS, per-stream CPU cost. **Timeline** tab: the write events of the last frame
    (clear / draw / copy / resolve / present per resource). **Debug** tab: tracker statistics and the verbose logging toggle.
 6. Tabs can also be switched with **Ctrl+1..4**.
@@ -121,6 +124,7 @@ than its sources, a version that does not match `Version.hpp`, or a symbol file 
 | `Language`       | `en` | Language of the overlay: `en` (English) or `fr` (French). Also switched from the selector next to the logo |
 | `SenderName`     | `CyGameCaptureRS::<exe name>` | Override the Spout sender base name |
 | `ViewToggleKey`  | `121` (F10) | Virtual key code toggling "show selected buffer in game" (0 disables) |
+| `PreserveSourceAlpha` | `0` | Default for new colour streams: 0 makes alpha opaque without changing RGB, 1 preserves the game's alpha. HUD streams always preserve their mask. |
 | `StandaloneWindow` | `1` | Show the standalone inspector window when the overlay opens |
 | `FlushAfterCopy` | `0` | Flush the immediate context after the copies, like Spout's own sender (costs ~200 us CPU per frame, no extra safety) |
 | `Verbose`        | `0` | Log every tracked resource creation/destruction |

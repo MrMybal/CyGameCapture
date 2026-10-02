@@ -32,9 +32,9 @@ namespace cygc
 		DestroyTexture();
 
 		const resource_desc desc(source_desc.texture.width, source_desc.texture.height, 1, 1, out_format, 1,
-			memory_heap::default_, resource_usage::shader_resource | resource_usage::copy_dest | resource_usage::resolve_dest);
+			memory_heap::default_, resource_usage::render_target | resource_usage::shader_resource | resource_usage::copy_dest | resource_usage::resolve_dest);
 
-		if (!device_->create_resource(desc, nullptr, resource_usage::copy_dest, &texture_))
+		if (!device_->create_resource(desc, nullptr, resource_usage::shader_resource, &texture_))
 		{
 			last_error_ = std::string("Failed to create preview texture (") + FormatName(out_format) + ")";
 			log::Error("%s", last_error_.c_str());
@@ -53,6 +53,13 @@ namespace cygc
 			return false;
 		}
 
+		if (!device_->create_resource_view(texture_, resource_usage::render_target, resource_view_desc(texture_desc_.texture.format), &texture_target_))
+		{
+			last_error_ = "Failed to create preview render target view";
+			DestroyTexture();
+			return false;
+		}
+
 		log::Verbose("Preview texture created %ux%u %s", texture_desc_.texture.width, texture_desc_.texture.height, FormatName(texture_desc_.texture.format));
 		last_error_.clear();
 		return true;
@@ -64,9 +71,12 @@ namespace cygc
 			view_ = {};
 		if (texture_view_ != 0)
 			device_->destroy_resource_view(texture_view_);
+		if (texture_target_ != 0)
+			device_->destroy_resource_view(texture_target_);
 		if (texture_ != 0)
 			device_->destroy_resource(texture_);
 		texture_view_ = {};
+		texture_target_ = {};
 		texture_ = {};
 		texture_desc_ = {};
 	}
@@ -110,6 +120,16 @@ namespace cygc
 			cmd_list->copy_texture_region(source.handle, 0, nullptr, texture_, 0, nullptr);
 			cmd_list->barrier(texture_, resource_usage::copy_dest, resource_usage::shader_resource);
 			cmd_list->barrier(source.handle, resource_usage::copy_source, source_state);
+		}
+
+		// Inspect the colour even when the game uses alpha as data or leaves it at zero.
+		cmd_list->barrier(texture_, resource_usage::shader_resource, resource_usage::render_target);
+		const bool opaque = WriteOpaqueAlpha(device_, cmd_list, texture_target_, texture_desc_, opaque_alpha_pass_, last_error_);
+		cmd_list->barrier(texture_, resource_usage::render_target, resource_usage::shader_resource);
+		if (!opaque)
+		{
+			view_ = {};
+			return;
 		}
 
 		view_ = texture_view_;

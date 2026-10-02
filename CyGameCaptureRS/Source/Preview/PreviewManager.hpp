@@ -11,6 +11,7 @@
 #pragma once
 
 #include "ResourceTracker/ResourceTracker.hpp"
+#include "GpuPass/BlitPass.hpp"
 
 #include <reshade.hpp>
 #include <cstdint>
@@ -57,6 +58,8 @@ namespace cygc
 		reshade::api::device *const device_;
 		reshade::api::resource texture_ = {};
 		reshade::api::resource_view texture_view_ = {};
+		reshade::api::resource_view texture_target_ = {};
+		FullscreenPass opaque_alpha_pass_;
 		reshade::api::resource_desc texture_desc_ = {};
 
 		reshade::api::resource_view view_ = {};     // what ImGui displays (own texture view or external view)

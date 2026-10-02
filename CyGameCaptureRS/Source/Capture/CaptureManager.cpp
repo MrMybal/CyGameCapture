@@ -74,6 +74,7 @@ namespace cygc
 		device_(device), backend_(backend), sender_base_name_(std::move(sender_base_name)), slot_index_(slot_index < 1 ? 1 : slot_index),
 		uses_bridge_(backend.api == device_api::d3d12)
 	{
+		preserve_source_alpha_ = config::GetBool("PreserveSourceAlpha", false);
 	}
 
 	CaptureManager::~CaptureManager()
@@ -125,6 +126,18 @@ namespace cygc
 	{
 		state_ = state;
 		message_ = std::move(message);
+	}
+
+	bool CaptureManager::PreserveSourceAlpha() const
+	{
+		std::lock_guard<std::mutex> lock(mutex_);
+		return preserve_source_alpha_;
+	}
+
+	void CaptureManager::SetPreserveSourceAlpha(bool preserve)
+	{
+		std::lock_guard<std::mutex> lock(mutex_);
+		preserve_source_alpha_ = preserve;
 	}
 
 	StreamTransform CaptureManager::Transform() const
@@ -801,6 +814,23 @@ namespace cygc
 			cmd_list->barrier(source.handle, source_state, resource_usage::copy_source);
 			cmd_list->copy_texture_region(source.handle, 0, nullptr, output_, 0, nullptr);
 			cmd_list->barrier(source.handle, resource_usage::copy_source, source_state);
+		}
+
+		// Game colour buffers often contain alpha = 0 although their RGB image is complete.
+		// Present ignores alpha; ImGui and OBS blend it. Make scene streams visible by default,
+		// without changing any colour bits or the alpha mask of derived HUD streams.
+		if (transform_ == StreamTransform::Copy && !preserve_source_alpha_)
+		{
+			std::string error;
+			cmd_list->barrier(output_, resource_usage::copy_dest, resource_usage::render_target);
+			const bool opaque = WriteOpaqueAlpha(device_, cmd_list, output_rtv_, output_desc_, opaque_alpha_pass_, error);
+			cmd_list->barrier(output_, resource_usage::render_target, resource_usage::copy_dest);
+			if (!opaque)
+			{
+				sender_.EndFrame();
+				SetState(CaptureState::Error, "Opaque alpha pass unavailable: " + error);
+				return false;
+			}
 		}
 
 		copy_in_progress_ = true;

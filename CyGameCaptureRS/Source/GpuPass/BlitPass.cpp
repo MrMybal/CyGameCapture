@@ -7,6 +7,9 @@ namespace cygc
 {
 	namespace
 	{
+		constexpr const char *kOpaqueAlphaShader = R"HLSL(
+float4 PSOpaqueAlpha() : SV_Target { return float4(0, 0, 0, 1); }
+)HLSL";
 		constexpr const char *kBlitShader = R"HLSL(
 struct VSOut { float4 pos : SV_Position; float2 uv : TEXCOORD0; };
 
@@ -23,6 +26,19 @@ float4 PSBlit(VSOut input) : SV_Target
 	return SourceTexture.SampleLevel(LinearSampler, input.uv * SourceRect.xy + SourceRect.zw, 0);
 }
 )HLSL";
+	}
+
+	bool WriteOpaqueAlpha(reshade::api::device *device, reshade::api::command_list *cmd,
+		reshade::api::resource_view target, const reshade::api::resource_desc &desc,
+		FullscreenPass &pass, std::string &error)
+	{
+		if (pass.IsValid() && pass.RenderTargetFormat() != desc.texture.format)
+			pass.Destroy();
+		if (!pass.IsValid() && !pass.Create(device, kOpaqueAlphaShader, "PSOpaqueAlpha", 0, 0,
+			desc.texture.format, error, 0x8))
+			return false;
+		pass.Draw(cmd, target, nullptr, 0, nullptr, 0, desc.texture.width, desc.texture.height);
+		return true;
 	}
 
 	SourceRect MakeSourceRect(const ActiveRect &rect, uint32_t texture_width, uint32_t texture_height)

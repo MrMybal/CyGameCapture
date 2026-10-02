@@ -133,6 +133,8 @@ namespace cygc
 		void SetHudSettings(const HudSettings &settings);
 
 		StreamTransform Transform() const;
+		bool PreserveSourceAlpha() const;
+		void SetPreserveSourceAlpha(bool preserve);
 
 		/** Depth linearisation settings; they only matter while the transform is DepthLinear. */
 		DepthSettings GetDepthSettings() const;
@@ -260,6 +262,8 @@ namespace cygc
 		HudSettings hud_settings_;
 		// Used by the plain copy path when the source is only partly rendered into (dynamic resolution)
 		FullscreenPass blit_pass_;
+		FullscreenPass opaque_alpha_pass_;
+		bool preserve_source_alpha_ = false;
 		ActiveRect active_rect_;        // area of the source that actually held the last frame
 		bool downscaled_ = false;       // so the dynamic-resolution message is logged once, not per frame
 		reshade::api::resource current_back_buffer_ = {};   // refreshed every present

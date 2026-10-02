@@ -47,6 +47,12 @@ namespace cygc
 	/** Turns an active rectangle in texels into texture coordinates for a texture of that size. */
 	SourceRect MakeSourceRect(const ActiveRect &rect, uint32_t texture_width, uint32_t texture_height);
 
+	// Writes only alpha = 1, preserving RGB bit for bit (including 10-bit/HDR data).
+	// The caller transitions the target to/from render_target; the game resource is never changed.
+	bool WriteOpaqueAlpha(reshade::api::device *device, reshade::api::command_list *cmd,
+		reshade::api::resource_view target, const reshade::api::resource_desc &desc,
+		FullscreenPass &pass, std::string &error);
+
 	/** Builds the scaling blit for one render target format. */
 	bool CreateBlitPass(reshade::api::device *device, reshade::api::format render_target_format,
 		FullscreenPass &out_pass, std::string &error);

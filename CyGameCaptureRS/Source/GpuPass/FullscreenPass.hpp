@@ -49,7 +49,7 @@ namespace cygc
 		 */
 		bool Create(reshade::api::device *device, const char *hlsl, const char *pixel_entry,
 			uint32_t input_count, uint32_t constant_dwords, reshade::api::format render_target_format,
-			std::string &error);
+			std::string &error, uint8_t color_write_mask = 0xF);
 
 		void Destroy();
 		bool IsValid() const { return pipeline_ != 0; }
@@ -74,6 +74,7 @@ namespace cygc
 		reshade::api::format render_target_format_ = reshade::api::format::unknown;
 		uint32_t input_count_ = 0;
 		uint32_t constant_dwords_ = 0;
+		uint8_t color_write_mask_ = 0xF;
 	};
 
 	/**

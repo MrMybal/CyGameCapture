@@ -197,6 +197,15 @@ namespace cygc
 				if (status.state == CaptureState::Idle)
 					ImGui::TextDisabled(TR("Select a buffer in the Buffer Inspector tab and click \"Use As Capture Source\"."));
 
+				if (status.state == CaptureState::Active && capture.Transform() == StreamTransform::Copy)
+				{
+					bool preserve_alpha = capture.PreserveSourceAlpha();
+					if (ImGui::Checkbox(TR("Preserve source alpha (advanced)"), &preserve_alpha))
+						capture.SetPreserveSourceAlpha(preserve_alpha);
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip(TR("Off: send an opaque scene, even if the game leaves alpha at zero.\nOn: keep the buffer's original transparency. Isolated HUD streams always keep their mask."));
+				}
+
 				// Depth streams: the numbers that cannot be guessed from outside the game. They are
 				// the same ones ReShade's own depth shaders use, so settings already worked out for a
 				// game carry over unchanged.

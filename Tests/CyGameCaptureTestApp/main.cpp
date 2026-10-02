@@ -120,7 +120,7 @@ float4 PSTonemap(VSOut i) : SV_Target
 {
 	float3 hdr = tex0.Sample(samp, i.uv * color.xy).rgb;
 	float3 mapped = hdr / (1.0 + hdr);
-	return float4(pow(mapped, 1.0 / 2.2), 1);
+	return float4(pow(mapped, 1.0 / 2.2), params.w);
 }
 
 float4 PSCopy(VSOut i) : SV_Target
@@ -163,6 +163,9 @@ float4 PSHud(VSOut i) : SV_Target
 	ComPtr<ID3D11DepthStencilState> g_ds_state;
 	RenderTarget g_scene_hdr, g_bloom, g_scene_clean;
 	bool g_running = true;
+	bool g_zero_alpha = false;
+	bool g_ten_bit = false;
+	bool g_fixed_frame = false;
 	float g_time = 0.0f;              // shared with the pass helper, which fills the constants itself
 
 	LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -283,7 +286,8 @@ float4 PSHud(VSOut i) : SV_Target
 
 		if (!CreateRenderTarget(g_scene_hdr, kWidth, kHeight, DXGI_FORMAT_R16G16B16A16_FLOAT, "SceneColorHDR")) return false;
 		if (!CreateRenderTarget(g_bloom, kWidth / 2, kHeight / 2, DXGI_FORMAT_R11G11B10_FLOAT, "BloomHalfRes")) return false;
-		if (!CreateRenderTarget(g_scene_clean, kWidth, kHeight, DXGI_FORMAT_R8G8B8A8_UNORM, "SceneCleanLDR")) return false;
+		if (!CreateRenderTarget(g_scene_clean, kWidth, kHeight,
+			g_ten_bit ? DXGI_FORMAT_R10G10B10A2_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM, "SceneCleanLDR")) return false;
 		return true;
 	}
 
@@ -314,6 +318,7 @@ float4 PSHud(VSOut i) : SV_Target
 		Constants c = {};
 		c.params[0] = g_time;
 		c.params[1] = static_cast<float>(kWidth) / static_cast<float>(kHeight);
+		c.params[3] = g_zero_alpha ? 0.0f : 1.0f;
 		c.color[0] = source_scale;
 		c.color[1] = source_scale;
 		SetConstants(c);
@@ -350,7 +355,7 @@ float4 PSHud(VSOut i) : SV_Target
 	void RenderFrame(float time)
 	{
 		g_time = time;
-		const float scale = ResolutionScale(time);
+		const float scale = g_fixed_frame ? 1.0f : ResolutionScale(time);
 		const UINT scene_width = static_cast<UINT>(kWidth * scale);
 		const UINT scene_height = static_cast<UINT>(kHeight * scale);
 		const float source_scale = static_cast<float>(scene_width) / static_cast<float>(kWidth);
@@ -401,8 +406,12 @@ float4 PSHud(VSOut i) : SV_Target
 	}
 }
 
-int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR, int)
+int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR command_line, int show_command)
 {
+	// Reproduce games whose RGB scene is valid but alpha is zero; fixed frames allow exact RGB comparisons.
+	g_zero_alpha = wcsstr(command_line, L"--zero-alpha") != nullptr;
+	g_ten_bit = wcsstr(command_line, L"--ten-bit") != nullptr;
+	g_fixed_frame = wcsstr(command_line, L"--fixed-frame") != nullptr;
 	WNDCLASSEXW wc = { sizeof(wc) };
 	wc.lpfnWndProc = WndProc;
 	wc.hInstance = instance;
@@ -419,7 +428,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR, int)
 		CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top, nullptr, nullptr, instance, nullptr);
 	if (hwnd == nullptr)
 		return 1;
-	ShowWindow(hwnd, SW_SHOW);
+	ShowWindow(hwnd, show_command);
 
 	if (!InitD3D(hwnd))
 	{
@@ -442,7 +451,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR, int)
 		if (!g_running)
 			break;
 		QueryPerformanceCounter(&now);
-		RenderFrame(static_cast<float>(static_cast<double>(now.QuadPart - start.QuadPart) / static_cast<double>(frequency.QuadPart)));
+		RenderFrame(g_fixed_frame ? 0.0f : static_cast<float>(static_cast<double>(now.QuadPart - start.QuadPart) / static_cast<double>(frequency.QuadPart)));
 	}
 	return 0;
 }

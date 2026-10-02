@@ -7,6 +7,10 @@
 
 { "No preview yet",
 	"Pas encore d'aperçu" },
+{ "Preserve source alpha (advanced)",
+	"Conserver l'alpha d'origine (avancé)" },
+{ "Off: send an opaque scene, even if the game leaves alpha at zero.\nOn: keep the buffer's original transparency. Isolated HUD streams always keep their mask.",
+	"Décoché : envoyer une scène opaque, même si le jeu laisse l'alpha à zéro.\nCoché : conserver la transparence du tampon. Les flux HUD isolés conservent toujours leur masque." },
 { "Show selected buffer in game (play without HUD / UI)",
 	"Afficher le tampon choisi dans le jeu (jouer sans HUD / interface)" },
 { "(hotkey: %s, [CYGAMECAPTURE] ViewToggleKey in ReShade.ini)",
