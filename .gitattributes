@@ -1,0 +1,3 @@
+# Preserve copied licence texts byte for byte, including upstream whitespace and line endings.
+/LICENCES/** -text -whitespace
+/CyGameCaptureUE/LICENCES/** -text -whitespace

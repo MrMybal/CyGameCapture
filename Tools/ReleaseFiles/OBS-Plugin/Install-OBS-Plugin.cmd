@@ -32,6 +32,8 @@ mkdir "%DST%\bin\64bit" 2>nul
 mkdir "%DST%\data" 2>nul
 xcopy /y /q "%SRC%\bin\64bit\*" "%DST%\bin\64bit\" >nul || goto :failed
 xcopy /y /q /e "%SRC%\data\*" "%DST%\data\" >nul || goto :failed
+xcopy /y /q /e /i "%~dp0LICENCES\*" "%DST%\LICENCES\" >nul || goto :failed
+copy /y "%~dp0LICENSE.txt" "%DST%\LICENSE.txt" >nul || goto :failed
 
 echo   Installed / Installe.
 echo.

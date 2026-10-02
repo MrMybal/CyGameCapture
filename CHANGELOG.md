@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+* Collect complete English licence texts and source references in `LICENCES`, including at the Unreal
+  plugin root. Release archives, test packages and OBS installers now carry the applicable notices.
+* Clarify that the product's native CyGameCaptureCore library is not CyToolsCore; no CyToolsCore,
+  CyUEMCPSDK or Python assistant runtime is included. Product licences and user settings are unchanged.
+
 * Fix invisible scene streams and previews when a game writes valid RGB with zero alpha (observed in Stray).
   Colour streams now force opaque alpha without modifying RGB; isolated HUD masks are preserved.
   The Capture tab offers an advanced option to retain the source alpha.

@@ -24,6 +24,25 @@ Game -> ReShade -> CyGameCaptureRS -> selected render target -> GPU copy -> shar
 | `Tests/`            | D3D11 and D3D12 test applications (scene + fake HUD), a headless Spout receiver, and a probe that reports what really survived in a recording | done |
 | `CyGameCaptureUEHost/` | Unreal host project used to build, run and benchmark the UE plugin | done |
 
+## Component licences and SDK integration
+
+CyGameCapture remains version **0.1.0**. Its native add-on, AI helper, shared library and OBS plugin
+use **AGPL-3.0-or-later**; the Unreal plugin uses **MIT**. Full English licence texts, component
+attributions and source links are collected in [`LICENCES/SOURCES.txt`](LICENCES/SOURCES.txt).
+Each release archive and installed OBS plugin includes its own `LICENCES` directory. The Unreal
+plugin also includes it at its plugin root; `FilterPlugin.ini` retains it in BuildPlugin packages.
+
+`CyGameCaptureCore` is a native library belonging to this product. This version does **not** integrate
+CyToolsCore or CyUEMCPSDK, or distribute a Python assistant runtime. The ReShade assistant uses the
+native `CyGameCaptureAI.exe` helper and user-installed provider CLIs. No Cy SDK migration, wheel or
+assistant bundle is required. Existing configuration paths, provider selections and operation contracts
+are unchanged by this licence-delivery update.
+
+To update a distribution, rebuild with `build.cmd Release` and regenerate the release/test package;
+copy the component together with its `LICENCES` folder. The OBS installer copies notices alongside its
+binary and data without deleting user configurations. Keep an older package for rollback and restore
+its matching binaries and notices together. No shared Python runtime or user settings are migrated.
+
 ## Requirements
 
 * Windows 10/11, 64-bit game using **Direct3D 11**, **Direct3D 12** or D3D10. On D3D12 the Spout output goes through a

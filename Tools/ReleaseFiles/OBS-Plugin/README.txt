@@ -49,4 +49,5 @@ Copyright (C) 2026 Cyberalien. Free software under the GNU Affero General
 Public License, version 3 or later (LICENSE.txt), provided WITHOUT ANY
 WARRANTY. Source code: https://github.com/MrMybal/CyGameCapture
 The plugin links libobs (GNU GPL v2 or later) and compiles part of the Spout2
-SDK (BSD 2-clause): their licences are in the Licences folder.
+SDK (BSD 2-clause): their full licence texts and source references are in
+LICENCES. Install-OBS-Plugin.cmd also copies LICENCES to the installed plugin.

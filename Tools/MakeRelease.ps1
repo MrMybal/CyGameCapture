@@ -23,6 +23,7 @@ Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 $root = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'PackageLicences.ps1')
 $bin = Join-Path $root "bin\Release"
 $files = Join-Path $PSScriptRoot "ReleaseFiles"
 
@@ -130,7 +131,6 @@ if (Test-Path $OutputDirectory) {
 New-Folder $package | Out-Null
 
 $licence = Join-Path $root "LICENSE"
-$rsThirdParty = Join-Path $root "CyGameCaptureRS\ThirdParty"
 
 # ----------------------------------------------------------------- the ReShade add-on
 Section "ReShade add-on"
@@ -141,12 +141,7 @@ Copy-Item $aiBinary $addon
 Copy-Item (Join-Path $files "ReShade-Addon\README.txt") $addon
 Copy-Item (Join-Path $PSScriptRoot "PackageFiles\LISEZMOI-installer-dans-un-jeu.txt") (Join-Path $addon "LISEZMOI.txt")
 Copy-Item $licence (Join-Path $addon "LICENSE.txt")
-$notices = New-Folder (Join-Path $addon "Licences")
-Copy-Item (Join-Path $rsThirdParty "THIRD_PARTY_NOTICES.md") $notices
-Copy-Item (Join-Path $rsThirdParty "reshade\LICENSE.md") (Join-Path $notices "ReShade-LICENSE.md")
-Copy-Item (Join-Path $rsThirdParty "imgui\LICENSE.txt") (Join-Path $notices "DearImGui-LICENSE.txt")
-Copy-Item (Join-Path $rsThirdParty "Spout2\LICENSE") (Join-Path $notices "Spout2-LICENSE.txt")
-Copy-Item (Join-Path $rsThirdParty "Spout2\licence.txt") (Join-Path $notices "Spout2-licence.txt")
+Copy-ProductLicences -ProjectRoot $root -Destination $addon -Component ReShade
 
 # ----------------------------------------------------------------- the OBS plugin
 Section "OBS plugin"
@@ -158,13 +153,7 @@ foreach ($name in "README.txt", "LISEZMOI.txt", "Install-OBS-Plugin.cmd", "Unins
     Copy-Item (Join-Path $files "OBS-Plugin\$name") $obs
 }
 Copy-Item $licence (Join-Path $obs "LICENSE.txt")
-$notices = New-Folder (Join-Path $obs "Licences")
-$obsThirdParty = Join-Path $root "CyGameCaptureOBS\ThirdParty"
-Copy-Item (Join-Path $obsThirdParty "THIRD_PARTY_NOTICES.md") $notices
-Copy-Item (Join-Path $obsThirdParty "obs-studio\COPYING") (Join-Path $notices "OBS-Studio-COPYING.txt")
-Copy-Item (Join-Path $obsThirdParty "obs-studio\COMMITMENT") (Join-Path $notices "OBS-Studio-COMMITMENT.txt")
-Copy-Item (Join-Path $rsThirdParty "Spout2\LICENSE") (Join-Path $notices "Spout2-LICENSE.txt")
-Copy-Item (Join-Path $rsThirdParty "Spout2\licence.txt") (Join-Path $notices "Spout2-licence.txt")
+Copy-ProductLicences -ProjectRoot $root -Destination $obs -Component OBS
 
 # ----------------------------------------------------------------- the Unreal plugin
 Section "Unreal plugin"
@@ -180,6 +169,7 @@ foreach ($unrealPackage in $unrealPackages) {
     # The documentation and the licence as they are now, not as they were when that engine version was built
     Copy-Item (Join-Path $unrealSource "README.md") $target -Force
     Copy-Item (Join-Path $unrealSource "LICENSE") $target -Force
+    Copy-ProductLicences -ProjectRoot $root -Destination $target -Component Unreal
     robocopy (Join-Path $unrealSource "Docs") (Join-Path $target "Docs") /MIR /NFL /NDL /NJH /NJS /NP | Out-Null
     if ($LASTEXITCODE -ge 8) { throw "Copy of the Unreal documentation failed" }
     Write-Host ("      Unreal " + $engine)
@@ -199,6 +189,7 @@ New-Folder (Join-Path $docs "Resources\Branding") | Out-Null
 Copy-Item (Join-Path $branding "CyGameCapture_Logo_256.png") (Join-Path $docs "Resources\Branding")
 
 Copy-Item $licence (Join-Path $package "LICENSE.txt")
+Copy-ProductLicences -ProjectRoot $root -Destination $package -Component Complete
 (Get-Content (Join-Path $files "README.txt") -Raw -Encoding UTF8).Replace("@VERSION@", $version) |
     Set-Content (Join-Path $package "README.txt") -Encoding UTF8 -NoNewline
 Copy-Item (Join-Path $branding "CyGameCapture.ico") $package
@@ -234,7 +225,7 @@ foreach ($unrealPackage in $unrealPackages) {
 }
 
 $sums = foreach ($archive in $archives) {
-    $hash = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+    $hash = (Get-ProductFileHash -Path $archive).ToLowerInvariant()
     "$hash  $(Split-Path $archive -Leaf)"
 }
 # LF line ends and no BOM, the format sha256sum -c reads
@@ -246,6 +237,9 @@ $pattern = "(?ms)^## " + [regex]::Escape($version) + "\b.*?(?=^## |\z)"
 $notes = [regex]::Match($changelog, $pattern)
 if (-not $notes.Success) { throw "No section for $version in CHANGELOG.md" }
 [System.IO.File]::WriteAllText((Join-Path $OutputDirectory "RELEASE_NOTES.md"), $notes.Value.TrimEnd() + "`n")
+
+# Verify the archives themselves, not just the staging folders.
+& (Join-Path $PSScriptRoot 'ValidateLicensePackages.ps1') -ReleaseDirectory $OutputDirectory
 
 Write-Host ""
 foreach ($archive in $archives) {

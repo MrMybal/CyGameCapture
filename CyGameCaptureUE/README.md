@@ -79,6 +79,15 @@ mklink /J CyGameCaptureUEHost\Plugins\CyGameCaptureUE CyGameCaptureUE
 Manual harness (in `CyGameCaptureUEHost`): `-CyGCTest -CyGCTestSeconds=25` spawns 4 senders + receivers and logs
 a report every 2 seconds.
 
+## Licence delivery
+
+The plugin remains version **0.1.0**, under MIT. Complete English texts and source links are in
+[`LICENCES/SOURCES.txt`](LICENCES/SOURCES.txt). Keep the `LICENCES` directory with the plugin when
+installing, updating or restoring an earlier package; `Config/FilterPlugin.ini` includes it in
+BuildPlugin packages. The release scripts refresh notices from the current sources for every engine
+package. Settings and application data are unaffected. No CyToolsCore, CyUEMCPSDK or Python assistant
+runtime is bundled; this is a native runtime plugin.
+
 ## Verified
 
 | Engine | Build | Runtime test |

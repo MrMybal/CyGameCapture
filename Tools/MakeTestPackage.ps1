@@ -14,6 +14,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'PackageLicences.ps1')
 $bin = Join-Path $root "bin\Release"
 $files = Join-Path $PSScriptRoot "PackageFiles"
 
@@ -55,6 +56,7 @@ Copy-Item (Join-Path $bin "CyGameCaptureAI.exe") $addon
 if ($WithSymbols) { Copy-Item (Join-Path $bin "CyGameCaptureRS.pdb") $addon -ErrorAction SilentlyContinue }
 Copy-Item (Join-Path $files "LISEZMOI-installer-dans-un-jeu.txt") $addon
 Copy-Item (Join-Path $root "LICENSE") (Join-Path $addon "LICENSE.txt")
+Copy-ProductLicences -ProjectRoot $root -Destination $addon -Component ReShade
 
 # ----------------------------------------------------------------- the OBS plugin
 Section "plugin OBS"
@@ -62,6 +64,7 @@ $obs = Join-Path $OutputDirectory "Plugin-OBS"
 New-Item -ItemType Directory -Force (Join-Path $obs "bin\64bit") | Out-Null
 Copy-Item (Join-Path $bin "obs-plugins\64bit\CyGameCaptureOBS.dll") (Join-Path $obs "bin\64bit")
 Copy-Item (Join-Path $bin "data\obs-plugins\CyGameCaptureOBS") (Join-Path $obs "data") -Recurse
+Copy-ProductLicences -ProjectRoot $root -Destination $obs -Component OBS
 
 # ----------------------------------------------------------------- the test applications
 Section "applications de test"
@@ -75,6 +78,7 @@ foreach ($pair in @(@("TestApp", "D3D11"), @("TestAppD3D12", "D3D12"))) {
         Copy-Item $_.FullName $target
     }
     Copy-Item (Join-Path $files ("ini\ReShade-" + $pair[1] + ".ini")) (Join-Path $target "ReShade.ini")
+    Copy-ProductLicences -ProjectRoot $root -Destination $target -Component ReShade
 }
 
 # ----------------------------------------------------------------- the tools
@@ -107,6 +111,8 @@ if (-not $NoUnreal) {
             # Intermediate holds build leftovers only; it is big and of no use to anyone installing
             $exclude = if ($WithSymbols) { @() } else { @('/XF', '*.pdb') }
             robocopy $package.FullName $target /E /XD Intermediate @exclude /NFL /NDL /NJH /NJS /NP | Out-Null
+            if ($LASTEXITCODE -ge 8) { throw "Unreal package copy failed: $($package.FullName)" }
+            Copy-ProductLicences -ProjectRoot $root -Destination $target -Component Unreal
             Write-Host ("      Unreal " + $version)
         }
     }
@@ -141,6 +147,8 @@ Section "scripts et guide"
 Get-ChildItem $files -Filter "*.cmd" | ForEach-Object { Copy-Item $_.FullName $OutputDirectory }
 Copy-Item (Join-Path $files "LISEZMOI.txt") $OutputDirectory
 Copy-Item (Join-Path $root "LICENSE") (Join-Path $OutputDirectory "LICENSE.txt")
+Copy-ProductLicences -ProjectRoot $root -Destination $OutputDirectory -Component Test -IncludeVideoProbe:(Test-Path (Join-Path $tools 'CyGameCaptureVideoProbe.exe'))
+Copy-ProductLicences -ProjectRoot $root -Destination $tools -Component Test -IncludeVideoProbe:(Test-Path (Join-Path $tools 'CyGameCaptureVideoProbe.exe'))
 
 # ----------------------------------------------------------------- a note on what this build is
 $addonVersion = (Get-Item (Join-Path $bin "CyGameCaptureRS.addon64")).VersionInfo.FileVersion
