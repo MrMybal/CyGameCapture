@@ -24,6 +24,32 @@ Game -> ReShade -> CyGameCaptureRS -> selected render target -> GPU copy -> shar
 | `Tests/`            | D3D11 and D3D12 test applications (scene + fake HUD), a headless Spout receiver, and a probe that reports what really survived in a recording | done |
 | `CyGameCaptureUEHost/` | Unreal host project used to build, run and benchmark the UE plugin | done |
 
+## Screenshots
+
+The screenshots below show CyGameCapture running with the D3D11 test application.
+Click an image to open it at full size.
+
+### Buffer Inspector
+
+Browse the game's render targets, inspect their properties and preview the selected buffer before capturing it.
+
+[![Buffer Inspector showing the render target list, resource properties and selected buffer preview](Docs/Images/m1_buffer_inspector.png)](Docs/Images/m1_buffer_inspector.png)
+
+### Capture and output preview
+
+Monitor multiple Spout streams and preview the image being sent to receivers.
+
+[![Capture tab showing two active Spout streams and the first stream's output preview](Docs/Images/m1_capture_tab_two_streams.png)](Docs/Images/m1_capture_tab_two_streams.png)
+
+### Player view and stream output
+
+Keep the HUD visible while playing and send the scene without it to a Spout receiver such as OBS.
+The test scene is animated; these screenshots were taken at different moments.
+
+| Player view with HUD | Clean scene received through Spout |
+|---|---|
+| [![Player view of the test scene with HUD bars and panels](Docs/Images/m1_player_view_with_hud.png)](Docs/Images/m1_player_view_with_hud.png) | [![Spout receiver output showing the test scene without HUD bars or panels](Docs/Images/m1_spout_receiver_clean_scene.png)](Docs/Images/m1_spout_receiver_clean_scene.png) |
+
 ## Component licences and SDK integration
 
 CyGameCapture remains version **0.1.0**. Its native add-on, AI helper, shared library and OBS plugin
