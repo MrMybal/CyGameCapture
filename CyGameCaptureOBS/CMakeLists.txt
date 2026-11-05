@@ -52,7 +52,7 @@ target_compile_definitions(CyGameCaptureOBS PRIVATE
 
 set_source_files_properties(${CYGC_OBS_SOURCES} PROPERTIES COMPILE_DEFINITIONS "WIN32_LEAN_AND_MEAN")
 
-target_link_libraries(CyGameCaptureOBS PRIVATE CyGameCaptureCore CyGameCaptureBranding ${CYGC_OBS_LIB} advapi32 shell32 winmm)
+target_link_libraries(CyGameCaptureOBS PRIVATE CyGameCaptureCore CyGameCaptureBranding ${CYGC_OBS_LIB} advapi32 shell32 shlwapi winmm)
 
 set_target_properties(CyGameCaptureOBS PROPERTIES
     OUTPUT_NAME "CyGameCaptureOBS"

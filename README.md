@@ -27,18 +27,22 @@ Game -> ReShade -> CyGameCaptureRS -> selected render target -> GPU copy -> shar
 ## Integrated user guide
 
 Open **User guide** next to the language selector in the ReShade overlay, or in the properties of an
-OBS **CyGameCapture** source. The complete illustrated manual opens locally in your browser, with
-search, a chapter index, diagrams and printing/PDF support. No Internet connection is needed.
-It follows the component's English/French language; the default entry page is English.
+OBS **CyGameCapture** source. The complete CyDoc manual opens locally in your browser, with search,
+API/source references, annotated/zoomable images, comparisons and static SVG diagrams. No server,
+CDN or Internet connection is needed. English is the default; the app opens the chosen English/French edition.
+With the ReShade inspector focused, **F1** opens the active tab's page or section. OBS opens its reception guide.
 
 Read the [English guide](Docs/UserGuide/en.html) or [French guide](Docs/UserGuide/fr.html) locally.
 Keep `Documentation/UserGuide` next to the add-on when installing it; the OBS installer carries the
 manual in its plugin data. Unreal includes the same manual at `Docs/UserGuide/index.html`.
 Release archives and the ready-to-run test suite include both languages and all images.
 
-Guide sources are `Docs/UserGuide/guide.json`, `style.css` and `manual.js`; regenerate the committed
-HTML, images and Unreal copy with `python Tools/BuildUserGuide.py` after editing. Normal builds and
-packages only copy the generated assets and need no Python. Validate with `python Tools/ValidateUserGuide.py`.
+Authoring sources are Markdown in `Docs/CyDoc/manual`, local assets in `Docs/CyDoc/assets`,
+`cydoc.config.json` and the public-API host adapter in `Docs/CyDoc/reader.mjs`.
+With Node.js 22+, run `npm ci`, `npm run docs:build`, `npm run docs:check` and `npm run docs:test`.
+The native build and package scripts regenerate and deploy the entire reader. End users need no Node.js.
+CyDoc 0.1.0 is pinned as a local package in `Resources/CyDoc`; only its image module is enabled.
+See [documentation maintenance](Docs/CyDoc/README.md) for translation tracking, source scope and limits.
 
 ## Screenshots
 
@@ -94,6 +98,7 @@ its matching binaries and notices together. No shared Python runtime or user set
   **Spout2 plugin** (https://github.com/Off-World-Live/obs-spout2-plugin). Any other Spout2 application works too
   (Resolume, TouchDesigner, another Unreal instance...): nothing in the pipeline is OBS specific.
 * Visual Studio 2022 (MSVC v143, CMake and Ninja components) to build.
+* Node.js 22+ for the documentation build tooling. Run `npm ci` once after cloning.
 
 ## Build
 

@@ -14,6 +14,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
+& node (Join-Path $PSScriptRoot 'BuildDocumentation.mjs')
+if ($LASTEXITCODE -ne 0) { throw 'CyDoc generation failed' }
 . (Join-Path $PSScriptRoot 'PackageLicences.ps1')
 . (Join-Path $PSScriptRoot 'PackageDocumentation.ps1')
 $bin = Join-Path $root "bin\Release"

@@ -1,0 +1,144 @@
+{
+  "guideChapters": [
+    {
+      "legacy": "Docs/UserGuide/guide.json#overview",
+      "id": "overview",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#install",
+      "id": "install",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#quickstart",
+      "id": "quickstart",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#inspector",
+      "id": "inspector",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#moment",
+      "id": "moment",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#ingame",
+      "id": "ingame",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#capture",
+      "id": "capture",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#obs",
+      "id": "obs",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#recording",
+      "id": "recording",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#assistant",
+      "id": "assistant",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#derived",
+      "id": "derived",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#unreal",
+      "id": "unreal",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#configuration",
+      "id": "configuration",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#performance",
+      "id": "performance",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#troubleshooting",
+      "id": "troubleshooting",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#diagnostics",
+      "id": "diagnostics",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "legacy": "Docs/UserGuide/guide.json#glossary",
+      "id": "glossary",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    }
+  ],
+  "readerModules": [
+    "image"
+  ],
+  "upstreamCommit": "774f2a7eabf7dd181a98ffc5add115b580b67f42"
+}

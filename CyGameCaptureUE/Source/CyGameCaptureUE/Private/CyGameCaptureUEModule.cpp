@@ -4,6 +4,7 @@
 #include "CyGameCaptureUEModule.h"
 #include "CyGameCaptureLog.h"
 #include "CyGameCaptureSettings.h"
+#include "CyUserGuide.h"
 
 DEFINE_LOG_CATEGORY(LogCyGameCapture);
 
@@ -15,6 +16,7 @@ bool CyGameCaptureDebugLoggingEnabled()
 
 void FCyGameCaptureUEModule::StartupModule()
 {
+	CyUserGuide::Register();
 #if CYGC_WITH_SPOUT
 	const TCHAR* SpoutState = TEXT("yes");
 #else
@@ -25,6 +27,7 @@ void FCyGameCaptureUEModule::StartupModule()
 
 void FCyGameCaptureUEModule::ShutdownModule()
 {
+	CyUserGuide::Unregister();
 	CYGC_LOG(Log, TEXT("Module shut down"));
 }
 

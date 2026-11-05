@@ -1,15 +1,20 @@
-# Shared deployment for the offline user guide. No network or generator is needed.
+# Deploy the complete CyDoc export, including providers, image module and notices.
 function Copy-UserGuide {
     param([string] $ProjectRoot, [string] $Destination)
     $source = Join-Path $ProjectRoot 'Docs/UserGuide'
-    New-Item -ItemType Directory -Force -Path $Destination | Out-Null
-    foreach ($name in 'index.html', 'en.html', 'fr.html', 'style.css', 'manual.js') {
-        Copy-Item -LiteralPath (Join-Path $source $name) -Destination $Destination -Force
+    if (-not (Test-Path -LiteralPath (Join-Path $source 'manifest.json'))) { throw 'Build the CyDoc manual first: npm run docs:build' }
+    $target = [IO.Path]::GetFullPath($Destination).TrimEnd('\','/')
+    if ([IO.Path]::GetFileName($target) -ne 'UserGuide' -or $target -eq [IO.Path]::GetFullPath($source)) { throw 'Unexpected manual deployment target' }
+    if (Test-Path -LiteralPath $target) {
+        $resolved = (Resolve-Path -LiteralPath $target).Path
+        if ($resolved -ne $target -or ((Get-Item -LiteralPath $target).Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Refusing a linked deployment target' }
+        if (Get-ChildItem -LiteralPath $target -Recurse -Force | Where-Object { $_.Attributes -band [IO.FileAttributes]::ReparsePoint }) { throw 'Refusing linked manual assets' }
+        if (-not (Test-Path -LiteralPath (Join-Path $target 'build-info.json')) -and -not (Test-Path -LiteralPath (Join-Path $target 'manual.js'))) { throw 'Refusing to replace an unmanaged directory' }
+        Remove-Item -LiteralPath $target -Recurse -Force
     }
-    $images = Join-Path $Destination 'images'
-    New-Item -ItemType Directory -Force -Path $images | Out-Null
-    Get-ChildItem -LiteralPath (Join-Path $source 'images') -File | ForEach-Object {
-        Copy-Item -LiteralPath $_.FullName -Destination $images -Force
+    New-Item -ItemType Directory -Force -Path $target | Out-Null
+    Get-ChildItem -LiteralPath $source -Force | ForEach-Object {
+        Copy-Item -LiteralPath $_.FullName -Destination $target -Recurse -Force
     }
 }
 

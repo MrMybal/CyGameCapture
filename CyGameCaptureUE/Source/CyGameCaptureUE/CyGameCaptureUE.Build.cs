@@ -16,6 +16,13 @@ public class CyGameCaptureUE : ModuleRules
 		bEnableExceptions = true;          // the Spout2 SDK uses try/catch in a few places
 		bUseUnity = false;                 // third-party wrappers must not be merged with engine-facing code
 
+		// Browser documentation must stay as loose local files, outside cooked pak data.
+		RuntimeDependencies.Add("$(PluginDir)/Docs/UserGuide/...", StagedFileType.NonUFS);
+		if (Target.Version.MajorVersion < 5)
+		{
+			CppStandard = CppStandardVersion.Cpp17; // CyDoc's native route helper uses string_view.
+		}
+
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core",
@@ -33,6 +40,11 @@ public class CyGameCaptureUE : ModuleRules
 			"SlateCore",
 			"InputCore",
 		});
+		if (Target.bBuildEditor)
+		{
+			PrivateDependencyModuleNames.Add("ToolMenus");
+		}
+		PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "..", "ThirdParty", "CyDoc")));
 
 		string ThirdPartyDir = Path.GetFullPath(Path.Combine(ModuleDirectory, "..", "ThirdParty", "Spout2"));
 		PrivateIncludePaths.Add(Path.Combine(ThirdPartyDir, "SpoutGL"));

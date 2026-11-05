@@ -45,19 +45,21 @@ if(CYGC_BUILD_TESTS)
     add_subdirectory(Tests)
 endif()
 
-# Committed HTML needs no Python/runtime/server to read or deploy. Run on every build,
-# including documentation-only changes where no binary needs relinking.
-set(CYGC_GUIDE_DIR "${CMAKE_SOURCE_DIR}/Docs/UserGuide")
-set(CYGC_GUIDE_FILES)
-foreach(name index.html en.html fr.html style.css manual.js)
-    list(APPEND CYGC_GUIDE_FILES "${CYGC_GUIDE_DIR}/${name}")
-endforeach()
-add_custom_target(CyGameCaptureUserGuide ALL)
+# Generate locally through CyDoc before copying the complete export. Node is a build
+# dependency only; end users read file:// without Node, a service or Internet access.
+find_program(CYGC_NODE_EXECUTABLE NAMES node node.exe REQUIRED)
+find_program(CYGC_POWERSHELL_EXECUTABLE NAMES powershell pwsh REQUIRED)
+if(NOT EXISTS "${CMAKE_SOURCE_DIR}/node_modules/cydoc/tools/cli.mjs")
+    message(FATAL_ERROR "CyDoc build dependencies are missing. Run npm ci in the project root (Node.js 22+).")
+endif()
+add_custom_target(CyGameCaptureUserGuide ALL
+    COMMAND "${CYGC_NODE_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/Tools/BuildDocumentation.mjs"
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" VERBATIM)
 function(cygc_copy_guide destination)
     add_custom_command(TARGET CyGameCaptureUserGuide POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${destination}"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CYGC_GUIDE_FILES} "${destination}"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CYGC_GUIDE_DIR}/images" "${destination}/images"
+        COMMAND "${CYGC_POWERSHELL_EXECUTABLE}" -NoProfile -ExecutionPolicy Bypass
+            -File "${CMAKE_SOURCE_DIR}/Tools/DeployDocumentation.ps1"
+            -ProjectRoot "${CMAKE_SOURCE_DIR}" -Destination "${destination}"
         VERBATIM)
 endfunction()
 cygc_copy_guide("${CYGC_OUTPUT_DIR}/Documentation/UserGuide")

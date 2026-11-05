@@ -1,0 +1,71 @@
+---
+id: install-obs
+title: Installation du plugin OBS
+description: Tools/ReleaseFiles/OBS-Plugin/LISEZMOI.txt
+section: Installation
+order: 151
+sourceRevision: aea370c5b34c
+---
+
+## Instructions d’origine {#instructions}
+
+```text
+===============================================================================
+ CyGameCaptureOBS - plugin OBS Studio
+===============================================================================
+
+(English version: README.txt)
+
+Manuel complet illustré hors connexion : bouton Guide utilisateur dans les
+propriétés de la source CyGameCapture, ou Documentation\UserGuide\index.html.
+Les éditions anglaise et française sont incluses. L’installateur conserve le
+manuel avec les données du plugin. L’entrée index.html est en anglais.
+
+Reçoit dans OBS les tampons GPU que CyGameCaptureRS (add-on ReShade) et
+CyGameCaptureUE (plugin Unreal) publient en Spout2, sans aucune copie par le
+processeur, et en enregistre plusieurs à la fois dans des fichiers séparés qui
+commencent à la même image.
+
+Demande OBS Studio 29.1 ou plus récent, 64 bits, sous Windows 10/11. Compilé
+avec et testé sur OBS Studio 29.1.3.
+
+
+Installer
+-------------------------------------------------------------------------------
+
+Fermer OBS, puis double-cliquer sur  Install-OBS-Plugin.cmd.
+
+Il copie le dossier CyGameCaptureOBS dans
+%ProgramData%\obs-studio\plugins\CyGameCaptureOBS
+Aucun droit administrateur n'est nécessaire : c'est là qu'OBS cherche les
+plugins de l'utilisateur sous Windows.
+
+À la main : copier le dossier CyGameCaptureOBS de ce paquet (avec ses dossiers
+bin et data) dans %ProgramData%\obs-studio\plugins\
+
+Désinstaller : Uninstall-OBS-Plugin.cmd, ou supprimer ce dossier.
+
+
+Utiliser
+-------------------------------------------------------------------------------
+
+Dans OBS : Sources > + > CyGameCapture, puis choisir le flux dans « Source de
+capture ». La source se reconnecte toute seule quand le jeu redémarre.
+
+Enregistrer plusieurs tampons à la fois : une source CyGameCapture par tampon,
+cocher « Enregistrer ce buffer » sur chacune, puis « Démarrer l'enregistrement
+de tous les buffers cochés ».
+
+Le plugin suit la langue d'OBS (français ou anglais).
+
+
+-------------------------------------------------------------------------------
+ LICENCE
+-------------------------------------------------------------------------------
+
+Copyright (C) 2026 Cyberalien. Logiciel libre sous licence GNU Affero General
+Public License, version 3 ou ultérieure (LICENSE.txt), fourni SANS AUCUNE
+GARANTIE. Code source : https://github.com/MrMybal/CyGameCapture
+Le plugin utilise libobs (GNU GPL v2 ou ultérieure) et compile une partie du
+SDK Spout2 (BSD 2 clauses) : leurs licences sont dans le dossier Licences.
+```

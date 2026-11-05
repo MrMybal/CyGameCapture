@@ -1163,6 +1163,8 @@ namespace cygc
 						requested_tab = i;
 			const auto tab_flags = [requested_tab](int index) { return requested_tab == index ? ImGuiTabItemFlags_SetSelected : ImGuiTabItemFlags_None; };
 
+			const char *help_page = "inspector";
+			const char *help_anchor = "";
 			if (ImGui::BeginTabBar("##cygc_tabs"))
 			{
 				if (ImGui::BeginTabItem(TR("Buffer Inspector"), nullptr, tab_flags(0)))
@@ -1172,20 +1174,28 @@ namespace cygc
 				}
 				if (ImGui::BeginTabItem(TR("Capture"), nullptr, tab_flags(1)))
 				{
+					help_page = "capture";
 					DrawCaptureTab(*ctx);
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem(TR("Timeline"), nullptr, tab_flags(2)))
 				{
+					help_anchor = "timeline-and-debug";
 					DrawTimelineTab(*ctx);
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem(TR("Debug"), nullptr, tab_flags(3)))
 				{
+					help_anchor = "timeline-and-debug";
 					DrawDebugTab(*ctx);
 					ImGui::EndTabItem();
 				}
 				ImGui::EndTabBar();
+			}
+			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && runtime->is_key_pressed(VK_F1))
+			{
+				if (!OpenUserGuideBesideModule(i18n::Current() == i18n::Language::French, help_page, help_anchor))
+					ImGui::OpenPopup("cygc_guide_error", 0);
 			}
 		}
 

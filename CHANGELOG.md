@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — CyDoc migration
+
+* Replace the handwritten reader with a pinned, local CyDoc 0.1.0 reader. Preserve the bilingual
+  manual, original technical/API guides, code examples, six images and three static SVG diagrams.
+* Enable only image zoom, annotations and comparisons; no Three.js or unused media modules.
+* Route ReShade/OBS help and focused ReShade F1 through encoded file URLs. Preserve old chapter links.
+* Replace Unreal's online documentation entry with a local Help menu and console command;
+  stage the reader as loose NonUFS files for game targets.
+* Add bounded public-header indexing, explicit translation freshness and complete build/package validation.
+
 ## Unreleased — integrated user guide
 
 * Add a complete offline English/French user guide with 17 chapters, six real application

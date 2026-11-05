@@ -714,10 +714,10 @@ namespace
 	{
 		const char *const locale = obs_get_locale();
 		const bool french = locale != nullptr && strncmp(locale, "fr", 2) == 0;
-		char *const file = obs_module_file(french ? "Documentation/UserGuide/fr.html" : "Documentation/UserGuide/en.html");
+		char *const file = obs_module_file("Documentation/UserGuide/index.html");
 		const std::wstring path = cygc::GuideWidePath(file);
 		bfree(file);
-		if (path.empty() || !cygc::OpenUserGuideFile(path))
+		if (path.empty() || !cygc::OpenUserGuideFile(path, french, "obs"))
 		{
 			const std::wstring message = cygc::GuideWidePath(obs_module_text("Guide.Error"));
 			const std::wstring title = cygc::GuideWidePath(obs_module_text("Guide.Title"));

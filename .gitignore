@@ -40,3 +40,6 @@ CyGameCaptureUEHost/Plugins/CyGameCaptureUE/
 # Python bytecode (Tools/*.py)
 __pycache__/
 *.pyc
+
+# Documentation build dependencies (the pinned CyDoc package and export are versioned)
+node_modules/

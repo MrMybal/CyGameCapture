@@ -1,0 +1,152 @@
+{
+  "defaultLocale": "en",
+  "missing": [
+    {
+      "id": "architecture",
+      "title": "Native architecture",
+      "locale": "fr",
+      "expectedRevision": "a6839e9997fb"
+    },
+    {
+      "id": "changelog",
+      "title": "Changelog",
+      "locale": "fr",
+      "expectedRevision": "2e3d054fc00a"
+    },
+    {
+      "id": "distribution",
+      "title": "Distribution contents and installation",
+      "locale": "fr",
+      "expectedRevision": "9c87bfbc6eea"
+    },
+    {
+      "id": "documentation-maintenance",
+      "title": "Build and maintain the documentation",
+      "locale": "fr",
+      "expectedRevision": "49e65f6df3b3"
+    },
+    {
+      "id": "licence-sources",
+      "title": "Component licences and source references",
+      "locale": "fr",
+      "expectedRevision": "1c0dbc4bcd1b"
+    },
+    {
+      "id": "notices-ffmpeg",
+      "title": "VideoProbe third-party notices",
+      "locale": "fr",
+      "expectedRevision": "d770ad45dade"
+    },
+    {
+      "id": "notices-obs",
+      "title": "OBS third-party notices",
+      "locale": "fr",
+      "expectedRevision": "d725e2b28ea6"
+    },
+    {
+      "id": "notices-reshade",
+      "title": "ReShade add-on third-party notices",
+      "locale": "fr",
+      "expectedRevision": "b622e128948a"
+    },
+    {
+      "id": "notices-unreal",
+      "title": "Unreal third-party notices",
+      "locale": "fr",
+      "expectedRevision": "61ac7bb888b6"
+    },
+    {
+      "id": "reference-obs",
+      "title": "OBS source and recording reference",
+      "locale": "fr",
+      "expectedRevision": "d5c98458c3dc"
+    },
+    {
+      "id": "reference-product",
+      "title": "Product reference",
+      "locale": "fr",
+      "expectedRevision": "5f7c89a72dba"
+    },
+    {
+      "id": "reference-unreal",
+      "title": "Unreal plugin reference",
+      "locale": "fr",
+      "expectedRevision": "2d6554ff4e66"
+    },
+    {
+      "id": "ue-architecture",
+      "title": "Unreal: architecture",
+      "locale": "fr",
+      "expectedRevision": "6bf0be95fe97"
+    },
+    {
+      "id": "ue-getting-started",
+      "title": "Unreal: getting started",
+      "locale": "fr",
+      "expectedRevision": "d479f7ff8bd7"
+    },
+    {
+      "id": "ue-licence-sources",
+      "title": "Unreal licence sources",
+      "locale": "fr",
+      "expectedRevision": "61e63539cb24"
+    },
+    {
+      "id": "ue-multi-stream",
+      "title": "Unreal: multiple streams",
+      "locale": "fr",
+      "expectedRevision": "a4e38a62a928"
+    },
+    {
+      "id": "ue-obs",
+      "title": "Unreal: OBS connection",
+      "locale": "fr",
+      "expectedRevision": "b3f512150ce7"
+    },
+    {
+      "id": "ue-performance",
+      "title": "Unreal: performance measurements",
+      "locale": "fr",
+      "expectedRevision": "fe8e5ebc1519"
+    },
+    {
+      "id": "ue-receiver",
+      "title": "Unreal: receiver API",
+      "locale": "fr",
+      "expectedRevision": "9a7d59dcbecf"
+    },
+    {
+      "id": "ue-render-target",
+      "title": "Unreal: render targets",
+      "locale": "fr",
+      "expectedRevision": "a668321f43ba"
+    },
+    {
+      "id": "ue-scene-capture",
+      "title": "Unreal: scene captures",
+      "locale": "fr",
+      "expectedRevision": "3eeae154c7d7"
+    },
+    {
+      "id": "ue-sender",
+      "title": "Unreal: sender API",
+      "locale": "fr",
+      "expectedRevision": "ecc2faec0735"
+    },
+    {
+      "id": "ue-troubleshooting",
+      "title": "Unreal: troubleshooting",
+      "locale": "fr",
+      "expectedRevision": "4bbbe4ce467a"
+    },
+    {
+      "id": "ue-viewport",
+      "title": "Unreal: viewport capture",
+      "locale": "fr",
+      "expectedRevision": "3a8ac6bcaa46"
+    }
+  ],
+  "outdated": [],
+  "untracked": [],
+  "current": 22
+}

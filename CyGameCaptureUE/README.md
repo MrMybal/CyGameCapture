@@ -5,6 +5,11 @@ The complete illustrated offline user guide is in [English](Docs/UserGuide/en.ht
 It includes installation, sender/receiver workflows, OBS, configuration and troubleshooting;
 the developer references below provide the API details.
 
+In the editor, **Help → CyGameCapture user guide** opens the local Unreal page using the
+editor's English/French language. `CyGameCapture.Help` does the same; `CyGameCapture.Help fr url`
+prints the encoded address without launching a browser. The old online descriptor documentation
+link is replaced by this local help entry. Ship the complete `Docs/UserGuide` directory.
+
 **Multi-stream Spout2 sender & receiver for Unreal Engine.** Part of the
 [CyGameCapture](../README.md) ecosystem (CyGameCaptureRS = ReShade add-on, CyGameCaptureOBS = OBS plugin).
 

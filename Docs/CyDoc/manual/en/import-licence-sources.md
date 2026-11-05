@@ -1,0 +1,69 @@
+---
+id: licence-sources
+title: Component licences and source references
+description: LICENCES/SOURCES.txt
+section: Licences
+order: 194
+revision: 1c0dbc4bcd1b
+---
+
+## Original instructions {#instructions}
+
+```text
+CyGameCapture - component licences and source references
+Copyright (c) 2026 Cyberalien
+
+Product version: 0.1.0
+Sources: https://github.com/MrMybal/CyGameCapture
+CyGameCaptureRS, CyGameCaptureAI, CyGameCaptureCore, CyGameCaptureOBS:
+AGPL-3.0-or-later (CyGameCapture-AGPL-3.0.txt).
+CyGameCaptureUE: MIT (CyGameCaptureUE-MIT.txt).
+Each component includes its applicable complete licence texts and notices.
+
+ReShade add-on SDK 6.8.0, API 20:
+https://github.com/crosire/reshade
+Commit 18deaa52de0c425a78b329e9cb3c497281cd00ec
+Full licence: ReShade-LICENSE.md
+
+Dear ImGui headers 1.92.5:
+https://github.com/ocornut/imgui
+Commit 3912b3d9a9c1b3f17431aebafd86d2f40ee6e59c
+Full licence: DearImGui-MIT.txt
+
+Spout2 DirectX subset:
+https://github.com/leadedge/Spout2
+Commit c2bcc12147711d12ace7d5f08e869d774d840f8a
+Full licences: Spout2-LICENSE.txt, Spout2-licence.txt
+
+OBS Studio / libobs public headers 29.1.3 (OBS plugin):
+https://github.com/obsproject/obs-studio/tree/29.1.3
+Full licence and commitment: OBS-Studio-COPYING.txt, OBS-Studio-COMMITMENT.txt
+
+FFmpeg public headers 6.0 (optional video probe):
+https://github.com/FFmpeg/FFmpeg/tree/n6.0
+Commit ea3d24bbe3c58b171e55fe2151fc7ffaca3ab3d2
+Full licences: FFmpeg-LGPL-2.1.txt, FFmpeg-LICENSE.md
+No FFmpeg DLLs are bundled; the probe uses the user's OBS installation.
+
+Component notices document the files used by each integration.
+AI provider CLIs and Unreal Engine are user-installed under their own terms.
+
+Offline documentation reader: CyDoc 0.1.0, MIT.
+https://github.com/MrMybal/CyDoc
+Pinned commit 774f2a7eabf7dd181a98ffc5add115b580b67f42.
+Each reader includes notices/CyDoc-MIT.txt and applicable product notices.
+The Unreal help entry uses CyDoc's MIT C++17 route example; its full licence is
+Source/ThirdParty/CyDoc/LICENSE.txt. Only the image module is exported.
+No Three.js or other optional media reader is distributed.
+
+Cy SDK integration references (not bundled):
+CyGameCaptureCore is the product's native library, not CyToolsCore.
+This version includes neither CyToolsCore nor CyUEMCPSDK, nor any Python
+runtime, SDK wheel or assistant bundle. No SDK MIT licence is claimed
+for components that are not included.
+https://github.com/MrMybal/CyToolsCore
+https://github.com/MrMybal/CyToolsCore/blob/main/Docs/AgentGuide.md
+https://github.com/MrMybal/CyToolsCore/blob/main/Docs/UpdateExistingProducts.md
+https://github.com/MrMybal/CyUEMCPSDK
+https://github.com/MrMybal/CyUEMCPSDK/blob/main/Docs/UpdateExistingPlugin.md
+```

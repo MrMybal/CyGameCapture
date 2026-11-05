@@ -36,6 +36,14 @@ No FFmpeg DLLs are bundled; the probe uses the user's OBS installation.
 Component notices document the files used by each integration.
 AI provider CLIs and Unreal Engine are user-installed under their own terms.
 
+Offline documentation reader: CyDoc 0.1.0, MIT.
+https://github.com/MrMybal/CyDoc
+Pinned commit 774f2a7eabf7dd181a98ffc5add115b580b67f42.
+Each reader includes notices/CyDoc-MIT.txt and applicable product notices.
+The Unreal help entry uses CyDoc's MIT C++17 route example; its full licence is
+Source/ThirdParty/CyDoc/LICENSE.txt. Only the image module is exported.
+No Three.js or other optional media reader is distributed.
+
 Cy SDK integration references (not bundled):
 CyGameCaptureCore is the product's native library, not CyToolsCore.
 This version includes neither CyToolsCore nor CyUEMCPSDK, nor any Python

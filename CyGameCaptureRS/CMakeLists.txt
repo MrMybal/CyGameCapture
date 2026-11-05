@@ -81,7 +81,7 @@ target_compile_definitions(CyGameCaptureRS PRIVATE
     CYGC_ADDON_NAME="CyGameCaptureRS")
 
 target_link_libraries(CyGameCaptureRS PRIVATE CyGameCaptureCore CyGameCaptureBranding
-    d3d11 d3d12 dxgi dxguid d3dcompiler winmm shell32 advapi32 version comctl32 psapi user32 gdi32 ole32 windowscodecs)
+    d3d11 d3d12 dxgi dxguid d3dcompiler winmm shell32 shlwapi advapi32 version comctl32 psapi user32 gdi32 ole32 windowscodecs)
 
 set_target_properties(CyGameCaptureRS PROPERTIES
     OUTPUT_NAME "CyGameCaptureRS"

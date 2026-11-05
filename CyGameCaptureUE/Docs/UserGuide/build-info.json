@@ -1,0 +1,322 @@
+{
+  "upstreamCommit": "774f2a7eabf7dd181a98ffc5add115b580b67f42",
+  "modules": [
+    "image"
+  ],
+  "sourceDirectories": [
+    "CyGameCaptureCore/Include/CyGameCaptureCore",
+    "CyGameCaptureUE/Source/CyGameCaptureUE/Public"
+  ],
+  "references": [
+    {
+      "source": "README.md",
+      "id": "reference-product",
+      "title": "Product reference",
+      "section": "Reference",
+      "order": 100,
+      "locale": "en",
+      "sourceHash": "082760eeb4ec221ad25251fd46a2d587efc12f9c72a47399941809919f1e6594",
+      "revision": "5f7c89a72dba"
+    },
+    {
+      "source": "Docs/CyGameCapture_Architecture.md",
+      "id": "architecture",
+      "title": "Native architecture",
+      "section": "Architecture",
+      "order": 110,
+      "historical": true,
+      "locale": "en",
+      "sourceHash": "6d96677f43a46d884c613de1f4de0c839e4a05a6b325f006342af3b990c560b8",
+      "revision": "a6839e9997fb"
+    },
+    {
+      "source": "CyGameCaptureOBS/README.md",
+      "id": "reference-obs",
+      "title": "OBS source and recording reference",
+      "section": "Reference",
+      "order": 120,
+      "locale": "en",
+      "sourceHash": "c0878e299bd2dea84741997d2a90a6d2e3951796c89ff9b49e7b70d642666727",
+      "revision": "d5c98458c3dc"
+    },
+    {
+      "source": "CyGameCaptureUE/README.md",
+      "id": "reference-unreal",
+      "title": "Unreal plugin reference",
+      "section": "Unreal Engine",
+      "order": 130,
+      "locale": "en",
+      "sourceHash": "047bbc4905613e766aa78b93cf1ce5ca3b8144fe6188eaa86245a455042a2e8c",
+      "revision": "2d6554ff4e66"
+    },
+    {
+      "source": "CyGameCaptureUE/Docs/GettingStarted.md",
+      "id": "ue-getting-started",
+      "title": "Unreal: getting started",
+      "section": "Unreal Engine",
+      "order": 131,
+      "locale": "en",
+      "sourceHash": "11cf7c64edb26189265d0bd11c6de0d203b408f5381f972307b8a372d353161a",
+      "revision": "d479f7ff8bd7"
+    },
+    {
+      "source": "CyGameCaptureUE/Docs/Sender.md",
+      "id": "ue-sender",
+      "title": "Unreal: sender API",
+      "section": "Unreal Engine",
+      "order": 132,
+      "locale": "en",
+      "sourceHash": "d04806d5d54d8113d57157d90da4c2fe070fbc994a01d42efa9c0197f01d90b8",
+      "revision": "ecc2faec0735"
+    },
+    {
+      "source": "CyGameCaptureUE/Docs/Receiver.md",
+      "id": "ue-receiver",
+      "title": "Unreal: receiver API",
+      "section": "Unreal Engine",
+      "order": 133,
+      "locale": "en",
+      "sourceHash": "d1095a3582096d07f3866a4fbd6d0625b1929104acf74bef2b7d8d9eab27ee93",
+      "revision": "9a7d59dcbecf"
+    },
+    {
+      "source": "CyGameCaptureUE/Docs/RenderTarget.md",
+      "id": "ue-render-target",
+      "title": "Unreal: render targets",
+      "section": "Unreal Engine",
+      "order": 134,
+      "locale": "en",
+      "sourceHash": "c2f381f2767ed6ed8a655b5d4bd6010ece70ea643d50c199503712d03b574d0f",
+      "revision": "a668321f43ba"
+    },
+    {
+      "source": "CyGameCaptureUE/Docs/SceneCapture.md",
+      "id": "ue-scene-capture",
+      "title": "Unreal: scene captures",
+      "section": "Unreal Engine",
+      "order": 135,
+      "locale": "en",
+      "sourceHash": "b5cbbe111bb1f20ba35bbc950b6e3d5083b6792bb3b94757270daef98e9832b6",
+      "revision": "3eeae154c7d7"
+    },
+    {
+      "source": "CyGameCaptureUE/Docs/ViewportCapture.md",
+      "id": "ue-viewport",
+      "title": "Unreal: viewport capture",
+      "section": "Unreal Engine",
+      "order": 136,
+      "locale": "en",
+      "sourceHash": "a87fca5b07d874871ce0a00734791df07c3a0b3e470d7848400e496d0f982db7",
+      "revision": "3a8ac6bcaa46"
+    },
+    {
+      "source": "CyGameCaptureUE/Docs/MultiStream.md",
+      "id": "ue-multi-stream",
+      "title": "Unreal: multiple streams",
+      "section": "Unreal Engine",
+      "order": 137,
+      "locale": "en",
+      "sourceHash": "942a4ba978fa9d57e55e64134c375a80f2b1e13ff53294ba60301ef104d289f9",
+      "revision": "a4e38a62a928"
+    },
+    {
+      "source": "CyGameCaptureUE/Docs/OBS.md",
+      "id": "ue-obs",
+      "title": "Unreal: OBS connection",
+      "section": "Unreal Engine",
+      "order": 138,
+      "locale": "en",
+      "sourceHash": "723322aac0f58a9cd2d3b6626ebded2e303952ede974e3fd36797c8c44298b4f",
+      "revision": "b3f512150ce7"
+    },
+    {
+      "source": "CyGameCaptureUE/Docs/Performance.md",
+      "id": "ue-performance",
+      "title": "Unreal: performance measurements",
+      "section": "Unreal Engine",
+      "order": 139,
+      "locale": "en",
+      "sourceHash": "ff61acc130a338cc117b3c196aec286661610f5860437900d9e70fe6f0ccbfab",
+      "revision": "fe8e5ebc1519"
+    },
+    {
+      "source": "CyGameCaptureUE/Docs/Troubleshooting.md",
+      "id": "ue-troubleshooting",
+      "title": "Unreal: troubleshooting",
+      "section": "Unreal Engine",
+      "order": 140,
+      "locale": "en",
+      "sourceHash": "aeb8b2c2bd94aa0a559ddda912291fdacdc4abfb5255c71dc6557e34bf2ea02e",
+      "revision": "4bbbe4ce467a"
+    },
+    {
+      "source": "CyGameCaptureUE/Docs/CyGameCaptureUE_Architecture.md",
+      "id": "ue-architecture",
+      "title": "Unreal: architecture",
+      "section": "Architecture",
+      "order": 141,
+      "locale": "en",
+      "sourceHash": "be5e40360fe7e0097974b1b6f90976fb0617ae5574fbb4daec6fec9232e15c4f",
+      "revision": "6bf0be95fe97"
+    },
+    {
+      "source": "Tools/ReleaseFiles/ReShade-Addon/README.txt",
+      "id": "install-reshade",
+      "title": "ReShade distribution instructions",
+      "section": "Installation",
+      "order": 150,
+      "locale": "en",
+      "sourceHash": "ece1b0d5ef0ffc1fc5bff687d475c0e6550b08d1214fcc6c8a185b393cb0ede8",
+      "revision": "b1007fba7fd0"
+    },
+    {
+      "source": "Tools/PackageFiles/LISEZMOI-installer-dans-un-jeu.txt",
+      "id": "install-reshade",
+      "title": "Installation ReShade dans un jeu",
+      "locale": "fr",
+      "section": "Installation",
+      "order": 150,
+      "sourceHash": "45307fe1e4fa9cf1e6f719b8d352d845302cd032e433b7495e604614016354c8",
+      "revision": "fbb69a501f1e"
+    },
+    {
+      "source": "Tools/ReleaseFiles/OBS-Plugin/README.txt",
+      "id": "install-obs",
+      "title": "OBS distribution instructions",
+      "section": "Installation",
+      "order": 151,
+      "locale": "en",
+      "sourceHash": "0b689a8847dd9aa987fcf3470bedecd5ee84bd960a6c71e2c2f92cc85d90bfc7",
+      "revision": "aea370c5b34c"
+    },
+    {
+      "source": "Tools/ReleaseFiles/OBS-Plugin/LISEZMOI.txt",
+      "id": "install-obs",
+      "title": "Installation du plugin OBS",
+      "locale": "fr",
+      "section": "Installation",
+      "order": 151,
+      "sourceHash": "06d2865f8c529faee4b5ce59c68345fd0b5d8c5880c4ad36a7753dcf6e74b0fd",
+      "revision": "8d657186f07c"
+    },
+    {
+      "source": "Tools/PackageFiles/LISEZMOI.txt",
+      "id": "test-suite",
+      "title": "Dossier de test : mode d’emploi",
+      "locale": "fr",
+      "section": "Installation",
+      "order": 152,
+      "sourceHash": "7d7b2c593606b23483b71518b86df2b01d7e75c11643ea349b8bb1a309821179",
+      "revision": "fdf2ce174f8f"
+    },
+    {
+      "source": "Tools/ReleaseFiles/README.txt",
+      "id": "distribution",
+      "title": "Distribution contents and installation",
+      "section": "Installation",
+      "order": 153,
+      "locale": "en",
+      "sourceHash": "1d6e44d031f12e92c1e4bed1045e6a8861ba32f7ab2c3be922320861c4492bbe",
+      "revision": "9c87bfbc6eea"
+    },
+    {
+      "source": "CHANGELOG.md",
+      "id": "changelog",
+      "title": "Changelog",
+      "section": "Reference",
+      "order": 180,
+      "locale": "en",
+      "sourceHash": "95bb3336a4d3250c2db794c82672b26c9b3d833e64fec8b15ce2505d82c439ea",
+      "revision": "2e3d054fc00a"
+    },
+    {
+      "source": "CyGameCaptureRS/ThirdParty/THIRD_PARTY_NOTICES.md",
+      "id": "notices-reshade",
+      "title": "ReShade add-on third-party notices",
+      "section": "Licences",
+      "order": 190,
+      "locale": "en",
+      "sourceHash": "baa8c1a096767c3f285d068ea3dd9c9a78138d4e84e146b4b014789029d0ed25",
+      "revision": "b622e128948a"
+    },
+    {
+      "source": "CyGameCaptureOBS/ThirdParty/THIRD_PARTY_NOTICES.md",
+      "id": "notices-obs",
+      "title": "OBS third-party notices",
+      "section": "Licences",
+      "order": 191,
+      "locale": "en",
+      "sourceHash": "e495c77d2b0daf0f70eee95e51abef790dee2b795ed66e5dbaa72004dc3a2d15",
+      "revision": "d725e2b28ea6"
+    },
+    {
+      "source": "CyGameCaptureUE/Source/ThirdParty/THIRD_PARTY_NOTICES.md",
+      "id": "notices-unreal",
+      "title": "Unreal third-party notices",
+      "section": "Licences",
+      "order": 192,
+      "locale": "en",
+      "sourceHash": "4df63ab8963b03b9074def3452f5cf6ec663424ba18bbc59f161a218ed341b1c",
+      "revision": "61ac7bb888b6"
+    },
+    {
+      "source": "Tests/CyGameCaptureVideoProbe/ThirdParty/THIRD_PARTY_NOTICES.md",
+      "id": "notices-ffmpeg",
+      "title": "VideoProbe third-party notices",
+      "section": "Licences",
+      "order": 193,
+      "locale": "en",
+      "sourceHash": "98fbe46bca5476be0dcd49e83d361c81e90a726395add0929781d5dd94f0d04a",
+      "revision": "d770ad45dade"
+    },
+    {
+      "source": "LICENCES/SOURCES.txt",
+      "id": "licence-sources",
+      "title": "Component licences and source references",
+      "section": "Licences",
+      "order": 194,
+      "locale": "en",
+      "sourceHash": "540af3000239ecc9f0810b7075ee0aada91dfb9667ba8204b2c45765b4768a76",
+      "revision": "1c0dbc4bcd1b"
+    },
+    {
+      "source": "Docs/CyDoc/README.md",
+      "id": "documentation-maintenance",
+      "title": "Build and maintain the documentation",
+      "section": "Maintenance",
+      "order": 210,
+      "locale": "en",
+      "sourceHash": "af78120376ee4e3276b8386c6d02daafb4c9215137e43d74cb046a4382ba0f35",
+      "revision": "49e65f6df3b3"
+    },
+    {
+      "source": "CyGameCaptureUE/LICENCES/SOURCES.txt",
+      "id": "ue-licence-sources",
+      "title": "Unreal licence sources",
+      "section": "Licences",
+      "order": 195,
+      "locale": "en",
+      "sourceHash": "66b3d52064dbb6dc0e3c6a473d71e38d4bb2b33b1c893100ca06dc2aad72ba39",
+      "revision": "61e63539cb24"
+    }
+  ],
+  "externalSourceLinks": [
+    {
+      "page": "reference-product",
+      "target": ".gitleaks.toml"
+    },
+    {
+      "page": "reference-product",
+      "target": "CyGameCaptureRS/Source/UI/Translations_fr.inl"
+    },
+    {
+      "page": "reference-product",
+      "target": "Resources/Branding"
+    },
+    {
+      "page": "reference-product",
+      "target": "CyGameCaptureUE/Docs"
+    }
+  ],
+  "pages": 99
+}

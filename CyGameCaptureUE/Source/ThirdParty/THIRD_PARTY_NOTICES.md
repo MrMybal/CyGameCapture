@@ -15,3 +15,8 @@ No prebuilt library, DLL or absolute path is used: `RunUAT BuildPlugin` produces
 The GPU work (shared texture creation, copies, D3D11On12 bridge) is implemented by CyGameCaptureUE itself on the
 engine's device; the Spout SDK is only used for the CPU-side sender registry and synchronisation primitives that
 define the Spout protocol.
+
+
+## CyDoc native route helper
+
+`CyDoc/cydoc_link.hpp` is the C++17 integration example from CyDoc 0.1.0, commit `774f2a7eabf7dd181a98ffc5add115b580b67f42`, under MIT. The original licence is retained in `CyDoc/LICENSE.txt`. The offline reader carries its own full CyDoc and product notices.

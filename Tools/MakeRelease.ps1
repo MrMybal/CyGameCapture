@@ -23,6 +23,8 @@ Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 $root = Split-Path -Parent $PSScriptRoot
+& node (Join-Path $PSScriptRoot 'BuildDocumentation.mjs')
+if ($LASTEXITCODE -ne 0) { throw 'CyDoc generation failed' }
 . (Join-Path $PSScriptRoot 'PackageLicences.ps1')
 . (Join-Path $PSScriptRoot 'PackageDocumentation.ps1')
 $bin = Join-Path $root "bin\Release"
@@ -247,6 +249,8 @@ if (-not $notes.Success) { throw "No section for $version in CHANGELOG.md" }
 
 # Verify the archives themselves, not just the staging folders.
 & (Join-Path $PSScriptRoot 'ValidateLicensePackages.ps1') -ReleaseDirectory $OutputDirectory
+& node (Join-Path $PSScriptRoot 'ValidateDocumentation.mjs') $OutputDirectory
+if ($LASTEXITCODE -ne 0) { throw 'CyDoc archive validation failed' }
 
 Write-Host ""
 foreach ($archive in $archives) {
