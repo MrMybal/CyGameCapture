@@ -95,6 +95,9 @@ try {
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2));
   await page.locator('[data-menu]').click();assert.equal(await page.locator('[data-menu]').getAttribute('aria-expanded'),'true');
   await page.locator('.side-nav a[data-page="moment"]').click();
+  // Hash navigation is asynchronous; wait for the new route and its menu state.
+  await page.waitForURL(/#\/fr\/moment$/);
+  await page.waitForFunction(()=>document.querySelector('[data-menu]')?.getAttribute('aria-expanded')==='false');
   assert.equal(await page.locator('[data-menu]').getAttribute('aria-expanded'),'false');
   await page.screenshot({path:resolve(output,'french-mobile.png')});
   const touch=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true,offline:true});
