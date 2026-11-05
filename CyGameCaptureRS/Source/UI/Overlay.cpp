@@ -16,6 +16,7 @@
 #include "UI/Localization.hpp"
 
 #include <CyGameCaptureCore/Version.hpp>
+#include <CyGameCaptureCore/UserGuide.hpp>
 
 #include <Windows.h>
 #include <algorithm>
@@ -1108,6 +1109,17 @@ namespace cygc
 			}
 			if (ImGui::IsItemHovered())
 				ImGui::SetTooltip("%s", TR("Language"));
+
+			ImGui::SameLine();
+			if (ImGui::SmallButton(TR("User guide")) && !OpenUserGuideBesideModule(french))
+				ImGui::OpenPopup("cygc_guide_error", 0);
+			if (ImGui::IsItemHovered())
+				ImGui::SetTooltip("%s", TR("Open the offline illustrated user guide in your browser (English / French)."));
+			if (ImGui::BeginPopup("cygc_guide_error", 0))
+			{
+				ImGui::TextUnformatted(TR("Could not open the user guide. Keep Documentation/UserGuide next to the add-on and check your HTML browser association."));
+				ImGui::EndPopup();
+			}
 
 			// Copyright, licence, absence of warranty and where the source is: the legal notices the AGPL
 			// expects an interactive program to make available

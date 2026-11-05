@@ -4,6 +4,11 @@
 
 (English version: README.txt)
 
+Manuel complet illustré hors connexion : bouton Guide utilisateur dans les
+propriétés de la source CyGameCapture, ou Documentation\UserGuide\index.html.
+Les éditions anglaise et française sont incluses. L’installateur conserve le
+manuel avec les données du plugin. L’entrée index.html est en anglais.
+
 Reçoit dans OBS les tampons GPU que CyGameCaptureRS (add-on ReShade) et
 CyGameCaptureUE (plugin Unreal) publient en Spout2, sans aucune copie par le
 processeur, et en enregistre plusieurs à la fois dans des fichiers séparés qui

@@ -24,6 +24,22 @@ Game -> ReShade -> CyGameCaptureRS -> selected render target -> GPU copy -> shar
 | `Tests/`            | D3D11 and D3D12 test applications (scene + fake HUD), a headless Spout receiver, and a probe that reports what really survived in a recording | done |
 | `CyGameCaptureUEHost/` | Unreal host project used to build, run and benchmark the UE plugin | done |
 
+## Integrated user guide
+
+Open **User guide** next to the language selector in the ReShade overlay, or in the properties of an
+OBS **CyGameCapture** source. The complete illustrated manual opens locally in your browser, with
+search, a chapter index, diagrams and printing/PDF support. No Internet connection is needed.
+It follows the component's English/French language; the default entry page is English.
+
+Read the [English guide](Docs/UserGuide/en.html) or [French guide](Docs/UserGuide/fr.html) locally.
+Keep `Documentation/UserGuide` next to the add-on when installing it; the OBS installer carries the
+manual in its plugin data. Unreal includes the same manual at `Docs/UserGuide/index.html`.
+Release archives and the ready-to-run test suite include both languages and all images.
+
+Guide sources are `Docs/UserGuide/guide.json`, `style.css` and `manual.js`; regenerate the committed
+HTML, images and Unreal copy with `python Tools/BuildUserGuide.py` after editing. Normal builds and
+packages only copy the generated assets and need no Python. Validate with `python Tools/ValidateUserGuide.py`.
+
 ## Screenshots
 
 The screenshots below show CyGameCapture running with the D3D11 test application.

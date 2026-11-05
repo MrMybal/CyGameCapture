@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — integrated user guide
+
+* Add a complete offline English/French user guide with 17 chapters, six real application
+  screenshots, three diagrams, search, chapter navigation and printing/PDF support. English is default.
+* Open the guide from the ReShade header or OBS source properties in the component's selected language.
+* Deploy matching guide assets in builds, test applications, OBS plugin data and every release archive,
+  including the Unreal plugin. Include the README screenshots in packaged documentation as well.
+
 ## Unreleased
 
 * Collect complete English licence texts and source references in `LICENCES`, including at the Unreal

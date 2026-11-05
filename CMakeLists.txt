@@ -44,3 +44,29 @@ endif()
 if(CYGC_BUILD_TESTS)
     add_subdirectory(Tests)
 endif()
+
+# Committed HTML needs no Python/runtime/server to read or deploy. Run on every build,
+# including documentation-only changes where no binary needs relinking.
+set(CYGC_GUIDE_DIR "${CMAKE_SOURCE_DIR}/Docs/UserGuide")
+set(CYGC_GUIDE_FILES)
+foreach(name index.html en.html fr.html style.css manual.js)
+    list(APPEND CYGC_GUIDE_FILES "${CYGC_GUIDE_DIR}/${name}")
+endforeach()
+add_custom_target(CyGameCaptureUserGuide ALL)
+function(cygc_copy_guide destination)
+    add_custom_command(TARGET CyGameCaptureUserGuide POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${destination}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CYGC_GUIDE_FILES} "${destination}"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CYGC_GUIDE_DIR}/images" "${destination}/images"
+        VERBATIM)
+endfunction()
+cygc_copy_guide("${CYGC_OUTPUT_DIR}/Documentation/UserGuide")
+add_dependencies(CyGameCaptureRS CyGameCaptureUserGuide)
+if(TARGET CyGameCaptureOBS)
+    cygc_copy_guide("${CYGC_OUTPUT_DIR}/data/obs-plugins/CyGameCaptureOBS/Documentation/UserGuide")
+    add_dependencies(CyGameCaptureOBS CyGameCaptureUserGuide)
+endif()
+if(CYGC_BUILD_TESTS)
+    cygc_copy_guide("${CYGC_OUTPUT_DIR}/TestApp/Documentation/UserGuide")
+    cygc_copy_guide("${CYGC_OUTPUT_DIR}/TestAppD3D12/Documentation/UserGuide")
+endif()

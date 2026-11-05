@@ -1,5 +1,10 @@
 # CyGameCaptureUE
 
+The complete illustrated offline user guide is in [English](Docs/UserGuide/en.html) and
+[French](Docs/UserGuide/fr.html). Open `Docs/UserGuide/index.html` in a browser (English by default).
+It includes installation, sender/receiver workflows, OBS, configuration and troubleshooting;
+the developer references below provide the API details.
+
 **Multi-stream Spout2 sender & receiver for Unreal Engine.** Part of the
 [CyGameCapture](../README.md) ecosystem (CyGameCaptureRS = ReShade add-on, CyGameCaptureOBS = OBS plugin).
 

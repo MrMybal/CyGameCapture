@@ -67,6 +67,12 @@ developing.
 Then restart OBS and add the source. `bin\Release\obs-plugins\64bit` and `bin\Release\data\obs-plugins`
 already have the right layout to be copied over directly.
 
+## Offline user guide
+
+Click **User guide** in a CyGameCapture source's properties to open the illustrated manual locally.
+It follows OBS's English/French language, with English as the fallback. Both editions, search,
+diagrams and all images are installed in `data/Documentation/UserGuide`; keep that folder with the plugin.
+
 ## Source properties
 
 | Setting | What it does |

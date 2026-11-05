@@ -25,8 +25,10 @@
 #include <CyGameCaptureCore/SenderNaming.hpp>
 #include <CyGameCaptureCore/StreamInfo.hpp>
 #include <CyGameCaptureCore/Version.hpp>
+#include <CyGameCaptureCore/UserGuide.hpp>
 
 #include <algorithm>
+#include <cstring>
 #include <mutex>
 #include <set>
 #include <string>
@@ -708,10 +710,28 @@ namespace
 		return true;
 	}
 
+	bool UserGuideClicked(obs_properties_t *, obs_property_t *, void *)
+	{
+		const char *const locale = obs_get_locale();
+		const bool french = locale != nullptr && strncmp(locale, "fr", 2) == 0;
+		char *const file = obs_module_file(french ? "Documentation/UserGuide/fr.html" : "Documentation/UserGuide/en.html");
+		const std::wstring path = cygc::GuideWidePath(file);
+		bfree(file);
+		if (path.empty() || !cygc::OpenUserGuideFile(path))
+		{
+			const std::wstring message = cygc::GuideWidePath(obs_module_text("Guide.Error"));
+			const std::wstring title = cygc::GuideWidePath(obs_module_text("Guide.Title"));
+			MessageBoxW(nullptr, message.c_str(), title.c_str(), MB_OK | MB_ICONINFORMATION);
+		}
+		return false;
+	}
+
 	obs_properties_t *SourceGetProperties(void *data)
 	{
 		auto *const ctx = static_cast<CyGameCaptureSource *>(data);
 		obs_properties_t *const props = obs_properties_create();
+		obs_property_t *const guide = obs_properties_add_button(props, "user_guide", obs_module_text("Guide.Title"), UserGuideClicked);
+		obs_property_set_long_description(guide, obs_module_text("Guide.Description"));
 
 		// Everything that needs a lock is read once, here, and the locks are released before the take
 		// counters below are consulted: those walk every source and would otherwise take this very mutex

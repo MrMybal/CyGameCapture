@@ -2,6 +2,10 @@
  CyGameCaptureRS - installer l'add-on dans un jeu
 ===============================================================================
 
+Guide complet illustre, hors connexion, en anglais et en francais : gardez le
+dossier Documentation avec l'add-on. Ouvrez Guide utilisateur dans l'overlay,
+ou Documentation\UserGuide\index.html (anglais par defaut).
+
 1. Installer ReShade
 -------------------------------------------------------------------------------
 

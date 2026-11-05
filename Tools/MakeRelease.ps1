@@ -24,6 +24,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 $root = Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'PackageLicences.ps1')
+. (Join-Path $PSScriptRoot 'PackageDocumentation.ps1')
 $bin = Join-Path $root "bin\Release"
 $files = Join-Path $PSScriptRoot "ReleaseFiles"
 
@@ -142,6 +143,7 @@ Copy-Item (Join-Path $files "ReShade-Addon\README.txt") $addon
 Copy-Item (Join-Path $PSScriptRoot "PackageFiles\LISEZMOI-installer-dans-un-jeu.txt") (Join-Path $addon "LISEZMOI.txt")
 Copy-Item $licence (Join-Path $addon "LICENSE.txt")
 Copy-ProductLicences -ProjectRoot $root -Destination $addon -Component ReShade
+Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $addon 'Documentation/UserGuide')
 
 # ----------------------------------------------------------------- the OBS plugin
 Section "OBS plugin"
@@ -149,6 +151,8 @@ $obs = New-Folder (Join-Path $package "OBS-Plugin")
 $obsPlugin = New-Folder (Join-Path $obs "CyGameCaptureOBS\bin\64bit")
 Copy-Item $obsBinary $obsPlugin
 Copy-Item $obsData (Join-Path $obs "CyGameCaptureOBS\data") -Recurse
+Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $obs 'CyGameCaptureOBS/data/Documentation/UserGuide')
+Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $obs 'Documentation/UserGuide')
 foreach ($name in "README.txt", "LISEZMOI.txt", "Install-OBS-Plugin.cmd", "Uninstall-OBS-Plugin.cmd") {
     Copy-Item (Join-Path $files "OBS-Plugin\$name") $obs
 }
@@ -172,13 +176,16 @@ foreach ($unrealPackage in $unrealPackages) {
     Copy-ProductLicences -ProjectRoot $root -Destination $target -Component Unreal
     robocopy (Join-Path $unrealSource "Docs") (Join-Path $target "Docs") /MIR /NFL /NDL /NJH /NJS /NP | Out-Null
     if ($LASTEXITCODE -ge 8) { throw "Copy of the Unreal documentation failed" }
+    Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $target 'Docs/UserGuide')
     Write-Host ("      Unreal " + $engine)
 }
 
 # ----------------------------------------------------------------- documentation and top level
 Section "documentation"
 $docs = New-Folder (Join-Path $package "Documentation")
-Copy-Item (Join-Path $root "README.md") (Join-Path $docs "CyGameCapture - README.md")
+Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $docs 'UserGuide')
+Copy-ReadmeImages -ProjectRoot $root -DocumentationRoot $docs
+Copy-DocumentationReadme -ProjectRoot $root -DocumentationRoot $docs
 Copy-Item (Join-Path $root "CHANGELOG.md") $docs
 Copy-Item (Join-Path $root "Docs\CyGameCapture_Architecture.md") $docs
 Copy-Item (Join-Path $root "CyGameCaptureOBS\README.md") (Join-Path $docs "CyGameCaptureOBS - README.md")

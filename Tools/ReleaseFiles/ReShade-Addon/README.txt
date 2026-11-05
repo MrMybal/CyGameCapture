@@ -26,6 +26,10 @@ its dxgi.dll / d3d11.dll.
 Copy  CyGameCaptureAI.exe  into the same folder too: it runs the AI assistant
 (see below). Everything else works without it.
 
+Copy the entire Documentation folder beside the add-on too. The User guide
+button opens its complete offline illustrated manual in English or French.
+You can also open Documentation\UserGuide\index.html directly (English).
+
 To keep them somewhere else, give the folder in ReShade.ini:
 
     [ADDON]

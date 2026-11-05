@@ -2,6 +2,10 @@
  CyGameCapture - dossier de test
 ===============================================================================
 
+GUIDE UTILISATEUR COMPLET : Documentation\UserGuide\index.html
+Manuel illustre en anglais et en francais, utilisable hors connexion.
+Il est aussi accessible par le bouton Guide utilisateur dans ReShade et OBS.
+
 Tout ce qu'il faut pour installer et essayer, sans rien compiler.
 
 Ce dossier contient l'add-on ReShade, le plugin OBS, deux applications de test

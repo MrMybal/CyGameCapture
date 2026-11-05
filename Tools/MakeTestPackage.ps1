@@ -15,6 +15,7 @@ param(
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'PackageLicences.ps1')
+. (Join-Path $PSScriptRoot 'PackageDocumentation.ps1')
 $bin = Join-Path $root "bin\Release"
 $files = Join-Path $PSScriptRoot "PackageFiles"
 
@@ -57,6 +58,7 @@ if ($WithSymbols) { Copy-Item (Join-Path $bin "CyGameCaptureRS.pdb") $addon -Err
 Copy-Item (Join-Path $files "LISEZMOI-installer-dans-un-jeu.txt") $addon
 Copy-Item (Join-Path $root "LICENSE") (Join-Path $addon "LICENSE.txt")
 Copy-ProductLicences -ProjectRoot $root -Destination $addon -Component ReShade
+Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $addon 'Documentation/UserGuide')
 
 # ----------------------------------------------------------------- the OBS plugin
 Section "plugin OBS"
@@ -64,6 +66,7 @@ $obs = Join-Path $OutputDirectory "Plugin-OBS"
 New-Item -ItemType Directory -Force (Join-Path $obs "bin\64bit") | Out-Null
 Copy-Item (Join-Path $bin "obs-plugins\64bit\CyGameCaptureOBS.dll") (Join-Path $obs "bin\64bit")
 Copy-Item (Join-Path $bin "data\obs-plugins\CyGameCaptureOBS") (Join-Path $obs "data") -Recurse
+Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $obs 'data/Documentation/UserGuide')
 Copy-ProductLicences -ProjectRoot $root -Destination $obs -Component OBS
 
 # ----------------------------------------------------------------- the test applications
@@ -79,6 +82,7 @@ foreach ($pair in @(@("TestApp", "D3D11"), @("TestAppD3D12", "D3D12"))) {
     }
     Copy-Item (Join-Path $files ("ini\ReShade-" + $pair[1] + ".ini")) (Join-Path $target "ReShade.ini")
     Copy-ProductLicences -ProjectRoot $root -Destination $target -Component ReShade
+    Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $target 'Documentation/UserGuide')
 }
 
 # ----------------------------------------------------------------- the tools
@@ -113,6 +117,7 @@ if (-not $NoUnreal) {
             robocopy $package.FullName $target /E /XD Intermediate @exclude /NFL /NDL /NJH /NJS /NP | Out-Null
             if ($LASTEXITCODE -ge 8) { throw "Unreal package copy failed: $($package.FullName)" }
             Copy-ProductLicences -ProjectRoot $root -Destination $target -Component Unreal
+            Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $target 'Docs/UserGuide')
             Write-Host ("      Unreal " + $version)
         }
     }
@@ -121,8 +126,10 @@ if (-not $NoUnreal) {
 # ----------------------------------------------------------------- documentation
 Section "documentation"
 $docs = Join-Path $OutputDirectory "Documentation"
+Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $docs 'UserGuide')
+Copy-ReadmeImages -ProjectRoot $root -DocumentationRoot $docs
 New-Item -ItemType Directory -Force $docs | Out-Null
-Copy-Item (Join-Path $root "README.md") (Join-Path $docs "CyGameCapture - README.md")
+Copy-DocumentationReadme -ProjectRoot $root -DocumentationRoot $docs
 Copy-Item (Join-Path $root "Docs\CyGameCapture_Architecture.md") $docs
 Copy-Item (Join-Path $root "CyGameCaptureOBS\README.md") (Join-Path $docs "CyGameCaptureOBS - README.md")
 Copy-Item (Join-Path $root "CyGameCaptureUE\README.md") (Join-Path $docs "CyGameCaptureUE - README.md") -ErrorAction SilentlyContinue
