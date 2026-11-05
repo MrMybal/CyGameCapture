@@ -4,6 +4,8 @@
 
 (Version francaise : LISEZMOI.txt)
 
+Documentation: https://mrmybal.github.io/CyGameCapture/#/en/overview
+
 1. Install ReShade
 -------------------------------------------------------------------------------
 

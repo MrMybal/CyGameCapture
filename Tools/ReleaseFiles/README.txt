@@ -11,9 +11,15 @@ Complete offline illustrated user guide (English / French):
   Documentation\UserGuide\index.html (English by default)
 Also accessible from User guide in ReShade and OBS source properties.
 
+Online Documentation (same reader):
+  https://mrmybal.github.io/CyGameCapture/#/en/overview
+
 Guide utilisateur complet illustre, hors connexion (anglais / francais) :
   Documentation\UserGuide\index.html (anglais par defaut)
 Accessible aussi depuis Guide utilisateur dans ReShade et les sources OBS.
+
+Documentation en ligne en francais (meme lecteur) :
+  https://mrmybal.github.io/CyGameCapture/#/fr/overview
 
 What is in this package
 -------------------------------------------------------------------------------

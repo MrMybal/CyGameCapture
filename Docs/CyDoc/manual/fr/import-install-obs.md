@@ -4,7 +4,7 @@ title: Installation du plugin OBS
 description: Tools/ReleaseFiles/OBS-Plugin/LISEZMOI.txt
 section: Installation
 order: 151
-sourceRevision: aea370c5b34c
+sourceRevision: f95a94bc77b3
 ---
 
 ## Instructions d’origine {#instructions}
@@ -15,6 +15,8 @@ sourceRevision: aea370c5b34c
 ===============================================================================
 
 (English version: README.txt)
+
+Documentation : https://mrmybal.github.io/CyGameCapture/#/fr/obs
 
 Manuel complet illustré hors connexion : bouton Guide utilisateur dans les
 propriétés de la source CyGameCapture, ou Documentation\UserGuide\index.html.

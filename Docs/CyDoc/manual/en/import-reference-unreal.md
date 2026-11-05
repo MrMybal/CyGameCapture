@@ -4,13 +4,15 @@ title: Unreal plugin reference
 description: CyGameCaptureUE/README.md
 section: Unreal Engine
 order: 130
-revision: 2d6554ff4e66
+revision: 18c79e18cf0b
 ---
 
 # CyGameCaptureUE {#cygamecaptureue}
 
-The complete illustrated offline user guide is in [English](doc:overview) and
-[French](doc:overview). Open `Docs/UserGuide/index.html` in a browser (English by default).
+[Documentation](https://mrmybal.github.io/CyGameCapture/#/en/unreal) · [Documentation en français](https://mrmybal.github.io/CyGameCapture/#/fr/unreal)
+
+The same illustrated guide is included offline. Open `Docs/UserGuide/index.html` in a browser
+(English by default), or `fr.html` for French.
 It includes installation, sender/receiver workflows, OBS, configuration and troubleshooting;
 the developer references below provide the API details.
 

@@ -1,9 +1,26 @@
 # CyGameCapture documentation with CyDoc
 
+[Documentation](https://mrmybal.github.io/CyGameCapture/#/en/overview) · [Documentation en français](https://mrmybal.github.io/CyGameCapture/#/fr/overview)
+
 The shipped manual is an application-owned CyDoc 0.1.0 export at `Docs/UserGuide` and
 `CyGameCaptureUE/Docs/UserGuide`. Both are generated directories. Open `index.html` using
 `file://`; `en.html` and `fr.html` remain compatibility entry points for the former guide.
 The native components now open encoded file URLs with CyDoc page/section/media routes.
+
+## Public reader and deployment
+
+`.github/workflows/documentation.yml` regenerates and tests the reader on each push to
+`main` or manual workflow dispatch, then uploads **only `Docs/UserGuide`** to GitHub Pages.
+The site uses the exact same export and relative resource providers as the embedded reader;
+there is no separate website renderer. English/French URLs use stable CyDoc hash routes.
+The workflow neither builds nor uploads native application binaries, user configurations,
+logs, captures, browser notes, the repository root or the build workspace. The public source
+index remains limited to the distributed headers configured in `cydoc.config.json`.
+
+Pages publishing source must be **GitHub Actions** (`build_type: workflow`). Actions are
+pinned to their upstream commit IDs. Build permissions are read-only; only the deployment
+job can write Pages and request its deployment identity token. All reader functionality is
+still tested using `file://` before deployment. The in-application help keeps its local URLs.
 
 ## Rebuild and verify
 

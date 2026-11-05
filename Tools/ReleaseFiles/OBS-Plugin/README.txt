@@ -4,6 +4,8 @@
 
 (Version francaise : LISEZMOI.txt)
 
+Documentation: https://mrmybal.github.io/CyGameCapture/#/en/obs
+
 Offline illustrated manual: click User guide in a CyGameCapture source's
 properties, or open Documentation\UserGuide\index.html. English and French
 are included; the default is English. The installer copies the manual with

@@ -1,5 +1,7 @@
 # CyGameCaptureOBS
 
+[Documentation](https://mrmybal.github.io/CyGameCapture/#/en/obs) · [Documentation en français](https://mrmybal.github.io/CyGameCapture/#/fr/obs)
+
 Native OBS Studio plugin that receives the GPU buffers published over Spout2 by **CyGameCaptureRS**
 (the ReShade add-on) and **CyGameCaptureUE** (the Unreal Engine plugin) — and any other Spout2 sender
 when you ask for it.

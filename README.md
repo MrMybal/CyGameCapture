@@ -6,6 +6,8 @@
 
 Maintained by **Cyberalien**.
 
+[Documentation](https://mrmybal.github.io/CyGameCapture/#/en/overview) · [Documentation en français](https://mrmybal.github.io/CyGameCapture/#/fr/overview)
+
 CyGameCapture lets you pick any render target of a game's frame (for example the clean, tonemapped scene
 *before* the HUD is composited) and stream it to OBS through Spout2, entirely on the GPU.
 The player keeps the normal image (gameplay + HUD + menus), OBS receives the buffer you selected.
@@ -32,7 +34,9 @@ API/source references, annotated/zoomable images, comparisons and static SVG dia
 CDN or Internet connection is needed. English is the default; the app opens the chosen English/French edition.
 With the ReShade inspector focused, **F1** opens the active tab's page or section. OBS opens its reception guide.
 
-Read the [English guide](Docs/UserGuide/en.html) or [French guide](Docs/UserGuide/fr.html) locally.
+Read the same visual guide online: [Documentation — English](https://mrmybal.github.io/CyGameCapture/#/en/overview)
+or [Documentation — Français](https://mrmybal.github.io/CyGameCapture/#/fr/overview).
+For offline reading, open the installed `index.html`, `en.html` or `fr.html` file in your browser.
 Keep `Documentation/UserGuide` next to the add-on when installing it; the OBS installer carries the
 manual in its plugin data. Unreal includes the same manual at `Docs/UserGuide/index.html`.
 Release archives and the ready-to-run test suite include both languages and all images.

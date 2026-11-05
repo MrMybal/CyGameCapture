@@ -1,7 +1,9 @@
 # CyGameCaptureUE
 
-The complete illustrated offline user guide is in [English](Docs/UserGuide/en.html) and
-[French](Docs/UserGuide/fr.html). Open `Docs/UserGuide/index.html` in a browser (English by default).
+[Documentation](https://mrmybal.github.io/CyGameCapture/#/en/unreal) · [Documentation en français](https://mrmybal.github.io/CyGameCapture/#/fr/unreal)
+
+The same illustrated guide is included offline. Open `Docs/UserGuide/index.html` in a browser
+(English by default), or `fr.html` for French.
 It includes installation, sender/receiver workflows, OBS, configuration and troubleshooting;
 the developer references below provide the API details.
 

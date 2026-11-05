@@ -6,6 +6,8 @@ Guide complet illustre, hors connexion, en anglais et en francais : gardez le
 dossier Documentation avec l'add-on. Ouvrez Guide utilisateur dans l'overlay,
 ou Documentation\UserGuide\index.html (anglais par defaut).
 
+Documentation : https://mrmybal.github.io/CyGameCapture/#/fr/overview
+
 1. Installer ReShade
 -------------------------------------------------------------------------------
 

@@ -17,13 +17,13 @@
       "id": "distribution",
       "title": "Distribution contents and installation",
       "locale": "fr",
-      "expectedRevision": "9c87bfbc6eea"
+      "expectedRevision": "62b8bdd33fdb"
     },
     {
       "id": "documentation-maintenance",
       "title": "Build and maintain the documentation",
       "locale": "fr",
-      "expectedRevision": "49e65f6df3b3"
+      "expectedRevision": "3b8ae812b7d0"
     },
     {
       "id": "licence-sources",
@@ -59,19 +59,19 @@
       "id": "reference-obs",
       "title": "OBS source and recording reference",
       "locale": "fr",
-      "expectedRevision": "d5c98458c3dc"
+      "expectedRevision": "1c7e9aabb26a"
     },
     {
       "id": "reference-product",
       "title": "Product reference",
       "locale": "fr",
-      "expectedRevision": "5f7c89a72dba"
+      "expectedRevision": "05adbfc3c6bc"
     },
     {
       "id": "reference-unreal",
       "title": "Unreal plugin reference",
       "locale": "fr",
-      "expectedRevision": "2d6554ff4e66"
+      "expectedRevision": "18c79e18cf0b"
     },
     {
       "id": "ue-architecture",

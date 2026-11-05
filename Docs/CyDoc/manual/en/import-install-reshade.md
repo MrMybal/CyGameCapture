@@ -4,7 +4,7 @@ title: ReShade distribution instructions
 description: Tools/ReleaseFiles/ReShade-Addon/README.txt
 section: Installation
 order: 150
-revision: b1007fba7fd0
+revision: 25c7ec3d9080
 ---
 
 ## Original instructions {#instructions}
@@ -15,6 +15,8 @@ revision: b1007fba7fd0
 ===============================================================================
 
 (Version francaise : LISEZMOI.txt)
+
+Documentation: https://mrmybal.github.io/CyGameCapture/#/en/overview
 
 1. Install ReShade
 -------------------------------------------------------------------------------

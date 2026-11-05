@@ -4,7 +4,7 @@ title: Installation ReShade dans un jeu
 description: Tools/PackageFiles/LISEZMOI-installer-dans-un-jeu.txt
 section: Installation
 order: 150
-sourceRevision: b1007fba7fd0
+sourceRevision: 25c7ec3d9080
 ---
 
 ## Instructions d’origine {#instructions}
@@ -17,6 +17,8 @@ sourceRevision: b1007fba7fd0
 Guide complet illustre, hors connexion, en anglais et en francais : gardez le
 dossier Documentation avec l'add-on. Ouvrez Guide utilisateur dans l'overlay,
 ou Documentation\UserGuide\index.html (anglais par defaut).
+
+Documentation : https://mrmybal.github.io/CyGameCapture/#/fr/overview
 
 1. Installer ReShade
 -------------------------------------------------------------------------------

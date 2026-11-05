@@ -6,6 +6,9 @@ GUIDE UTILISATEUR COMPLET : Documentation\UserGuide\index.html
 Manuel illustre en anglais et en francais, utilisable hors connexion.
 Il est aussi accessible par le bouton Guide utilisateur dans ReShade et OBS.
 
+Documentation en ligne (meme lecteur) :
+https://mrmybal.github.io/CyGameCapture/#/fr/overview
+
 Tout ce qu'il faut pour installer et essayer, sans rien compiler.
 
 Ce dossier contient l'add-on ReShade, le plugin OBS, deux applications de test

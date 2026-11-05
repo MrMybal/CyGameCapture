@@ -15,8 +15,8 @@
       "section": "Reference",
       "order": 100,
       "locale": "en",
-      "sourceHash": "082760eeb4ec221ad25251fd46a2d587efc12f9c72a47399941809919f1e6594",
-      "revision": "5f7c89a72dba"
+      "sourceHash": "daca1979d16f2d95a34fbc9b67f9fa79b7f2d9d4bb16b76e56729c65013f3a5e",
+      "revision": "05adbfc3c6bc"
     },
     {
       "source": "Docs/CyGameCapture_Architecture.md",
@@ -36,8 +36,8 @@
       "section": "Reference",
       "order": 120,
       "locale": "en",
-      "sourceHash": "c0878e299bd2dea84741997d2a90a6d2e3951796c89ff9b49e7b70d642666727",
-      "revision": "d5c98458c3dc"
+      "sourceHash": "5f8ae1dd2b66264ebbab4e907fb57cee0494e4d9d12798709286cb4133126afa",
+      "revision": "1c7e9aabb26a"
     },
     {
       "source": "CyGameCaptureUE/README.md",
@@ -46,8 +46,8 @@
       "section": "Unreal Engine",
       "order": 130,
       "locale": "en",
-      "sourceHash": "047bbc4905613e766aa78b93cf1ce5ca3b8144fe6188eaa86245a455042a2e8c",
-      "revision": "2d6554ff4e66"
+      "sourceHash": "d3b26b14750a554fcc75a982f33b422a0e99b9f27c4bb93ae91d24886e566a4a",
+      "revision": "18c79e18cf0b"
     },
     {
       "source": "CyGameCaptureUE/Docs/GettingStarted.md",
@@ -166,8 +166,8 @@
       "section": "Installation",
       "order": 150,
       "locale": "en",
-      "sourceHash": "ece1b0d5ef0ffc1fc5bff687d475c0e6550b08d1214fcc6c8a185b393cb0ede8",
-      "revision": "b1007fba7fd0"
+      "sourceHash": "f964e8ed54947e57eaf6290ecccda8876405c1849107289f4888352eb781bd39",
+      "revision": "25c7ec3d9080"
     },
     {
       "source": "Tools/PackageFiles/LISEZMOI-installer-dans-un-jeu.txt",
@@ -176,8 +176,8 @@
       "locale": "fr",
       "section": "Installation",
       "order": 150,
-      "sourceHash": "45307fe1e4fa9cf1e6f719b8d352d845302cd032e433b7495e604614016354c8",
-      "revision": "fbb69a501f1e"
+      "sourceHash": "d85b1048b09443064c9473739245046461e78383db0343002a81b4c717561f34",
+      "revision": "176bc7af9b5c"
     },
     {
       "source": "Tools/ReleaseFiles/OBS-Plugin/README.txt",
@@ -186,8 +186,8 @@
       "section": "Installation",
       "order": 151,
       "locale": "en",
-      "sourceHash": "0b689a8847dd9aa987fcf3470bedecd5ee84bd960a6c71e2c2f92cc85d90bfc7",
-      "revision": "aea370c5b34c"
+      "sourceHash": "d9af78e1b26d86f3008907a3143a5704e845b3d95b7a1c8577c9bd2b6b375ece",
+      "revision": "f95a94bc77b3"
     },
     {
       "source": "Tools/ReleaseFiles/OBS-Plugin/LISEZMOI.txt",
@@ -196,8 +196,8 @@
       "locale": "fr",
       "section": "Installation",
       "order": 151,
-      "sourceHash": "06d2865f8c529faee4b5ce59c68345fd0b5d8c5880c4ad36a7753dcf6e74b0fd",
-      "revision": "8d657186f07c"
+      "sourceHash": "d4a473c21dff851fd08490aa43e3dd41b25aff486a4cd33927a9c991e7795d93",
+      "revision": "14ba24166dab"
     },
     {
       "source": "Tools/PackageFiles/LISEZMOI.txt",
@@ -206,8 +206,8 @@
       "locale": "fr",
       "section": "Installation",
       "order": 152,
-      "sourceHash": "7d7b2c593606b23483b71518b86df2b01d7e75c11643ea349b8bb1a309821179",
-      "revision": "fdf2ce174f8f"
+      "sourceHash": "ed65b60635bb50d20625d858f21aef2328015f411763fca96d0ce00de3b91880",
+      "revision": "a1c615742b2d"
     },
     {
       "source": "Tools/ReleaseFiles/README.txt",
@@ -216,8 +216,8 @@
       "section": "Installation",
       "order": 153,
       "locale": "en",
-      "sourceHash": "1d6e44d031f12e92c1e4bed1045e6a8861ba32f7ab2c3be922320861c4492bbe",
-      "revision": "9c87bfbc6eea"
+      "sourceHash": "cddac542c24701428d57410d5f7de37cfdf92dad841ef4ebc8e0f399033098a6",
+      "revision": "62b8bdd33fdb"
     },
     {
       "source": "CHANGELOG.md",
@@ -286,8 +286,8 @@
       "section": "Maintenance",
       "order": 210,
       "locale": "en",
-      "sourceHash": "af78120376ee4e3276b8386c6d02daafb4c9215137e43d74cb046a4382ba0f35",
-      "revision": "49e65f6df3b3"
+      "sourceHash": "cdbb965ec905f8236064a0e355657dc6871804de02dddf561f70c26c8b661f47",
+      "revision": "3b8ae812b7d0"
     },
     {
       "source": "CyGameCaptureUE/LICENCES/SOURCES.txt",

@@ -4,7 +4,7 @@ title: OBS distribution instructions
 description: Tools/ReleaseFiles/OBS-Plugin/README.txt
 section: Installation
 order: 151
-revision: aea370c5b34c
+revision: f95a94bc77b3
 ---
 
 ## Original instructions {#instructions}
@@ -15,6 +15,8 @@ revision: aea370c5b34c
 ===============================================================================
 
 (Version francaise : LISEZMOI.txt)
+
+Documentation: https://mrmybal.github.io/CyGameCapture/#/en/obs
 
 Offline illustrated manual: click User guide in a CyGameCapture source's
 properties, or open Documentation\UserGuide\index.html. English and French

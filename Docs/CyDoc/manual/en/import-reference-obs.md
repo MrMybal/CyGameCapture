@@ -4,10 +4,12 @@ title: OBS source and recording reference
 description: CyGameCaptureOBS/README.md
 section: Reference
 order: 120
-revision: d5c98458c3dc
+revision: 1c7e9aabb26a
 ---
 
 # CyGameCaptureOBS {#cygamecaptureobs}
+
+[Documentation](https://mrmybal.github.io/CyGameCapture/#/en/obs) · [Documentation en français](https://mrmybal.github.io/CyGameCapture/#/fr/obs)
 
 Native OBS Studio plugin that receives the GPU buffers published over Spout2 by **CyGameCaptureRS**
 (the ReShade add-on) and **CyGameCaptureUE** (the Unreal Engine plugin) — and any other Spout2 sender
