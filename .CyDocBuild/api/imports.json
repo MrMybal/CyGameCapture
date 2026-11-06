@@ -1,0 +1,14 @@
+[
+  {
+    "format": "cydoc",
+    "path": "api/en.json",
+    "prefix": "public-api",
+    "locale": "en"
+  },
+  {
+    "format": "cydoc",
+    "path": "api/fr.json",
+    "prefix": "public-api",
+    "locale": "fr"
+  }
+]

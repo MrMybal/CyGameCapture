@@ -23,10 +23,10 @@ Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 $root = Split-Path -Parent $PSScriptRoot
-& node (Join-Path $PSScriptRoot 'BuildDocumentation.mjs')
+& node (Join-Path $root '.CyDocBuild/scripts/BuildDocumentation.mjs')
 if ($LASTEXITCODE -ne 0) { throw 'CyDoc generation failed' }
 . (Join-Path $PSScriptRoot 'PackageLicences.ps1')
-. (Join-Path $PSScriptRoot 'PackageDocumentation.ps1')
+. (Join-Path $root '.CyDocBuild/scripts/PackageDocumentation.ps1')
 $bin = Join-Path $root "bin\Release"
 $files = Join-Path $PSScriptRoot "ReleaseFiles"
 
@@ -145,7 +145,7 @@ Copy-Item (Join-Path $files "ReShade-Addon\README.txt") $addon
 Copy-Item (Join-Path $PSScriptRoot "PackageFiles\LISEZMOI-installer-dans-un-jeu.txt") (Join-Path $addon "LISEZMOI.txt")
 Copy-Item $licence (Join-Path $addon "LICENSE.txt")
 Copy-ProductLicences -ProjectRoot $root -Destination $addon -Component ReShade
-Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $addon 'Documentation/UserGuide')
+Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $addon 'Documentation')
 
 # ----------------------------------------------------------------- the OBS plugin
 Section "OBS plugin"
@@ -153,8 +153,8 @@ $obs = New-Folder (Join-Path $package "OBS-Plugin")
 $obsPlugin = New-Folder (Join-Path $obs "CyGameCaptureOBS\bin\64bit")
 Copy-Item $obsBinary $obsPlugin
 Copy-Item $obsData (Join-Path $obs "CyGameCaptureOBS\data") -Recurse
-Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $obs 'CyGameCaptureOBS/data/Documentation/UserGuide')
-Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $obs 'Documentation/UserGuide')
+Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $obs 'CyGameCaptureOBS/data/Documentation')
+Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $obs 'Documentation')
 foreach ($name in "README.txt", "LISEZMOI.txt", "Install-OBS-Plugin.cmd", "Uninstall-OBS-Plugin.cmd") {
     Copy-Item (Join-Path $files "OBS-Plugin\$name") $obs
 }
@@ -170,26 +170,23 @@ foreach ($unrealPackage in $unrealPackages) {
     $target = New-Folder (Join-Path $unreal ("UE" + $engine + "\CyGameCaptureUE"))
     # Intermediate holds the build's leftovers, symbol files carry build paths: neither is for installing.
     # The project compiles the plugin from Source for its game targets.
-    robocopy $unrealPackage.FullName $target /E /XD Intermediate /XF *.pdb /NFL /NDL /NJH /NJS /NP | Out-Null
+    robocopy $unrealPackage.FullName $target /E /XD Intermediate Docs Documentation /XF *.pdb /NFL /NDL /NJH /NJS /NP | Out-Null
     if ($LASTEXITCODE -ge 8) { throw "Copy of $($unrealPackage.FullName) failed" }
     # The documentation and the licence as they are now, not as they were when that engine version was built
     Copy-Item (Join-Path $unrealSource "README.md") $target -Force
     Copy-Item (Join-Path $unrealSource "LICENSE") $target -Force
     Copy-ProductLicences -ProjectRoot $root -Destination $target -Component Unreal
-    robocopy (Join-Path $unrealSource "Docs") (Join-Path $target "Docs") /MIR /NFL /NDL /NJH /NJS /NP | Out-Null
-    if ($LASTEXITCODE -ge 8) { throw "Copy of the Unreal documentation failed" }
-    Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $target 'Docs/UserGuide')
+    Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $target 'Documentation')
     Write-Host ("      Unreal " + $engine)
 }
 
 # ----------------------------------------------------------------- documentation and top level
 Section "documentation"
-$docs = New-Folder (Join-Path $package "Documentation")
-Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $docs 'UserGuide')
+$docs = New-Folder (Join-Path $package "ProductInformation")
+Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $package 'Documentation')
 Copy-ReadmeImages -ProjectRoot $root -DocumentationRoot $docs
 Copy-DocumentationReadme -ProjectRoot $root -DocumentationRoot $docs
 Copy-Item (Join-Path $root "CHANGELOG.md") $docs
-Copy-Item (Join-Path $root "Docs\CyGameCapture_Architecture.md") $docs
 Copy-Item (Join-Path $root "CyGameCaptureOBS\README.md") (Join-Path $docs "CyGameCaptureOBS - README.md")
 Copy-Item (Join-Path $root "CyGameCaptureUE\README.md") (Join-Path $docs "CyGameCaptureUE - README.md")
 # The README shows the logo through a relative path, which has to resolve from here as well
@@ -249,7 +246,7 @@ if (-not $notes.Success) { throw "No section for $version in CHANGELOG.md" }
 
 # Verify the archives themselves, not just the staging folders.
 & (Join-Path $PSScriptRoot 'ValidateLicensePackages.ps1') -ReleaseDirectory $OutputDirectory
-& node (Join-Path $PSScriptRoot 'ValidateDocumentation.mjs') $OutputDirectory
+& node (Join-Path $root '.CyDocBuild/scripts/ValidateDocumentation.mjs') $OutputDirectory
 if ($LASTEXITCODE -ne 0) { throw 'CyDoc archive validation failed' }
 
 Write-Host ""

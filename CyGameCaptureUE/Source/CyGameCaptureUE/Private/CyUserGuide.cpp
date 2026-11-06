@@ -20,7 +20,7 @@ namespace
     {
         const TSharedPtr<IPlugin> Plugin = IPluginManager::Get().FindPlugin(TEXT("CyGameCaptureUE"));
         if (!Plugin.IsValid()) return FString();
-        FString File = FPaths::ConvertRelativePathToFull(FPaths::Combine(Plugin->GetBaseDir(), TEXT("Docs/UserGuide/index.html")));
+        FString File = FPaths::ConvertRelativePathToFull(FPaths::Combine(Plugin->GetBaseDir(), TEXT("Documentation/Documentation.html")));
         FPaths::NormalizeFilename(File);
         if (!IFileManager::Get().FileExists(*File))
         {

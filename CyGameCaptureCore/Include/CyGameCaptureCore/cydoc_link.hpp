@@ -1,7 +1,7 @@
 #pragma once
 // Copyright (c) CyDoc contributors — SPDX-License-Identifier: MIT
-// Upstream examples/integrations/cydoc_link.hpp, commit 774f2a7.
-// Full licence: Resources/CyDoc/LICENSE.txt; shipped reader notices/CyDoc-MIT.txt.
+// Upstream examples/integrations/cydoc_link.hpp, commit 6ddf9a5 (unchanged helper).
+// Full licence: .CyDocBuild/vendor/LICENSE.txt; Documentation/DocData/notices/CyDoc-MIT.txt.
 #include <string>
 #include <string_view>
 #include <utility>

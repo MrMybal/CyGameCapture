@@ -1,0 +1,71 @@
+{
+  "name": "CyGameCapture",
+  "version": "0.1.0",
+  "logo": "assets/logo.png",
+  "defaultLocale": "en",
+  "locales": [
+    {
+      "code": "en",
+      "label": "English"
+    },
+    {
+      "code": "fr",
+      "label": "Français"
+    }
+  ],
+  "homePage": "overview",
+  "content": "manual",
+  "assets": "assets",
+  "out": "../Documentation",
+  "modules": [
+    "image"
+  ],
+  "sources": [
+    "../CyGameCaptureCore/Include/CyGameCaptureCore"
+  ],
+  "apiIndex": {
+    "enabled": false
+  },
+  "aliases": {
+    "help": "overview",
+    "buffer-inspector": "inspector",
+    "getting-started": "quickstart",
+    "streaming": "capture",
+    "depth": "derived#depth",
+    "hud": "derived#hud-on-its-own",
+    "reference-product": "overview",
+    "reference-obs": "obs",
+    "reference-unreal": "unreal",
+    "architecture": "performance",
+    "ue-architecture": "unreal",
+    "ue-obs": "obs",
+    "ue-performance": "performance",
+    "install-reshade": "install",
+    "install-obs": "obs",
+    "distribution": "install",
+    "test-suite": "diagnostics",
+    "changelog": "overview",
+    "documentation-maintenance": "help-navigation",
+    "translation-report": "help-navigation",
+    "notices-reshade": "glossary#licences",
+    "notices-obs": "glossary#licences",
+    "notices-unreal": "glossary#licences",
+    "notices-ffmpeg": "glossary#licences",
+    "licence-sources": "glossary#licences",
+    "ue-licence-sources": "glossary#licences",
+    "source-cygamecapturecore-include-cygamecapturecore-framesync-hpp": "core-api#synchronisation",
+    "source-cygamecapturecore-include-cygamecapturecore-sendernaming-hpp": "core-api#naming",
+    "source-cygamecapturecore-include-cygamecapturecore-streaminfo-hpp": "core-api#synchronisation",
+    "source-cygamecapturecore-include-cygamecapturecore-userguide-hpp": "native-help-api#parameters",
+    "source-cygamecapturecore-include-cygamecapturecore-version-hpp": "core-api#synchronisation",
+    "source-cygamecapturecore-include-cygamecapturecore-cydoc-link-hpp": "native-help-api#parameters",
+    "source-cygamecaptureue-source-cygamecaptureue-public-cygamecaptureblueprintlibrary-h": "ue-subsystem#includes",
+    "source-cygamecaptureue-source-cygamecaptureue-public-cygamecapturesettings-h": "ue-subsystem#includes",
+    "source-cygamecaptureue-source-cygamecaptureue-public-cygamecapturespoutreceivercomponent-h": "ue-receiver#functions",
+    "source-cygamecaptureue-source-cygamecaptureue-public-cygamecapturespoutsendercomponent-h": "ue-sender#functions",
+    "source-cygamecaptureue-source-cygamecaptureue-public-cygamecapturestream-h": "ue-subsystem#includes",
+    "source-cygamecaptureue-source-cygamecaptureue-public-cygamecapturesubsystem-h": "ue-subsystem#includes",
+    "source-cygamecaptureue-source-cygamecaptureue-public-cygamecapturetypes-h": "ue-subsystem#includes",
+    "source-cygamecaptureue-source-cygamecaptureue-public-cygamecaptureuemodule-h": "ue-subsystem#includes"
+  }
+}

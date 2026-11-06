@@ -1,4 +1,0 @@
-CyDoc 0.1.0, MIT, commit 774f2a7eabf7dd181a98ffc5add115b580b67f42
-https://github.com/MrMybal/CyDoc
-Enabled reader: image. No Three.js, mesh, video, GIF, gallery or graph runtime.
-Application content and indexed source retain their original licences; see file headers.

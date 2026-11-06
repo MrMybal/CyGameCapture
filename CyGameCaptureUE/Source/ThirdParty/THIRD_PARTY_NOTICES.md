@@ -19,4 +19,4 @@ define the Spout protocol.
 
 ## CyDoc native route helper
 
-`CyDoc/cydoc_link.hpp` is the C++17 integration example from CyDoc 0.1.0, commit `774f2a7eabf7dd181a98ffc5add115b580b67f42`, under MIT. The original licence is retained in `CyDoc/LICENSE.txt`. The offline reader carries its own full CyDoc and product notices.
+`CyDoc/cydoc_link.hpp` is the C++17 integration example from CyDoc 0.1.0, commit `6ddf9a582defb2f11fbb3f992afef6f98dcadc93`, under MIT. The original licence is retained in `CyDoc/LICENSE.txt`. The offline reader carries its own full CyDoc and product notices.

@@ -2,7 +2,7 @@
  CyGameCapture - dossier de test
 ===============================================================================
 
-GUIDE UTILISATEUR COMPLET : Documentation\UserGuide\index.html
+GUIDE UTILISATEUR COMPLET : Documentation\Documentation.html
 Manuel illustre en anglais et en francais, utilisable hors connexion.
 Il est aussi accessible par le bouton Guide utilisateur dans ReShade et OBS.
 

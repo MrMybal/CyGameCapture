@@ -49,26 +49,26 @@ endif()
 # dependency only; end users read file:// without Node, a service or Internet access.
 find_program(CYGC_NODE_EXECUTABLE NAMES node node.exe REQUIRED)
 find_program(CYGC_POWERSHELL_EXECUTABLE NAMES powershell pwsh REQUIRED)
-if(NOT EXISTS "${CMAKE_SOURCE_DIR}/node_modules/cydoc/tools/cli.mjs")
-    message(FATAL_ERROR "CyDoc build dependencies are missing. Run npm ci in the project root (Node.js 22+).")
+if(NOT EXISTS "${CMAKE_SOURCE_DIR}/.CyDocBuild/node_modules/cydoc/tools/cli.mjs")
+    message(FATAL_ERROR "CyDoc build dependencies are missing. Run npm --prefix .CyDocBuild ci in the project root (Node.js 22+).")
 endif()
 add_custom_target(CyGameCaptureUserGuide ALL
-    COMMAND "${CYGC_NODE_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/Tools/BuildDocumentation.mjs"
+    COMMAND "${CYGC_NODE_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/.CyDocBuild/scripts/BuildDocumentation.mjs"
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" VERBATIM)
 function(cygc_copy_guide destination)
     add_custom_command(TARGET CyGameCaptureUserGuide POST_BUILD
         COMMAND "${CYGC_POWERSHELL_EXECUTABLE}" -NoProfile -ExecutionPolicy Bypass
-            -File "${CMAKE_SOURCE_DIR}/Tools/DeployDocumentation.ps1"
+            -File "${CMAKE_SOURCE_DIR}/.CyDocBuild/scripts/DeployDocumentation.ps1"
             -ProjectRoot "${CMAKE_SOURCE_DIR}" -Destination "${destination}"
         VERBATIM)
 endfunction()
-cygc_copy_guide("${CYGC_OUTPUT_DIR}/Documentation/UserGuide")
+cygc_copy_guide("${CYGC_OUTPUT_DIR}/Documentation")
 add_dependencies(CyGameCaptureRS CyGameCaptureUserGuide)
 if(TARGET CyGameCaptureOBS)
-    cygc_copy_guide("${CYGC_OUTPUT_DIR}/data/obs-plugins/CyGameCaptureOBS/Documentation/UserGuide")
+    cygc_copy_guide("${CYGC_OUTPUT_DIR}/data/obs-plugins/CyGameCaptureOBS/Documentation")
     add_dependencies(CyGameCaptureOBS CyGameCaptureUserGuide)
 endif()
 if(CYGC_BUILD_TESTS)
-    cygc_copy_guide("${CYGC_OUTPUT_DIR}/TestApp/Documentation/UserGuide")
-    cygc_copy_guide("${CYGC_OUTPUT_DIR}/TestAppD3D12/Documentation/UserGuide")
+    cygc_copy_guide("${CYGC_OUTPUT_DIR}/TestApp/Documentation")
+    cygc_copy_guide("${CYGC_OUTPUT_DIR}/TestAppD3D12/Documentation")
 endif()

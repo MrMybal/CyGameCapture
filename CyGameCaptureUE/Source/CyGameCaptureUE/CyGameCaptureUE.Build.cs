@@ -17,7 +17,7 @@ public class CyGameCaptureUE : ModuleRules
 		bUseUnity = false;                 // third-party wrappers must not be merged with engine-facing code
 
 		// Browser documentation must stay as loose local files, outside cooked pak data.
-		RuntimeDependencies.Add("$(PluginDir)/Docs/UserGuide/...", StagedFileType.NonUFS);
+		RuntimeDependencies.Add("$(PluginDir)/Documentation/...", StagedFileType.NonUFS);
 		if (Target.Version.MajorVersion < 5)
 		{
 			CppStandard = CppStandardVersion.Cpp17; // CyDoc's native route helper uses string_view.

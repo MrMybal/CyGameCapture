@@ -30,23 +30,23 @@ Game -> ReShade -> CyGameCaptureRS -> selected render target -> GPU copy -> shar
 
 Open **User guide** next to the language selector in the ReShade overlay, or in the properties of an
 OBS **CyGameCapture** source. The complete CyDoc manual opens locally in your browser, with search,
-API/source references, annotated/zoomable images, comparisons and static SVG diagrams. No server,
+public API references, annotated/zoomable images, comparisons and static SVG diagrams. No server,
 CDN or Internet connection is needed. English is the default; the app opens the chosen English/French edition.
 With the ReShade inspector focused, **F1** opens the active tab's page or section. OBS opens its reception guide.
 
 Read the same visual guide online: [Documentation — English](https://mrmybal.github.io/CyGameCapture/#/en/overview)
 or [Documentation — Français](https://mrmybal.github.io/CyGameCapture/#/fr/overview).
-For offline reading, open the installed `index.html`, `en.html` or `fr.html` file in your browser.
-Keep `Documentation/UserGuide` next to the add-on when installing it; the OBS installer carries the
-manual in its plugin data. Unreal includes the same manual at `Docs/UserGuide/index.html`.
+For offline reading, open `Documentation/Documentation.html` in your browser.
+Keep `Documentation` next to the add-on when installing it; the OBS installer carries the
+manual in its plugin data. Unreal includes the same manual at `Documentation/Documentation.html`.
 Release archives and the ready-to-run test suite include both languages and all images.
 
-Authoring sources are Markdown in `Docs/CyDoc/manual`, local assets in `Docs/CyDoc/assets`,
-`cydoc.config.json` and the public-API host adapter in `Docs/CyDoc/reader.mjs`.
-With Node.js 22+, run `npm ci`, `npm run docs:build`, `npm run docs:check` and `npm run docs:test`.
+Authoring sources are Markdown in `.CyDocBuild/manual`, local assets in `.CyDocBuild/assets`,
+`.CyDocBuild/cydoc.config.json` and the application HTML shell in `.CyDocBuild/Documentation.template.html`.
+With Node.js 22+, run `npm --prefix .CyDocBuild ci`, `npm --prefix .CyDocBuild run docs:build`, `npm --prefix .CyDocBuild run docs:check` and `npm --prefix .CyDocBuild run docs:test`.
 The native build and package scripts regenerate and deploy the entire reader. End users need no Node.js.
-CyDoc 0.1.0 is pinned as a local package in `Resources/CyDoc`; only its image module is enabled.
-See [documentation maintenance](Docs/CyDoc/README.md) for translation tracking, source scope and limits.
+CyDoc 0.1.0 is pinned as a local package in `.CyDocBuild/vendor`; only its image module is enabled.
+See [documentation maintenance](.CyDocBuild/internal/README.md) for translation tracking, source scope and limits.
 
 ## Screenshots
 
@@ -102,7 +102,7 @@ its matching binaries and notices together. No shared Python runtime or user set
   **Spout2 plugin** (https://github.com/Off-World-Live/obs-spout2-plugin). Any other Spout2 application works too
   (Resolume, TouchDesigner, another Unreal instance...): nothing in the pipeline is OBS specific.
 * Visual Studio 2022 (MSVC v143, CMake and Ninja components) to build.
-* Node.js 22+ for the documentation build tooling. Run `npm ci` once after cloning.
+* Node.js 22+ for the documentation build tooling. Run `npm --prefix .CyDocBuild ci` once after cloning.
 
 ## Build
 
@@ -418,8 +418,8 @@ normal build does not need Python.
 
 ## Documentation
 
-* [CyGameCaptureUE/README.md](CyGameCaptureUE/README.md) and [CyGameCaptureUE/Docs/](CyGameCaptureUE/Docs/) - the Unreal plugin (architecture, sender, receiver, multi-stream, viewport capture, OBS, performance, troubleshooting).
-* [Docs/CyGameCapture_Architecture.md](Docs/CyGameCapture_Architecture.md) - architecture, ReShade callbacks used, tracking / preview / capture strategies, Spout2 integration, D3D11 and D3D12 backends, synchronisation, roadmap, known limitations.
+* [CyGameCaptureUE/README.md](CyGameCaptureUE/README.md) and [Unreal user guide](CyGameCaptureUE/Documentation/Documentation.html#/en/unreal) - the Unreal plugin (architecture, sender, receiver, multi-stream, viewport capture, OBS, performance, troubleshooting).
+* [Capture compatibility](Documentation/Documentation.html#/en/performance) - supported backends, formats, stream costs and limitations.
 * [CyGameCaptureOBS/README.md](CyGameCaptureOBS/README.md) - the OBS plugin (build, install, source properties, the zero-copy path).
 * [CyGameCaptureRS/ThirdParty/THIRD_PARTY_NOTICES.md](CyGameCaptureRS/ThirdParty/THIRD_PARTY_NOTICES.md),
   [CyGameCaptureOBS/ThirdParty/THIRD_PARTY_NOTICES.md](CyGameCaptureOBS/ThirdParty/THIRD_PARTY_NOTICES.md) and

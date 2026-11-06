@@ -1,0 +1,19 @@
+{
+  "name": "cygamecapture-documentation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Build-time tooling for the native application's offline CyDoc manual",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "docs:build": "node scripts/BuildDocumentation.mjs",
+    "docs:check": "node scripts/ValidateDocumentation.mjs",
+    "docs:test": "node scripts/TestDocumentation.mjs"
+  },
+  "devDependencies": {
+    "cydoc": "file:vendor/cydoc-0.1.0.tgz",
+    "playwright": "1.62.1"
+  }
+}

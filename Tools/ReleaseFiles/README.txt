@@ -8,14 +8,14 @@ Resolume, TouchDesigner, another Unreal instance or any Spout2 application can
 receive it.
 
 Complete offline illustrated user guide (English / French):
-  Documentation\UserGuide\index.html (English by default)
+  Documentation\Documentation.html (English by default)
 Also accessible from User guide in ReShade and OBS source properties.
 
 Online Documentation (same reader):
   https://mrmybal.github.io/CyGameCapture/#/en/overview
 
 Guide utilisateur complet illustre, hors connexion (anglais / francais) :
-  Documentation\UserGuide\index.html (anglais par defaut)
+  Documentation\Documentation.html (anglais par defaut)
 Accessible aussi depuis Guide utilisateur dans ReShade et les sources OBS.
 
 Documentation en ligne en francais (meme lecteur) :

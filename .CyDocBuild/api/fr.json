@@ -1,0 +1,154 @@
+{
+  "symbols": [
+    {
+      "key": "sanitize",
+      "name": "cygc::SanitizeGameName",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "std::string cygc::SanitizeGameName(std::string_view exe_stem)",
+      "returnType": "std::string",
+      "description": "Nettoie le nom de base de l’exécutable pour un émetteur Spout. Incluez CyGameCaptureCore/SenderNaming.hpp ; C++17.",
+      "returns": "Nom sans les suffixes de compilation pris en charge, avec remplacement des séparateurs réservés.",
+      "parameters": [
+        {
+          "name": "exe_stem",
+          "type": "std::string_view",
+          "description": "Nom de l’exécutable sans son extension."
+        }
+      ]
+    },
+    {
+      "key": "sender-name",
+      "name": "cygc::MakeSenderName",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "std::string cygc::MakeSenderName(std::string_view game_name, unsigned int instance = 1)",
+      "returnType": "std::string",
+      "description": "Construit un nom d’émetteur ReShade à partir d’un nom de jeu nettoyé. Incluez CyGameCaptureCore/SenderNaming.hpp.",
+      "returns": "CyGameCaptureRS::<Game>, avec ::N pour les instances supérieures à un ; 255 octets au maximum.",
+      "parameters": [
+        {
+          "name": "game_name",
+          "type": "std::string_view",
+          "description": "Nom du jeu nettoyé."
+        },
+        {
+          "name": "instance",
+          "type": "unsigned int",
+          "description": "Indice d’instance ; 1 par défaut."
+        }
+      ],
+      "references": [
+        {
+          "key": "sanitize",
+          "name": "cygc::SanitizeGameName"
+        }
+      ]
+    },
+    {
+      "key": "frame-read",
+      "name": "cygc::ReadFrameSync",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "bool cygc::ReadFrameSync(const std::string& sender_name, cygc::FrameSyncRecord& out)",
+      "returnType": "bool",
+      "description": "Lit l’instantané actuel de métadonnées d’un nom Spout. Incluez CyGameCaptureCore/FrameSync.hpp sous Windows. Cet appel ne lit pas les pixels.",
+      "returns": "true avec un enregistrement de sortie rempli si un instantané existe ; false sinon.",
+      "parameters": [
+        {
+          "name": "sender_name",
+          "type": "const std::string&",
+          "description": "Nom exact de l’émetteur Spout."
+        },
+        {
+          "name": "out",
+          "type": "cygc::FrameSyncRecord&",
+          "description": "Enregistrement de sortie, à utiliser uniquement si true est renvoyé."
+        }
+      ]
+    },
+    {
+      "key": "create-sender",
+      "name": "UCyGameCaptureSubsystem::CreateSender",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "FSenderStreamPtr CreateSender(const FCySenderStreamConfig& Config, UObject* Owner, FString& OutError)",
+      "returnType": "FSenderStreamPtr",
+      "description": "Crée un flux émetteur associé à un propriétaire via le sous-système moteur. Incluez CyGameCaptureSubsystem.h ; module CyGameCaptureUE. Associez cet appel à DestroySender.",
+      "returns": "Pointeur partagé d’émetteur utilisable entre threads, ou pointeur invalide en cas d’échec. Consultez OutError avant utilisation.",
+      "parameters": [
+        {
+          "name": "Config",
+          "type": "const FCySenderStreamConfig&",
+          "description": "Réglages de l’émetteur, dont le nom, le mode source et la cadence."
+        },
+        {
+          "name": "Owner",
+          "type": "UObject*",
+          "description": "Propriétaire vivant du flux, utilisé pour sa libération."
+        },
+        {
+          "name": "OutError",
+          "type": "FString&",
+          "description": "Message d’erreur de sortie si la création échoue."
+        }
+      ],
+      "references": [
+        {
+          "key": "discover",
+          "name": "UCyGameCaptureSubsystem::GetAvailableSpoutSenders"
+        }
+      ]
+    },
+    {
+      "key": "create-receiver",
+      "name": "UCyGameCaptureSubsystem::CreateReceiver",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "FReceiverStreamPtr CreateReceiver(const FCyReceiverStreamConfig& Config, UObject* Owner, FString& OutError)",
+      "returnType": "FReceiverStreamPtr",
+      "description": "Crée un flux récepteur associé à un propriétaire. Incluez CyGameCaptureSubsystem.h ; module CyGameCaptureUE. Associez cet appel à DestroyReceiver et fournissez une cible de destination.",
+      "returns": "Pointeur partagé de récepteur utilisable entre threads, ou pointeur invalide en cas d’échec.",
+      "parameters": [
+        {
+          "name": "Config",
+          "type": "const FCyReceiverStreamConfig&",
+          "description": "Nom exact de l’émetteur, nom du récepteur et réglages de connexion."
+        },
+        {
+          "name": "Owner",
+          "type": "UObject*",
+          "description": "Propriétaire vivant du flux."
+        },
+        {
+          "name": "OutError",
+          "type": "FString&",
+          "description": "Message d’erreur de sortie si la création échoue."
+        }
+      ],
+      "references": [
+        {
+          "key": "discover",
+          "name": "UCyGameCaptureSubsystem::GetAvailableSpoutSenders"
+        }
+      ]
+    },
+    {
+      "key": "discover",
+      "name": "UCyGameCaptureSubsystem::GetAvailableSpoutSenders",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "TArray<FCySpoutSenderInfo> GetAvailableSpoutSenders(bool bForceRefresh = false)",
+      "returnType": "TArray<FCySpoutSenderInfo>",
+      "description": "Découvre les producteurs Spout des différentes applications. Incluez CyGameCaptureSubsystem.h ; module CyGameCaptureUE.",
+      "returns": "Tableau des informations d’émetteurs ; un tableau vide signifie qu’aucun n’est actuellement connu.",
+      "parameters": [
+        {
+          "name": "bForceRefresh",
+          "type": "bool",
+          "description": "Actualise immédiatement la découverte au lieu de renvoyer le cache ; false par défaut."
+        }
+      ]
+    }
+  ]
+}

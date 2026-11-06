@@ -1,0 +1,154 @@
+{
+  "symbols": [
+    {
+      "key": "sanitize",
+      "name": "cygc::SanitizeGameName",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "std::string cygc::SanitizeGameName(std::string_view exe_stem)",
+      "returnType": "std::string",
+      "description": "Clean a game executable stem for a Spout sender name. Include CyGameCaptureCore/SenderNaming.hpp; C++17.",
+      "returns": "Name with supported build suffixes removed and reserved separators replaced.",
+      "parameters": [
+        {
+          "name": "exe_stem",
+          "type": "std::string_view",
+          "description": "Executable name without its file extension."
+        }
+      ]
+    },
+    {
+      "key": "sender-name",
+      "name": "cygc::MakeSenderName",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "std::string cygc::MakeSenderName(std::string_view game_name, unsigned int instance = 1)",
+      "returnType": "std::string",
+      "description": "Build a ReShade sender name from a sanitised game name. Include CyGameCaptureCore/SenderNaming.hpp.",
+      "returns": "CyGameCaptureRS::<Game>, with ::N for instances above one; at most 255 bytes.",
+      "parameters": [
+        {
+          "name": "game_name",
+          "type": "std::string_view",
+          "description": "Sanitised game name."
+        },
+        {
+          "name": "instance",
+          "type": "unsigned int",
+          "description": "Instance index; default 1."
+        }
+      ],
+      "references": [
+        {
+          "key": "sanitize",
+          "name": "cygc::SanitizeGameName"
+        }
+      ]
+    },
+    {
+      "key": "frame-read",
+      "name": "cygc::ReadFrameSync",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "bool cygc::ReadFrameSync(const std::string& sender_name, cygc::FrameSyncRecord& out)",
+      "returnType": "bool",
+      "description": "Read the current metadata snapshot for one Spout name. Include CyGameCaptureCore/FrameSync.hpp on Windows. This does not read pixels.",
+      "returns": "true and a filled output record when a snapshot exists; otherwise false.",
+      "parameters": [
+        {
+          "name": "sender_name",
+          "type": "const std::string&",
+          "description": "Exact Spout sender name."
+        },
+        {
+          "name": "out",
+          "type": "cygc::FrameSyncRecord&",
+          "description": "Output record, used only when true is returned."
+        }
+      ]
+    },
+    {
+      "key": "create-sender",
+      "name": "UCyGameCaptureSubsystem::CreateSender",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "FSenderStreamPtr CreateSender(const FCySenderStreamConfig& Config, UObject* Owner, FString& OutError)",
+      "returnType": "FSenderStreamPtr",
+      "description": "Create an owned sender stream through the engine subsystem. Include CyGameCaptureSubsystem.h; module CyGameCaptureUE. Pair with DestroySender.",
+      "returns": "Thread-safe shared sender pointer, or an invalid pointer on failure. Inspect OutError before use.",
+      "parameters": [
+        {
+          "name": "Config",
+          "type": "const FCySenderStreamConfig&",
+          "description": "Sender settings including name, source mode and timing."
+        },
+        {
+          "name": "Owner",
+          "type": "UObject*",
+          "description": "Live stream owner used for lifetime cleanup."
+        },
+        {
+          "name": "OutError",
+          "type": "FString&",
+          "description": "Output error message when creation fails."
+        }
+      ],
+      "references": [
+        {
+          "key": "discover",
+          "name": "UCyGameCaptureSubsystem::GetAvailableSpoutSenders"
+        }
+      ]
+    },
+    {
+      "key": "create-receiver",
+      "name": "UCyGameCaptureSubsystem::CreateReceiver",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "FReceiverStreamPtr CreateReceiver(const FCyReceiverStreamConfig& Config, UObject* Owner, FString& OutError)",
+      "returnType": "FReceiverStreamPtr",
+      "description": "Create an owned receiver stream. Include CyGameCaptureSubsystem.h; module CyGameCaptureUE. Pair with DestroyReceiver and supply a destination target.",
+      "returns": "Thread-safe shared receiver pointer, or an invalid pointer on failure.",
+      "parameters": [
+        {
+          "name": "Config",
+          "type": "const FCyReceiverStreamConfig&",
+          "description": "Exact sender name, receiver name and connection settings."
+        },
+        {
+          "name": "Owner",
+          "type": "UObject*",
+          "description": "Live stream owner."
+        },
+        {
+          "name": "OutError",
+          "type": "FString&",
+          "description": "Output error message when creation fails."
+        }
+      ],
+      "references": [
+        {
+          "key": "discover",
+          "name": "UCyGameCaptureSubsystem::GetAvailableSpoutSenders"
+        }
+      ]
+    },
+    {
+      "key": "discover",
+      "name": "UCyGameCaptureSubsystem::GetAvailableSpoutSenders",
+      "kind": "function",
+      "language": "cpp",
+      "signature": "TArray<FCySpoutSenderInfo> GetAvailableSpoutSenders(bool bForceRefresh = false)",
+      "returnType": "TArray<FCySpoutSenderInfo>",
+      "description": "Discover Spout producers across applications. Include CyGameCaptureSubsystem.h; module CyGameCaptureUE.",
+      "returns": "Sender information array; an empty array means none is currently known.",
+      "parameters": [
+        {
+          "name": "bForceRefresh",
+          "type": "bool",
+          "description": "Refresh discovery immediately instead of returning the cached list; default false."
+        }
+      ]
+    }
+  ]
+}

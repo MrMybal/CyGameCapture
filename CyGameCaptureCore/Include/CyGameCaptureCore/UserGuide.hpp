@@ -26,7 +26,7 @@ namespace cygc
 	 * @doc native-help-api
 	 * @locale en
 	 * @title Native Windows help API
-	 * @section API
+	 * @section API / Windows
 	 * @symbol cygc::OpenUserGuideFile
 	 * Open a shipped CyDoc page from the native ReShade or OBS component.
 	 *
@@ -37,7 +37,7 @@ namespace cygc
 	 * handled before adding the CyDoc fragment. No HTTP fallback is used.
 	 *
 	 * ## Parameters and result {#parameters}
-	 * `file` is the installed `index.html`; `french` selects fr or en; `page` is a
+	 * `file` is the installed `Documentation.html`; `french` selects fr or en; `page` is a
 	 * stable page ID. Optional `anchor` and `media` target a section or image.
 	 * The return value indicates whether Windows accepted the local open request,
 	 * not whether the browser finished rendering. Missing files and shell errors
@@ -94,6 +94,6 @@ namespace cygc
 		wchar_t path[32768] = {};
 		const DWORD length = GetModuleFileNameW(module, path, static_cast<DWORD>(std::size(path)));
 		if (length == 0 || length >= std::size(path)) return false;
-		return OpenUserGuideFile(std::filesystem::path(path).parent_path() / L"Documentation" / L"UserGuide" / L"index.html", french, page, anchor, media);
+		return OpenUserGuideFile(std::filesystem::path(path).parent_path() / L"Documentation" / L"Documentation.html", french, page, anchor, media);
 	}
 }

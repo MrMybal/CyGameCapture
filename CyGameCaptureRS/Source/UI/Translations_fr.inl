@@ -386,5 +386,5 @@
 { "User guide", "Guide utilisateur" },
 { "Open the offline illustrated user guide in your browser (English / French).",
 	"Ouvrir le guide utilisateur illustré hors connexion dans le navigateur (anglais / français)." },
-{ "Could not open the user guide. Keep Documentation/UserGuide next to the add-on and check your HTML browser association.",
-	"Impossible d’ouvrir le guide. Gardez Documentation/UserGuide près de l’add-on et vérifiez l’application associée aux fichiers HTML." },
+{ "Could not open the user guide. Keep Documentation next to the add-on and check your HTML browser association.",
+	"Impossible d’ouvrir le guide. Gardez Documentation près de l’add-on et vérifiez l’application associée aux fichiers HTML." },

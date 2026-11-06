@@ -73,7 +73,7 @@ already have the right layout to be copied over directly.
 
 Click **User guide** in a CyGameCapture source's properties to open the illustrated manual locally.
 It follows OBS's English/French language, with English as the fallback. Both editions, search,
-diagrams and all images are installed in `data/Documentation/UserGuide`; keep that folder with the plugin.
+diagrams and all images are installed in `data/Documentation`; keep that folder with the plugin.
 
 ## Source properties
 

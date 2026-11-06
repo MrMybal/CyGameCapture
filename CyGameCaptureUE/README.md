@@ -2,15 +2,15 @@
 
 [Documentation](https://mrmybal.github.io/CyGameCapture/#/en/unreal) · [Documentation en français](https://mrmybal.github.io/CyGameCapture/#/fr/unreal)
 
-The same illustrated guide is included offline. Open `Docs/UserGuide/index.html` in a browser
-(English by default), or `fr.html` for French.
+The same illustrated guide is included offline. Open `Documentation/Documentation.html` in a browser
+(English by default), then select Français in the reader for French.
 It includes installation, sender/receiver workflows, OBS, configuration and troubleshooting;
 the developer references below provide the API details.
 
 In the editor, **Help → CyGameCapture user guide** opens the local Unreal page using the
 editor's English/French language. `CyGameCapture.Help` does the same; `CyGameCapture.Help fr url`
 prints the encoded address without launching a browser. The old online descriptor documentation
-link is replaced by this local help entry. Ship the complete `Docs/UserGuide` directory.
+link is replaced by this local help entry. Ship the complete `Documentation` directory.
 
 **Multi-stream Spout2 sender & receiver for Unreal Engine.** Part of the
 [CyGameCapture](../README.md) ecosystem (CyGameCaptureRS = ReShade add-on, CyGameCaptureOBS = OBS plugin).
@@ -42,23 +42,23 @@ several senders and receivers at the same time. OBS is a use case, never a depen
 2. Add a **CyGameCapture Spout Sender** component, pick a *Source Mode*, press Play.
 3. In OBS: *Add Source → Spout2 Capture → the sender name*.
 
-Full walkthrough: [Docs/GettingStarted.md](Docs/GettingStarted.md).
+Full walkthrough: [First capture](Documentation/Documentation.html#/en/ue-getting-started).
 
 ## Documentation
 
 | File | Content |
 |------|---------|
-| [Docs/CyGameCaptureUE_Architecture.md](Docs/CyGameCaptureUE_Architecture.md) | Spout2 integration, RHI compatibility, D3D11 / D3D12 paths, lifecycles, synchronisation, multi-stream design, limitations |
-| [Docs/GettingStarted.md](Docs/GettingStarted.md) | install, first sender, first receiver, console commands, editor vs standalone |
-| [Docs/Sender.md](Docs/Sender.md) | sender component: properties, nodes, events, formats, colour space |
-| [Docs/Receiver.md](Docs/Receiver.md) | receiver component, material and UMG usage, resolution changes |
-| [Docs/MultiStream.md](Docs/MultiStream.md) | several senders / receivers, costs, naming, collisions |
-| [Docs/ViewportCapture.md](Docs/ViewportCapture.md) | game viewport hook, what the image contains, PIE vs standalone |
-| [Docs/SceneCapture.md](Docs/SceneCapture.md) | managed and user scene captures, capture sources, cost |
-| [Docs/RenderTarget.md](Docs/RenderTarget.md) | render target sources, formats, recipes, alpha |
-| [Docs/OBS.md](Docs/OBS.md) | Unreal → OBS and OBS → Unreal |
-| [Docs/Performance.md](Docs/Performance.md) | design rules, measurements, benchmark procedure |
-| [Docs/Troubleshooting.md](Docs/Troubleshooting.md) | symptoms → causes |
+| [Unreal capture overview](Documentation/Documentation.html#/en/unreal) | Spout2 integration, RHI compatibility, D3D11 / D3D12 paths, lifecycles, synchronisation, multi-stream design, limitations |
+| [First capture](Documentation/Documentation.html#/en/ue-getting-started) | install, first sender, first receiver, console commands, editor vs standalone |
+| [Sender API](Documentation/Documentation.html#/en/ue-sender) | sender component: properties, nodes, events, formats, colour space |
+| [Receiver API](Documentation/Documentation.html#/en/ue-receiver) | receiver component, material and UMG usage, resolution changes |
+| [Multiple streams](Documentation/Documentation.html#/en/ue-multi-stream) | several senders / receivers, costs, naming, collisions |
+| [Viewport capture](Documentation/Documentation.html#/en/ue-viewport) | game viewport hook, what the image contains, PIE vs standalone |
+| [Scene captures](Documentation/Documentation.html#/en/ue-scene-capture) | managed and user scene captures, capture sources, cost |
+| [Render targets](Documentation/Documentation.html#/en/ue-render-target) | render target sources, formats, recipes, alpha |
+| [OBS reception](Documentation/Documentation.html#/en/obs) | Unreal → OBS and OBS → Unreal |
+| [Performance and compatibility](Documentation/Documentation.html#/en/performance) | compatible formats, stream costs and practical limits |
+| [Troubleshooting](Documentation/Documentation.html#/en/ue-troubleshooting) | symptoms → causes |
 
 ## Project settings
 

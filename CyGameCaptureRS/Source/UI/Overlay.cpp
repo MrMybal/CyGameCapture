@@ -1117,7 +1117,7 @@ namespace cygc
 				ImGui::SetTooltip("%s", TR("Open the offline illustrated user guide in your browser (English / French)."));
 			if (ImGui::BeginPopup("cygc_guide_error", 0))
 			{
-				ImGui::TextUnformatted(TR("Could not open the user guide. Keep Documentation/UserGuide next to the add-on and check your HTML browser association."));
+				ImGui::TextUnformatted(TR("Could not open the user guide. Keep Documentation next to the add-on and check your HTML browser association."));
 				ImGui::EndPopup();
 			}
 
