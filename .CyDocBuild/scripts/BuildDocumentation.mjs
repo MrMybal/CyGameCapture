@@ -13,7 +13,7 @@ if(config.out!=='../Documentation')throw new Error('Unexpected documentation out
 // then author source Markdown wrappers for useful descriptions and parent links.
 // The actual reader export is always produced by the stock CLI, never patched.
 const reviewed=JSON.parse(await readFile(resolve(work,'api/translation.json'),'utf8'));
-if(reviewed.sourceRevision!==createHash('sha256').update(await readFile(resolve(work,'api/en.json'))).digest('hex'))throw new Error('Review the French public API translation before generating');
+if(reviewed.sourceRevision!==createHash('sha256').update((await readFile(resolve(work,'api/en.json'),'utf8')).replaceAll('\r\n','\n')).digest('hex'))throw new Error('Review the French public API translation before generating');
 const adapters=JSON.parse(await readFile(resolve(work,'api/imports.json'),'utf8'));
 const imported=await importApi(adapters,{base:work,locales:config.locales});
 for(const item of imported){
