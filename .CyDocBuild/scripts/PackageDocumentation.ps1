@@ -38,8 +38,27 @@ function Copy-ReadmeImages {
 
 function Copy-DocumentationReadme {
     param([string] $ProjectRoot, [string] $DocumentationRoot)
-    $text = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'README.md'))
-    # The packaged README lives inside ProductInformation rather than the repository root.
-    $text = $text.Replace('](Documentation/', '](../Documentation/')
-    [IO.File]::WriteAllText((Join-Path $DocumentationRoot 'CyGameCapture - README.md'), $text, [Text.UTF8Encoding]::new($false))
+    # Keep language/version links usable inside ProductInformation as well as GitHub.
+    $links = @{
+        'Documentation/' = '../Documentation/'
+        'LICENSE' = '../LICENSE.txt'
+        'CyGameCaptureUE/LICENSE' = '../Documentation/DocData/notices/CyGameCaptureUE-MIT.txt'
+        'LICENCES/' = '../Documentation/DocData/notices/'
+        '.CyDocBuild/vendor/LICENSE.txt' = '../Documentation/DocData/notices/CyDoc-MIT.txt'
+        'CyGameCaptureRS/ThirdParty/THIRD_PARTY_NOTICES.md' = '../Documentation/DocData/notices/CyGameCaptureRS-Notices.md'
+        'CyGameCaptureOBS/ThirdParty/THIRD_PARTY_NOTICES.md' = '../Documentation/DocData/notices/CyGameCaptureOBS-Notices.md'
+        'Tests/CyGameCaptureVideoProbe/ThirdParty/THIRD_PARTY_NOTICES.md' = '../Documentation/DocData/notices/CyGameCaptureVideoProbe-Notices.md'
+        'CyGameCaptureOBS/README.md' = 'CyGameCaptureOBS%20-%20README.md'
+        'CyGameCaptureUE/README.md' = 'CyGameCaptureUE%20-%20README.md'
+    }
+    foreach ($name in @('README.md','README.fr.md','CHANGELOG.md','CHANGELOG.fr.md')) {
+        $text = [IO.File]::ReadAllText((Join-Path $ProjectRoot $name))
+        foreach ($source in $links.Keys) {
+            $text = $text.Replace('](' + $source, '](' + $links[$source])
+            $text = $text.Replace('href="' + $source + '"', 'href="' + $links[$source] + '"')
+        }
+        [IO.File]::WriteAllText((Join-Path $DocumentationRoot $name), $text, [Text.UTF8Encoding]::new($false))
+    }
+    # Retain the previous packaged entry filename for existing callers.
+    Copy-Item -LiteralPath (Join-Path $DocumentationRoot 'README.md') -Destination (Join-Path $DocumentationRoot 'CyGameCapture - README.md') -Force
 }

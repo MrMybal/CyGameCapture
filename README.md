@@ -1,452 +1,172 @@
-<p align="center"><img src="Resources/Branding/CyGameCapture_Logo_256.png" width="160" alt="CyGameCapture logo"></p>
+<table width="100%">
+  <tr>
+    <td width="300" align="left" valign="top">
+      <a href="https://mrmybal.github.io/CyGameCapture/Documentation.html#/en/overview">Documentation</a><br>
+      <a href="https://github.com/MrMybal/CyGameCapture">Source repository</a><br>
+      <a href="https://github.com/MrMybal/CyGameCapture/issues">Issue tracker</a><br><br>
+      <sub>README</sub><br>
+      <a href="README.md">English</a> · <a href="README.fr.md">Français</a>
+    </td>
+    <td width="400" align="center" valign="middle">
+      <img src="Resources/Branding/CyGameCapture_Logo_256.png" alt="CyGameCapture logo" width="128">
+    </td>
+    <td width="300" align="right" valign="top">
+      <p><sub>Application licenses</sub><br><a href="LICENSE"><strong>AGPL-3.0-or-later</strong></a><br><a href="CyGameCaptureUE/LICENSE">Unreal plugin: MIT</a></p>
+      <p><sub>Version</sub><br><a href="CHANGELOG.md#current-version"><strong>0.1.0</strong></a><br><strong>BETA</strong></p>
+      <p><a href="https://github.com/MrMybal/CyGameCapture/releases/download/v0.1.0/CyGameCapture-0.1.0-Complete-Win64.zip"><strong>Download</strong></a><br><sub>Windows x64</sub></p>
+    </td>
+  </tr>
+</table>
 
-# CyGameCapture
+<h1 align="center">CyGameCapture</h1>
+<p align="center">By <a href="https://github.com/MrMybal">Cyberalien</a></p>
 
-**GPU capture toolkit: ReShade add-on, Unreal Engine plugin, Spout2 everywhere.**
+Capture the image you need from a game's rendering pipeline and share it with OBS or another Spout2 application. CyGameCapture combines a ReShade buffer inspector, an OBS source plugin and an Unreal Engine sender/receiver plugin for streamers and developers working with game images.
 
-Maintained by **Cyberalien**.
+> **BETA · 0.1.0**
+>
+> Available for testing and validation before a stable release. Check the [version notes, fixes and known limitations](CHANGELOG.md#current-version) before updating. The current downloads include the documentation update published on November 6, 2026.
 
-[Documentation](https://mrmybal.github.io/CyGameCapture/#/en/overview) · [Documentation en français](https://mrmybal.github.io/CyGameCapture/#/fr/overview)
+[![CyGameCapture Buffer Inspector with the render target list, resource properties and live preview](Docs/Images/m1_buffer_inspector.png)](Docs/Images/m1_buffer_inspector.png)
 
-CyGameCapture lets you pick any render target of a game's frame (for example the clean, tonemapped scene
-*before* the HUD is composited) and stream it to OBS through Spout2, entirely on the GPU.
-The player keeps the normal image (gameplay + HUD + menus), OBS receives the buffer you selected.
+## The application
 
+Keep the normal game image, including its HUD and menus, while sending a clean scene to OBS. Choose a render target in the **Buffer Inspector**, check its preview and click **Use As Capture Source**. If the game draws its HUD straight into the final image, D3D11 capture can select a moment before the HUD is drawn.
+
+```text
+Game → ReShade → selected buffer → shared GPU texture → Spout2 → OBS
 ```
-Game -> ReShade -> CyGameCaptureRS -> selected render target -> GPU copy -> shared texture -> Spout2 -> OBS
-```
 
-| Component | Role | Status |
-|-----------|------|--------|
-| `CyGameCaptureRS`   | Native ReShade add-on (`CyGameCaptureRS.addon64`): resource tracker, Buffer Inspector overlay, GPU preview, Spout sender(s) | **D3D11 and D3D12 working** |
-| `CyGameCaptureUE`   | Unreal Engine plugin (4.27 -> 5.8): multi-stream Spout2 **sender and receiver** (render target, scene capture, game viewport), Blueprint + C++ | **D3D11 and D3D12 working**, see [its README](CyGameCaptureUE/README.md) |
-| `CyGameCaptureAI`   | Helper of the add-on's AI assistant (`CyGameCaptureAI.exe`): turns the frame's pictures into PNG files outside the game and runs the chosen AI client | **working** (D3D11 games) |
-| `CyGameCaptureCore` | Small library shared by the add-on, the AI helper and the OBS plugin (sender naming, versions, stream kinds, frame sync) | done |
-| `CyGameCaptureOBS`  | Native OBS source plugin ("Add Source -> CyGameCapture"): discovery, auto-reconnect, zero-copy shared texture, and **recording several buffers at once into separate synchronised files** | **working**, see [its README](CyGameCaptureOBS/README.md) |
-| `Tests/`            | D3D11 and D3D12 test applications (scene + fake HUD), a headless Spout receiver, and a probe that reports what really survived in a recording | done |
-| `CyGameCaptureUEHost/` | Unreal host project used to build, run and benchmark the UE plugin | done |
+The **Capture** tab shows each stream's sender name, resolution, frame counters and output preview. Add extra streams for other buffers, a linearised depth image or an isolated HUD. In OBS, add a **CyGameCapture** source and select the matching sender. Recording several streams into separate files is also available.
 
-## Integrated user guide
-
-Open **User guide** next to the language selector in the ReShade overlay, or in the properties of an
-OBS **CyGameCapture** source. The complete CyDoc manual opens locally in your browser, with search,
-public API references, annotated/zoomable images, comparisons and static SVG diagrams. No server,
-CDN or Internet connection is needed. English is the default; the app opens the chosen English/French edition.
-With the ReShade inspector focused, **F1** opens the active tab's page or section. OBS opens its reception guide.
-
-Read the same visual guide online: [Documentation — English](https://mrmybal.github.io/CyGameCapture/#/en/overview)
-or [Documentation — Français](https://mrmybal.github.io/CyGameCapture/#/fr/overview).
-For offline reading, open `Documentation/Documentation.html` in your browser.
-Keep `Documentation` next to the add-on when installing it; the OBS installer carries the
-manual in its plugin data. Unreal includes the same manual at `Documentation/Documentation.html`.
-Release archives and the ready-to-run test suite include both languages and all images.
-
-Authoring sources are Markdown in `.CyDocBuild/manual`, local assets in `.CyDocBuild/assets`,
-`.CyDocBuild/cydoc.config.json` and the application HTML shell in `.CyDocBuild/Documentation.template.html`.
-With Node.js 22+, run `npm --prefix .CyDocBuild ci`, `npm --prefix .CyDocBuild run docs:build`, `npm --prefix .CyDocBuild run docs:check` and `npm --prefix .CyDocBuild run docs:test`.
-The native build and package scripts regenerate and deploy the entire reader. End users need no Node.js.
-CyDoc 0.1.0 is pinned as a local package in `.CyDocBuild/vendor`; only its image module is enabled.
-See [documentation maintenance](.CyDocBuild/internal/README.md) for translation tracking, source scope and limits.
-
-## Screenshots
-
-The screenshots below show CyGameCapture running with the D3D11 test application.
-Click an image to open it at full size.
-
-### Buffer Inspector
-
-Browse the game's render targets, inspect their properties and preview the selected buffer before capturing it.
-
-[![Buffer Inspector showing the render target list, resource properties and selected buffer preview](Docs/Images/m1_buffer_inspector.png)](Docs/Images/m1_buffer_inspector.png)
-
-### Capture and output preview
-
-Monitor multiple Spout streams and preview the image being sent to receivers.
-
-[![Capture tab showing two active Spout streams and the first stream's output preview](Docs/Images/m1_capture_tab_two_streams.png)](Docs/Images/m1_capture_tab_two_streams.png)
-
-### Player view and stream output
-
-Keep the HUD visible while playing and send the scene without it to a Spout receiver such as OBS.
-The test scene is animated; these screenshots were taken at different moments.
+[![Capture tab showing two active streams and the first stream's output preview](Docs/Images/m1_capture_tab_two_streams.png)](Docs/Images/m1_capture_tab_two_streams.png)
 
 | Player view with HUD | Clean scene received through Spout |
-|---|---|
-| [![Player view of the test scene with HUD bars and panels](Docs/Images/m1_player_view_with_hud.png)](Docs/Images/m1_player_view_with_hud.png) | [![Spout receiver output showing the test scene without HUD bars or panels](Docs/Images/m1_spout_receiver_clean_scene.png)](Docs/Images/m1_spout_receiver_clean_scene.png) |
+| --- | --- |
+| [![Animated test scene with HUD bars and panels visible to the player](Docs/Images/m1_player_view_with_hud.png)](Docs/Images/m1_player_view_with_hud.png) | [![Spout receiver showing the test scene without HUD bars or panels](Docs/Images/m1_spout_receiver_clean_scene.png)](Docs/Images/m1_spout_receiver_clean_scene.png) |
 
-## Component licences and SDK integration
+These are actual captures of the animated test application, taken at different moments.
 
-CyGameCapture remains version **0.1.0**. Its native add-on, AI helper, shared library and OBS plugin
-use **AGPL-3.0-or-later**; the Unreal plugin uses **MIT**. Full English licence texts, component
-attributions and source links are collected in [`LICENCES/SOURCES.txt`](LICENCES/SOURCES.txt).
-Each release archive and installed OBS plugin includes its own `LICENCES` directory. The Unreal
-plugin also includes it at its plugin root; `FilterPlugin.ini` retains it in BuildPlugin packages.
+The Unreal plugin publishes render targets, scene captures or the game viewport, and receives Spout textures into Unreal materials. It exposes Blueprint and C++ APIs and can run independently of ReShade or OBS.
 
-`CyGameCaptureCore` is a native library belonging to this product. This version does **not** integrate
-CyToolsCore or CyUEMCPSDK, or distribute a Python assistant runtime. The ReShade assistant uses the
-native `CyGameCaptureAI.exe` helper and user-installed provider CLIs. No Cy SDK migration, wheel or
-assistant bundle is required. Existing configuration paths, provider selections and operation contracts
-are unchanged by this licence-delivery update.
+## Features
 
-To update a distribution, rebuild with `build.cmd Release` and regenerate the release/test package;
-copy the component together with its `LICENCES` folder. The OBS installer copies notices alongside its
-binary and data without deleting user configurations. Keep an older package for rollback and restore
-its matching binaries and notices together. No shared Python runtime or user settings are migrated.
+- **Inspect buffers:** contact sheet, resource filters, formats, write events, steadiness and GPU previews.
+- **Share several images:** Spout2 colour streams, derived depth and isolated HUD; D3D11 and D3D12 capture backends.
+- **Choose a frame moment:** D3D11 capture after a selected write, before the game adds its interface.
+- **Play with the selected image:** **F10** toggles a compatible selected buffer in game; capture remains a separate action.
+- **Optional AI assistance:** on D3D11, an installed and signed-in Claude Code, Codex or OpenCode client can propose a buffer and capture moment. You inspect and apply the proposal yourself. The chosen provider receives sampled images, buffer metadata and the conversation through your account; manual capture needs no AI client.
+- **Unreal workflows:** multiple senders and receivers, render targets, scene captures and viewport sources on Win64 D3D11/D3D12.
+- **English/French help:** 37 fully translated pages with search, images, annotations, comparisons and SVG diagrams. Open **User guide** in ReShade or OBS, **Help → CyGameCapture user guide** in Unreal, or press **F1** while the ReShade inspector is focused.
 
-## Requirements
+---
 
-* Windows 10/11, 64-bit game using **Direct3D 11**, **Direct3D 12** or D3D10. On D3D12 the Spout output goes through a
-  D3D11On12 bridge (see the architecture document); everything else is identical.
-* **ReShade 6.8.0 with add-on support** (the installer labelled *"Add-on support"* on https://reshade.me). Plain ReShade builds refuse external add-ons. The add-on targets ReShade API version 20 (6.8.0); older ReShade versions (6.7.x = API 18) will not load it.
-* OBS Studio: either **CyGameCaptureOBS** (built here, `Add Source -> CyGameCapture`) or the generic
-  **Spout2 plugin** (https://github.com/Off-World-Live/obs-spout2-plugin). Any other Spout2 application works too
-  (Resolume, TouchDesigner, another Unreal instance...): nothing in the pipeline is OBS specific.
-* Visual Studio 2022 (MSVC v143, CMake and Ninja components) to build.
-* Node.js 22+ for the documentation build tooling. Run `npm --prefix .CyDocBuild ci` once after cloning.
+## Installation
 
-## Build
+### Requirements and downloads
+
+Use **Windows 10/11 x64** and a 64-bit game in which ReShade is allowed. D3D11 and D3D12 are the tested capture backends; D3D10 support is limited. Intermediate frame moments and AI buffer search require D3D11. This pipeline does not support Vulkan or OpenGL and does not bypass anti-cheat restrictions.
+
+[Download the complete 0.1.0 package](https://github.com/MrMybal/CyGameCapture/releases/download/v0.1.0/CyGameCapture-0.1.0-Complete-Win64.zip), or choose the ReShade, OBS or matching Unreal package on the [release page](https://github.com/MrMybal/CyGameCapture/releases/tag/v0.1.0). Prebuilt Unreal Editor plugins cover **5.3, 5.4, 5.5, 5.6, 5.7 and 5.8**; source compatibility targets 4.27–5.8, with 4.27 and cooked Shipping targets still unverified. Check downloads against the release's [SHA256SUMS.txt](https://github.com/MrMybal/CyGameCapture/releases/download/v0.1.0/SHA256SUMS.txt).
+
+### ReShade and OBS
+
+1. Install **ReShade 6.8.0 with add-on support** for the game. The add-on targets API 20; the plain ReShade build cannot load it.
+2. Extract the entire package. Copy `CyGameCaptureRS.addon64`, `CyGameCaptureAI.exe`, `Documentation` and the supplied licenses together next to the game executable, or into the configured ReShade add-on directory.
+3. Open ReShade with **Home**, select a suitable buffer and click **Use As Capture Source**. Check the output preview in **Capture**. A stream normally appears as `CyGameCaptureRS::<Game>`.
+4. For the native OBS receiver, use **64-bit OBS Studio 29.1 or later**; the plugin is built against 29.1.3. Close OBS and run `Install-OBS-Plugin.cmd` from the fully extracted OBS package. Restart OBS, then choose **Sources → + → CyGameCapture** and select the sender. An existing generic Spout2 receiver can also receive the stream.
+
+Use the same GPU for the game and OBS. If a complete scene becomes transparent or invisible, leave **Preserve source alpha** off for colour streams; derived HUD streams keep their mask. See the [first-capture walkthrough](https://mrmybal.github.io/CyGameCapture/Documentation.html#/en/quickstart) and [troubleshooting](https://mrmybal.github.io/CyGameCapture/Documentation.html#/en/troubleshooting).
+
+### Unreal Engine
+
+Extract the package for your engine version into `<Project>/Plugins/CyGameCaptureUE`, enable it and restart the editor. Select D3D11 or D3D12, add a **CyGameCapture Spout Sender** component and assign a render target or scene capture. Enter Play and choose the published sender in your receiver. Follow the [Unreal quickstart](https://mrmybal.github.io/CyGameCapture/Documentation.html#/en/ue-getting-started) for viewport capture, receiving and Blueprint usage.
+
+### Local manual and updates
+
+Open [Documentation/Documentation.html](Documentation/Documentation.html#/en/overview) from the extracted application or plugin folder. Keep the complete `Documentation` directory: the reader, images, scripts and both languages work through `file://`, without a server, CDN, Internet connection or Node.js installation. OBS installs its copy with the plugin's data.
+
+Close the game, OBS and Unreal before replacing loaded components. Replace binaries, the helper, documentation and license files together. Preserve `ReShade.ini`, OBS settings and scene collections; do not overwrite them with the test application's example configuration. Keep an older package for rollback.
+
+## Source, build and required libraries
+
+<details>
+<summary>Build CyGameCapture and prepare local packages</summary>
+
+### Requirements
+
+- Windows x64, **Visual Studio 2022** with MSVC v143 and the C++/CMake/Ninja tools; **CMake 3.21+** and C++17.
+- **Node.js 22+ and npm**, for generating the documentation during builds. The pinned local CyDoc archive is included; no registry substitute is needed.
+- An installed OBS Studio for generating the optional OBS/FFmpeg import libraries; a matching Unreal Engine installation for Unreal plugin builds.
+- The native dependencies are included as the limited SDK/header subsets described in the license table. ReShade, OBS, Unreal and AI provider clients are installed separately.
+
+### Get the source and build
 
 ```bat
+git clone https://github.com/MrMybal/CyGameCapture.git
+cd CyGameCapture
+npm --prefix .CyDocBuild ci
+Tools\GenerateObsImportLib.cmd
 build.cmd Release
 ```
 
-Outputs in `bin\Release\`:
+`GenerateObsImportLib.cmd` reads the installed OBS `obs.dll`. Without its generated import library, CMake skips the OBS plugin and builds the other components. Optional `Tools\GenerateFFmpegImportLibs.cmd` enables the video probe using FFmpeg DLLs already installed with OBS.
 
-* `CyGameCaptureRS.addon64` (+ `.pdb`)
-* `obs-plugins\64bit\CyGameCaptureOBS.dll` and `data\obs-plugins\CyGameCaptureOBS\` — copy both into
-  `%ProgramData%\obs-studio\plugins\CyGameCaptureOBS\{bin\64bit,data}`. Run `Tools\GenerateObsImportLib.cmd` once
-  first; without it CMake skips the OBS plugin with a warning and builds everything else.
-* `CyGameCaptureSpoutReceiverTest.exe`
-* `CyGameCaptureVideoProbe.exe` — optional, built only once `Tools\GenerateFFmpegImportLibs.cmd` has been
-  run; otherwise CMake skips it with a message and everything else builds as usual.
-* `TestApp\CyGameCaptureTestApp.exe` (D3D11) and `TestAppD3D12\CyGameCaptureTestAppD3D12.exe` (D3D12), each with the
-  add-on and a `ReShade.ini` next to it (drop the ReShade add-on build `dxgi.dll` there to run them).
-  Both accept `-seconds N` to exit on their own.
+Outputs in `bin\Release` include the ReShade add-on and AI helper, `obs-plugins\64bit\CyGameCaptureOBS.dll`, its `data\obs-plugins\CyGameCaptureOBS` folder, test applications and receiver tools. To run the D3D11 test, install the ReShade add-on build's `dxgi.dll` beside `bin\Release\TestApp\CyGameCaptureTestApp.exe`, then launch that executable.
 
-## A ready-to-run folder
-
-To try everything without building anything — or to hand the whole thing to someone else:
+### Packages and diagnostics
 
 ```bat
 Tools\MakeTestPackage.cmd
-```
-
-It assembles `dist\CyGameCapture_Test\` from the Release build: the ReShade add-on, the OBS plugin with
-a one-click installer, the two test applications with ReShade already beside them, the verification
-tools, two ready-made OBS scene collections, the Unreal plugin for each engine version, the
-documentation and the third-party licences. A French `LISEZMOI.txt` walks through it in five minutes.
-
-Pass `noue` to leave out the Unreal plugin packages, which are more than 200 MB of the ~290 MB total.
-Re-run it after any build to refresh the folder.
-
-## Release archives
-
-```bat
-build.cmd Release
 Tools\MakeRelease.cmd
 ```
 
-It writes `dist\CyGameCapture-<version>\`: one archive for the ReShade add-on (with the AI helper), one for the OBS
-plugin (with its installer), one per engine version for the Unreal plugin (extracted into `<Project>\Plugins`, it gives
-`Plugins\CyGameCaptureUE`), a complete archive holding all of them with the documentation, `SHA256SUMS.txt` and the
-release notes taken from [CHANGELOG.md](CHANGELOG.md). The Unreal plugin has to be packaged first for each engine version
-into `build\Plugin_UE<version>` (see [its README](CyGameCaptureUE/README.md#verified)). The script stops on a binary older
-than its sources, a version that does not match `Version.hpp`, or a symbol file or log in the package.
+The test folder is assembled in `dist\CyGameCapture_Test`. Use `Tools\MakeTestPackage.cmd noue` to omit Unreal packages. Release archives are written to `dist\CyGameCapture-0.1.0` with the complete manual, notices and checksums. Unreal packages must first exist in `build\Plugin_UE<version>`; see the [Unreal build instructions](CyGameCaptureUE/README.md#verified).
 
-## Install in a game
-
-1. Install ReShade 6.8.0 (add-on support build) for the game as usual.
-2. Copy `CyGameCaptureRS.addon64` next to the game executable (or into the folder set by `[ADDON] AddonPath=` in `ReShade.ini`).
-3. Start the game; `ReShade.log` shows `Registered add-on "CyGameCaptureRS"` and `[CyGameCaptureRS] Renderer: D3D11 (Spout output available)`.
-
-## Use
-
-1. Press **Home** to open the ReShade overlay. The **CyGameCaptureRS - Buffer Inspector** window opens with it
-   (it is also available as a tab of the main ReShade window; the window can be hidden from the add-on settings).
-2. **Buffer Inspector** tab: the **Contact Sheet** draws every listed buffer small, side by side, so the scene, the HUD
-   or the depth can be spotted at a glance; click one to select it. Below it, the table gives each buffer's resolution
-   (with the area actually rendered when the game scales its resolution), format, writes, and **Steady**: the share of
-   frames it was written during. A buffer worth capturing is written nearly every frame; the ones an engine takes from a
-   pool for a frame or two are what used to make the list flicker, and **Steady buffers only** (on by default) hides them.
-   The other filters (written recently, colour targets, depth, resolution relative to the back buffer, format) and
-   **Sort by** narrow it further. Browse with **Previous / Next**, the **Left / Right** keys or by clicking; the live GPU
-   preview of the selection appears below, and **Freeze Preview** keeps the current image for inspection.
-3. Click **Use As Capture Source**. A Spout sender named `CyGameCaptureRS::<Game>` appears in OBS (Spout2 Capture source).
-   **Add As Extra Stream** sends another buffer at the same time as `CyGameCaptureRS::<Game>::2`, `::3`...
-   There is no fixed number of streams (see [How many streams](#how-many-streams-at-once) below); each one costs one GPU copy per frame.
-   **Moment of the frame** (D3D11): reads the selected buffer right after one of its writes instead of at the end of the
-   frame. It is the answer for games that have no clean buffer at all, see
-   [When the interface is drawn into the final image](#when-the-interface-is-drawn-into-the-final-image). The preview,
-   the capture buttons and "show selected buffer in game" all use the moment chosen here.
-4. **Show selected buffer in game** (checkbox, or the **F10** hotkey) replaces what the player sees with the selected buffer:
-   play without HUD / UI. Works when the buffer has the back buffer size and a copy-compatible format (a scaling / conversion pass is planned).
-   Colour streams are opaque by default: some games leave alpha at zero even though their RGB image is complete.
-   **Preserve source alpha (advanced)** in the Capture tab restores the original alpha for an individual colour stream.
-   Isolated HUD streams always retain their transparency mask. The inspector's own preview displays RGB opaquely.
-5. **Capture** tab: status, sender name, resolution, format, FPS, per-stream CPU cost. **Timeline** tab: the write events of the last frame
-   (clear / draw / copy / resolve / present per resource). **Debug** tab: tracker statistics and the verbose logging toggle.
-6. Tabs can also be switched with **Ctrl+1..4**.
-
-## Configuration (`ReShade.ini`, section `[CYGAMECAPTURE]`)
-
-| Key | Default | Meaning |
-|-----|---------|---------|
-| `Language`       | `en` | Language of the overlay: `en` (English) or `fr` (French). Also switched from the selector next to the logo |
-| `SenderName`     | `CyGameCaptureRS::<exe name>` | Override the Spout sender base name |
-| `ViewToggleKey`  | `121` (F10) | Virtual key code toggling "show selected buffer in game" (0 disables) |
-| `PreserveSourceAlpha` | `0` | Default for new colour streams: 0 makes alpha opaque without changing RGB, 1 preserves the game's alpha. HUD streams always preserve their mask. |
-| `StandaloneWindow` | `1` | Show the standalone inspector window when the overlay opens |
-| `FlushAfterCopy` | `0` | Flush the immediate context after the copies, like Spout's own sender (costs ~200 us CPU per frame, no extra safety) |
-| `Verbose`        | `0` | Log every tracked resource creation/destruction |
-| `AutoCapture`    | *(empty)* | Test / bootstrap hook: `1280x720:R8G8B8A8_UNORM[;1280x720:D32_FLOAT:depth][;1280x720:R8G8B8A8_UNORM:hud]` selects matching buffers automatically once the frame is stable. The `:depth` and `:hud` suffixes pick the derived streams; a `:hud` entry subtracts whatever the first entry selected. An entry can also name one buffer exactly, `#42` (ids are stable within a run, see `DumpBuffers`), and read it at a moment of the frame, `#42@2` (right after its 2nd write); `#5@2;#5:hud` gives the game without its interface on stream 1 and the interface alone on stream 2 |
-| `DumpBuffers`    | `0` | At that frame, write every buffer written during the frame to `ReShade.log` once (id, size, active area, format, writes, steadiness), to choose a buffer from a log file alone |
-| `AIClient`       | `auto` | AI assistant client: `auto` (first installed of Claude Code, Codex, OpenCode), `claude`, `codex`, `opencode` |
-| `AIModel`        | *(empty)* | Model passed to the client (`--model`); empty for the client's default |
-| `AIClientPath`   | *(empty)* | Full path of the client's `.exe` when it is not found automatically |
-| `AILanguage`     | *(the overlay's language)* | Language of the AI assistant's replies, when it should differ from the overlay's: `fr` or `en` |
-| `AISearchOnStart` | `0` | Test hook: presses the AI assistant's button once at that frame (60 at the earliest) |
-| `OpenOverlayOnStart` | `0` | Open the ReShade overlay by itself once the game has settled. For automated checks: sending the overlay key lands in whichever window has the focus |
-| `DepthFarPlane`  | `1000` | Distance the depth linearisation maps to white. Game specific, same meaning as `RESHADE_DEPTH_LINEARIZATION_FAR_PLANE` |
-| `DepthReversed`  | `0` | The depth buffer is 1 at the near plane (common in modern engines) |
-| `DepthLogarithmic` | `0` | The depth buffer is distributed logarithmically |
-| `DepthUpsideDown` | `0` | The depth buffer is stored flipped compared to the colour buffer |
-| `HudThreshold`   | `0.02` | Below this much difference between the two buffers, a pixel counts as pure scene |
-| `HudSoftness`    | `0.08` | Difference at which the HUD mask is fully opaque |
-| `HudKeepFinalColour` | `1` | Keep the finished colours in the HUD stream instead of the raw difference |
-
-## Check what a recording really contains
-
-Recording a buffer does not mean keeping it: an encoder can quietly halve its precision, squeeze it into
-limited range or subsample its chroma. `CyGameCaptureVideoProbe` decodes a file and says what survived —
-the pixel format the codec actually used, its bit depth, and how many *distinct* values the picture
-holds:
-
-```bat
-bin\Release\CyGameCaptureVideoProbe.exe "take.mkv" 2
-```
-
-`--dump <component> <folder>` writes one component of each frame as a grey-scale `.bmp`, which is how you
-look at a channel that is invisible otherwise — `--dump 3` saves the alpha, where an isolated HUD keeps
-its mask.
-
-```
-codec  : ffv1
-stored : yuv444p16le 1280x720
-  frame  0  yuv444p16le  1280x720  planar  3 component(s), NO ALPHA CHANNEL
-      Y  depth=16  1280x720   distinct levels=  4945  min=11422 max=65507 mean= 52375.2  (0.1743..0.9996)
-      U  depth=16  1280x720   distinct levels=     5  ...
-```
-
-A depth stream that was 16-bit at the source and comes back with 214 distinct levels lost everything
-below eight bits somewhere, whatever the codec calls itself. That is how the recording modes of
-CyGameCaptureOBS were measured.
-
-It decodes with the FFmpeg libraries OBS already installs, so there is nothing extra to install: run
-`Tools\GenerateFFmpegImportLibs.cmd` once to build the import libraries from them. Set `CYGC_OBS_BIN` to
-use an `obs-studio\bin\64bit` folder other than the installed one.
-
-## Validate without OBS
-
-Start the test app with ReShade, then:
+While a sender is running, these optional tools list streams, save received frames and inspect a recording:
 
 ```bat
 bin\Release\CyGameCaptureSpoutReceiverTest.exe --list
-bin\Release\CyGameCaptureSpoutReceiverTest.exe --frames 3 --out %TEMP%
+bin\Release\CyGameCaptureSpoutReceiverTest.exe --frames 3 --out "%TEMP%"
+bin\Release\CyGameCaptureVideoProbe.exe "take.mkv" 2
 ```
 
-The tool behaves like the OBS Spout2 plugin (SpoutDX receiver), lists every `CyGameCaptureRS::*` sender and dumps received frames as `.bmp`.
+See the [configuration reference](https://mrmybal.github.io/CyGameCapture/Documentation.html#/en/configuration), [recording guide](https://mrmybal.github.io/CyGameCapture/Documentation.html#/en/recording) and [public API](https://mrmybal.github.io/CyGameCapture/Documentation.html#/en/api-links) for settings, precision limits and integration examples.
 
-## The AI assistant: "find the setting that removes the game's interface"
+</details>
 
-At the top of the **Buffer Inspector** tab, the **AI Assistant** section does the search above for you, with an AI
-command line client already installed and signed in on this PC (Claude Code, Codex or OpenCode). Show a scene where
-the game's interface is visible, pick the client, click the button: it is the automatic first message of a discussion,
-which opens in its own window (**CyGameCapture - AI Assistant**). A minute or two later the reply appears, and every
-proposal in it comes with **Show** / **Apply** / **Apply, and send the interface alone too**. Nothing changes before
-that click.
+---
 
-Then answer in the discussion: "the subtitles are still there", "and the interface alone?"... **Attach the current
-frame** (on by default) sends fresh pictures with the message, for instance after moving to a scene where the problem
-shows; **Send** or Ctrl+Enter sends it; **New discussion** starts over. The clients keep no session: the conversation
-(its last 12 messages) goes with each message, which works the same with all three.
+## License
 
-What happens behind the button:
+**CyGameCaptureRS, CyGameCaptureAI, CyGameCaptureCore and CyGameCaptureOBS use [AGPL-3.0-or-later](LICENSE). The Unreal plugin uses [MIT](CyGameCaptureUE/LICENSE).** Copyright © 2026 Cyberalien. These licenses do not replace the terms of third-party components. The Unreal plugin does not link the AGPL application components.
 
-1. The add-on renders small pictures of the frame on the GPU into one shared texture: the back buffer after each of
-   its writes, and the full-size buffers at the end of the frame. That is all the game process does.
-2. `CyGameCaptureAI.exe`, next to the add-on, reads the pictures back in its own process, writes them as PNG files,
-   and runs the chosen client non-interactively with the method (the reasoning of the section below) and the frame's
-   buffer list and write order. The client runs with no tools, no user configuration and no saved session; the command
-   lines are the ones CyAICodex (a sibling project) already uses with these clients.
-3. A reply that proposes a setting ends with a JSON object (buffer, moment of the frame, whether the interface alone
-   can be had); the helper checks it against the buffers of the frame, removes it from the text, and hands both back to
-   the overlay, where it becomes the buttons.
+### Native libraries and the reader
 
-Measured: on the D3D11 test application it proposes the clean scene buffer `#005`; on Stray's title screen it proposes
-the back buffer right after its 2nd write, the setting found by hand below. With a black loading screen it answers that
-it cannot tell and asks for a scene with the interface visible.
+| Library · source | License · terms | Use / scope |
+| --- | --- | --- |
+| [ReShade add-on SDK 6.8.0 · API 20](https://github.com/crosire/reshade/tree/18deaa52de0c425a78b329e9cb3c497281cd00ec) | [BSD-3-Clause OR MIT](CyGameCaptureRS/ThirdParty/THIRD_PARTY_NOTICES.md) | Headers for the native ReShade integration; ReShade itself is installed separately. |
+| [Dear ImGui 1.92.5](https://github.com/ocornut/imgui/tree/3912b3d9a9c1b3f17431aebafd86d2f40ee6e59c) | [MIT](LICENCES/DearImGui-MIT.txt) | Overlay headers; ReShade supplies the ImGui function table at runtime. |
+| [Spout2 DirectX subset](https://github.com/leadedge/Spout2/tree/c2bcc12147711d12ace7d5f08e869d774d840f8a) | [BSD-2-Clause and supplied notices](LICENCES/Spout2-LICENSE.txt) | Compiled native texture sharing for the producers, receiver and tools. |
+| [OBS Studio / libobs 29.1.3](https://github.com/obsproject/obs-studio/tree/29.1.3) | [GPL-2.0-or-later; cooperation commitment](CyGameCaptureOBS/ThirdParty/THIRD_PARTY_NOTICES.md) | Public headers and user-installed libobs for the optional OBS plugin; import library generated locally. |
+| [FFmpeg 6.0 headers](https://github.com/FFmpeg/FFmpeg/tree/n6.0) | [LGPL-2.1-or-later and build terms](Tests/CyGameCaptureVideoProbe/ThirdParty/THIRD_PARTY_NOTICES.md) | Optional video probe only; dynamically loads the user's OBS FFmpeg libraries. No FFmpeg DLL is bundled. |
+| [CyDoc 0.1.0 · revision 6ddf9a5](https://github.com/MrMybal/CyDoc/tree/6ddf9a582defb2f11fbb3f992afef6f98dcadc93) | [MIT](.CyDocBuild/vendor/LICENSE.txt) | Local documentation reader and image module; generation tools run at build time. Source access may require permission. No Three.js or mesh module is included. |
+| [Unreal Engine](https://www.unrealengine.com/) | [Epic's Unreal Engine terms](https://www.unrealengine.com/eula/unreal) | Separately installed host/runtime and build toolchain for the MIT Unreal plugin. The engine is not redistributed here. |
 
-What leaves the PC goes to the provider of the client you chose, with your account: the pictures and the buffer list.
-CyGameCapture stores no key. Everything that was sent and received stays readable in
-`%LOCALAPPDATA%\CyGameCapture\AI\<game>` (`prompt.txt`, `answer.txt`, `picture_NN.png`). D3D11 only for now.
+### Documentation build and development tools
 
-## When the interface is drawn into the final image
+| Library · source | License · terms | Use / scope |
+| --- | --- | --- |
+| [marked 17.0.6](https://github.com/markedjs/marked/tree/v17.0.6) | [MIT](https://github.com/markedjs/marked/blob/v17.0.6/LICENSE.md) | Build-time Markdown compilation through CyDoc. |
+| [PrismJS 1.30.0](https://github.com/PrismJS/prism/tree/v1.30.0) | [MIT](https://github.com/PrismJS/prism/blob/v1.30.0/LICENSE) | Build-time code highlighting. |
+| [esbuild 0.25.12](https://github.com/evanw/esbuild/tree/v0.25.12) | [MIT](https://github.com/evanw/esbuild/blob/v0.25.12/LICENSE.md) | Documentation export bundling. |
+| [Playwright 1.62.1](https://github.com/microsoft/playwright/tree/v1.62.1) | [Apache-2.0](https://github.com/microsoft/playwright/blob/v1.62.1/LICENSE) | Development/CI reader tests with an installed browser; not shipped to users. |
+| [Node.js](https://github.com/nodejs/node) | [MIT and component notices](https://github.com/nodejs/node/blob/main/LICENSE) | Build-time runtime only; not required to read the manual. |
 
-Some games never keep their picture without the interface in a buffer of its own. Unreal Engine 4 is the common case:
-the tonemapper writes the finished image straight into the back buffer, and the interface is drawn into that same
-buffer right after. `DumpBuffers` shows it plainly in Stray:
+This table is an index, not a replacement for complete notices. Preserve the supplied `LICENCES` folders and [source references](LICENCES/SOURCES.txt). The product's native **CyGameCaptureCore** is distinct from CyToolsCore; this application includes neither CyToolsCore nor CyUEMCPSDK, nor a Python assistant runtime. AI clients remain optional, separately installed software under their providers' terms.
 
-```
-event 60  #005 back buffer  Clear  x1
-event 61  #005 back buffer  Draw   x3    tonemapper, then the interface, in the same buffer
-event 62  #005 back buffer  Present
-```
+## References and links
 
-At the end of the frame, no buffer without the interface exists anywhere, so none can be picked. What does exist is a
-*moment*: after the 2nd write of `#005` (the clear, then the tonemapper) and before the 3rd (the first interface draw).
-The **Moment of the frame** slider reads the buffer right there: the add-on sees every write before it reaches the GPU
-(ReShade reports draws, clears and copies ahead of forwarding them), and when the chosen one is about to happen it
-slips a copy of the buffer in first. That copy is what the preview shows and what the stream sends. The player still
-sees the normal image.
-
-How to find the moment: select the back buffer, look at the line *Writes of this buffer in the last frame* under the
-slider (`1 clear, 2-4 draw` in Stray's menus), and move the slider back until the interface disappears from the
-preview. In Stray, *after write 2* gives the scene without the menu, its blur and its darkening. With that moment on
-stream 1, **Isolate HUD Against Stream 1** on the same back buffer at the end of the frame sends the interface alone.
-
-Limits: D3D11 only for now (D3D12 records its command lists in parallel, so the order of the writes is not known while
-they are recorded); multisampled buffers are refused; one extra full-size GPU copy per frame per moment in use.
-Anything the game draws *before* its interface in the same buffer stays, of course: Stray's title logo is part of the
-3D scene and remains.
-
-## Derived streams: depth and HUD
-
-Two of the streams are not buffers the game holds; the add-on computes them with a GPU pass and sends
-them like any other stream.
-
-* **Depth.** Select a depth buffer and click **Use As Depth Stream**. It is linearised and published as
-  16 bits per channel (`R16G16B16A16_UNORM`), which is what a depth-based 3D conversion needs. The far
-  plane, reversed-Z, logarithmic and upside-down settings are game specific and cannot be detected from
-  outside, so they sit in the Capture tab (and in `ReShade.ini`); they have exactly the meaning of
-  ReShade's own `RESHADE_DEPTH_*`, so anything already worked out for a game carries over.
-* **HUD on its own.** In most games the interface is composited onto the image rather than kept in its
-  own buffer, so it is the difference between the finished image and the scene before it. Capture the
-  clean scene as stream 1, select the finished image (usually the back buffer), then click **Isolate HUD
-  Against Stream 1**: the stream carries the interface with a mask in its alpha channel. Exact wherever
-  the interface is opaque, an approximation in its soft edges — the threshold and softness are
-  adjustable. When a game *does* render its interface to its own render target with alpha, select that
-  buffer directly instead: a plain copy is exact and cheaper.
-
-Both run on D3D11 and D3D12, and neither touches the CPU.
-
-**Dynamic resolution is handled.** A game that scales its resolution at run time normally keeps its
-render targets at full size and draws into a corner of them; the texture never changes, so only the
-viewport says how much of it holds the frame. The add-on follows that viewport and scales the rendered
-area into a stream of stable size, rather than sending a picture with a stale margin or making the
-sender resize several times a second. The overlay shows the rendered area next to the stream resolution. When the buffer you select is a back buffer —
-which the finished image usually is — the stream follows whichever back buffer the swap chain is
-presenting rather than the one resource you clicked: a flip-model swap chain rotates between several, and
-capturing a fixed one would hand you a stale frame every other present.
-
-## Recording several buffers at the same time
-
-Several buffers of the same frame can be recorded simultaneously, each into its own file, so they can be
-laid on top of each other in an editor afterwards: the scene without the HUD next to the final image, or
-the colour next to the depth for a 3D conversion. This lives in CyGameCaptureOBS (one libobs video mix,
-encoder and muxer per buffer) — see [its README](CyGameCaptureOBS/README.md#recording-several-buffers-at-once).
-
-To keep the files honest, the producers publish a per-stream frame index in shared memory next to their
-Spout senders (`CyGameCaptureCore/FrameSync.hpp`): every stream of one presented frame carries the same
-number, and the recorder reports the drift between them.
-
-The depth and HUD streams above are ordinary streams once produced, so they record like any other, and
-the recorder offers a lossless mode (FFV1) next to the hardware encoder. How much of a 16-bit depth
-buffer actually survives each one was measured rather than assumed — 214, 249 and 4945 distinct levels
-respectively, out of 65536 — see
-[the OBS plugin README](CyGameCaptureOBS/README.md#how-much-of-a-depth-buffer-survives-a-recording).
-The short version: the hardware encoder is unusable for depth, lossless 8-bit RGB is linear and exact to
-eight bits, lossless 16-bit keeps about twelve, and nothing gets the full sixteen through OBS because
-libobs has no 16-bit unorm video mix. When the last bit matters, read the Spout stream directly.
-
-For an **isolated HUD** the answer is simpler: its mask lives in the alpha channel, and only the 8-bit
-lossless RGB mode has an alpha channel at all — the other two are YUV and drop the cut-out silently. The
-plugin warns before a take when the chosen encoding would lose it.
-
-## How many streams at once
-
-There is **no artificial limit** in CyGameCapture. What actually limits you:
-
-* **Spout's sender name table is machine wide** and holds **64 entries by default** — shared by every Spout
-  application running on the computer, not just ours. `CreateSender` fails *silently* once it is full, so both the
-  ReShade add-on and the Unreal plugin check it first and tell you how many slots are in use instead of appearing to
-  work. The size can be raised in the registry under `HKCU\Software\Leading Edge\Spout\MaxSenders` (Spout's own
-  SpoutSettings tool writes that key).
-* **Receivers are not in that table at all**: as many as you like, bounded only by GPU memory.
-* **GPU cost**: one copy per stream per frame (two on D3D12, through the D3D11On12 bridge). This is what really
-  decides how many streams a given machine sustains.
-
-The numbers you may still see in the code (`kSanityStreamLimit = 256` in the add-on, `StreamSanityLimit` in the
-Unreal project settings) exist only so a runaway loop cannot create streams forever; raise them freely.
-
-## Before publishing
-
-Secret scanning with [gitleaks](https://github.com/gitleaks/gitleaks), configured by
-[`.gitleaks.toml`](.gitleaks.toml) so the same check runs every time:
-
-```bash
-gitleaks dir . --config .gitleaks.toml --redact
-```
-
-It uses gitleaks' own rules and only skips what is never committed (build outputs, the packaged release, local
-tooling). No finding is not a proof that there is none: the files that would be committed, the pictures used in the
-documentation and the contents of a release package are worth a look of their own.
-
-## Languages
-
-The overlay is in English by default and switches to French from the selector next to the logo (saved as `Language`
-in `ReShade.ini`); the AI assistant replies in the same language. Every text is written in English where it is used,
-wrapped in `TR()`, and translated in [`Translations_fr.inl`](CyGameCaptureRS/Source/UI/Translations_fr.inl): a text
-with no translation there simply shows in English. The OBS plugin follows OBS's own language (`data/locale`).
-
-## Logo and icon
-
-The logo and the Windows icon live in [`Resources/Branding`](Resources/Branding). Every binary embeds the icon
-(the add-on, the OBS plugin, the test tools), and the add-on also embeds the logo, which the overlay draws at the top
-of its window. The icon and the smaller PNGs are derived from `CyGameCapture_Logo.png`; to change the logo, replace that
-file (or pass the new one) and run `python Tools/GenerateBranding.py` (needs Pillow). The results are committed, so a
-normal build does not need Python.
-
-## Documentation
-
-* [CyGameCaptureUE/README.md](CyGameCaptureUE/README.md) and [Unreal user guide](CyGameCaptureUE/Documentation/Documentation.html#/en/unreal) - the Unreal plugin (architecture, sender, receiver, multi-stream, viewport capture, OBS, performance, troubleshooting).
-* [Capture compatibility](Documentation/Documentation.html#/en/performance) - supported backends, formats, stream costs and limitations.
-* [CyGameCaptureOBS/README.md](CyGameCaptureOBS/README.md) - the OBS plugin (build, install, source properties, the zero-copy path).
-* [CyGameCaptureRS/ThirdParty/THIRD_PARTY_NOTICES.md](CyGameCaptureRS/ThirdParty/THIRD_PARTY_NOTICES.md),
-  [CyGameCaptureOBS/ThirdParty/THIRD_PARTY_NOTICES.md](CyGameCaptureOBS/ThirdParty/THIRD_PARTY_NOTICES.md) and
-  [Tests/CyGameCaptureVideoProbe/ThirdParty/THIRD_PARTY_NOTICES.md](Tests/CyGameCaptureVideoProbe/ThirdParty/THIRD_PARTY_NOTICES.md) - vendored SDK subsets and licences (ReShade headers, Dear ImGui header, Spout2, libobs headers, FFmpeg headers).
-
-## Licence
-
-Copyright (C) 2026 Cyberalien.
-
-CyGameCapture is free software: you can redistribute it and/or modify it under the terms of the
-[GNU Affero General Public License](LICENSE) as published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version. It is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the licence for
-more details.
-
-This covers the ReShade add-on, the AI helper, the OBS plugin, `CyGameCaptureCore`, the tests and the tools.
-
-**The Unreal Engine plugin is the exception: `CyGameCaptureUE` and its host project `CyGameCaptureUEHost` are under the
-[MIT licence](CyGameCaptureUE/LICENSE).** The Unreal Engine EULA does not allow the engine to be combined with code under
-GPL-family licences, so an AGPL plugin could not be used in an Unreal project. The plugin shares no code with the AGPL
-components.
-
-Every source file names its licence on its first lines (`SPDX-License-Identifier`). The third-party code keeps its own
-licence, listed in the `THIRD_PARTY_NOTICES.md` files above: ReShade headers (BSD-3-Clause or MIT), Dear ImGui (MIT),
-Spout2 (BSD-2-Clause), libobs headers (GPL-2.0-or-later, which the AGPL-3.0 OBS plugin can link through GPL-3.0's
-section 13) and FFmpeg headers (LGPL-2.1-or-later, verification probe only).
-
-## Scope note
-
-CyGameCapture only targets applications where ReShade is normally usable. It contains nothing to bypass anti-cheat or ReShade blocking; such applications are simply unsupported.
+- [English documentation](https://mrmybal.github.io/CyGameCapture/Documentation.html#/en/overview) · [Documentation en français](https://mrmybal.github.io/CyGameCapture/Documentation.html#/fr/overview).
+- [Changes and known limitations](CHANGELOG.md#current-version) · [Releases](https://github.com/MrMybal/CyGameCapture/releases) · [Issue tracker](https://github.com/MrMybal/CyGameCapture/issues).
+- [Source repository](https://github.com/MrMybal/CyGameCapture) · [OBS plugin](CyGameCaptureOBS/README.md) · [Unreal plugin](CyGameCaptureUE/README.md).
