@@ -123,6 +123,6 @@ The 4.27 installation available here is missing the Win64 editor generated heade
 `ERHIAccess::CopySrc/CopyDest/SRVMask`, `TexCreate_Shared`, `OnBackBufferReadyToPresent(SWindow&, const FTexture2DRHIRef&)`,
 `SubmitCommandsHint`, `FTicker`, `UEngineSubsystem`, `DeveloperSettings`), but a real 4.27 compile is still pending.
 
-## CyMCPSDK control (current source builds)
+## CyMCPSDK control (0.1.0 package update of 2026-11-20)
 
 CyMCPSDK 0.7.0 (`791d4d7`) is compiled from source. Build the native project first, then retain Binaries/ThirdParty/CyMCPSDK/Win64 (DLL and CLI). Help → CyGameCapture assistant opens the Slate panel. Control is read only by default; CyGameCapture.Automation.AllowMutations enables documented component operations on the game ticker. No CyUEMCPSDK, CyUI or Python runtime is bundled. See the bundled automation chapter for CLI, MCP, sessions and independent optimisation settings.

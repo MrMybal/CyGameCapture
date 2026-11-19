@@ -4,7 +4,7 @@ title: À quoi sert CyGameCapture
 description: Choisir l’image à afficher, diffuser ou enregistrer.
 section: Guide utilisateur
 order: 0
-sourceRevision: 74fce6c5d567
+sourceRevision: 07d8a983fc05
 ---
 
 CyGameCapture sélectionne des images dans le rendu d’un jeu et les partage avec **Spout2**. Vous pouvez conserver l’image normale avec son interface tout en envoyant une scène propre à OBS, capturer la profondeur, isoler le HUD ou diffuser plusieurs buffers à la fois.
@@ -23,3 +23,5 @@ Le partage et la capture habituelle restent sur le GPU. L’encodage d’un enre
 ```callout
 {"type": "info", "title": "À savoir", "body": "Les captures montrent une petite scène de test animée pour rendre chaque fonction identifiable. Ce sont de vraies captures de l’application."}
 ```
+
+Utilisez les [outils assistant, CLI et MCP](doc:automation) pour inspecter une instance active et, après autorisation explicite, piloter ses fonctions de capture. L’assistant propose streaming et conversations restaurées ; le compagnon console ne nécessite pas d’interface propre.

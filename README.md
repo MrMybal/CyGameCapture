@@ -25,7 +25,7 @@ Capture the image you need from a game's rendering pipeline and share it with OB
 
 > **BETA · 0.1.0**
 >
-> Available for testing and validation before a stable release. Check the [version notes, fixes and known limitations](CHANGELOG.md#current-version) before updating. The current downloads include the documentation update published on November 6, 2026.
+> Available for testing and validation before a stable release. Check the [version notes, fixes and known limitations](CHANGELOG.md#current-version) before updating. The November 20, 2026 package update includes CyMCPSDK 0.7.0, the console companion and the updated offline manual.
 
 [![CyGameCapture Buffer Inspector with the render target list, resource properties and live preview](Docs/Images/m1_buffer_inspector.png)](Docs/Images/m1_buffer_inspector.png)
 
@@ -55,9 +55,10 @@ The Unreal plugin publishes render targets, scene captures or the game viewport,
 - **Share several images:** Spout2 colour streams, derived depth and isolated HUD; D3D11 and D3D12 capture backends.
 - **Choose a frame moment:** D3D11 capture after a selected write, before the game adds its interface.
 - **Play with the selected image:** **F10** toggles a compatible selected buffer in game; capture remains a separate action.
-- **Optional AI assistance:** on D3D11, an installed and signed-in Claude Code, Codex or OpenCode client can propose a buffer and capture moment. You inspect and apply the proposal yourself. The chosen provider receives sampled images, buffer metadata and the conversation through your account; manual capture needs no AI client.
+- **Optional AI assistance:** the D3D11 ReShade assistant uses Claude Code, Codex, OpenCode or an OpenAI-compatible endpoint, with streaming, cancellation and restored sessions. Review buffer proposals yourself, or explicitly permit the assistant to control capture. Your selected provider receives the supplied images, metadata and conversation; manual capture needs no AI client.
+- **CLI and MCP:** inspect and control a running ReShade, OBS or Unreal instance using the same typed business operations. Remote modifications are disabled by default. The Unreal assistant is available from **Help → CyGameCapture assistant**.
 - **Unreal workflows:** multiple senders and receivers, render targets, scene captures and viewport sources on Win64 D3D11/D3D12.
-- **English/French help:** 37 fully translated pages with search, images, annotations, comparisons and SVG diagrams. Open **User guide** in ReShade or OBS, **Help → CyGameCapture user guide** in Unreal, or press **F1** while the ReShade inspector is focused.
+- **English/French help:** 38 fully translated pages with search, images, annotations, comparisons and SVG diagrams. Open **User guide** in ReShade or OBS, **Help → CyGameCapture user guide** in Unreal, or press **F1** while the ReShade inspector is focused.
 
 ---
 
@@ -72,7 +73,7 @@ Use **Windows 10/11 x64** and a 64-bit game in which ReShade is allowed. D3D11 a
 ### ReShade and OBS
 
 1. Install **ReShade 6.8.0 with add-on support** for the game. The add-on targets API 20; the plain ReShade build cannot load it.
-2. Extract the entire package. Copy `CyGameCaptureRS.addon64`, `CyGameCaptureAI.exe`, `Documentation` and the supplied licenses together next to the game executable, or into the configured ReShade add-on directory.
+2. Extract the entire package. Copy `CyGameCaptureRS.addon64`, `CyGameCaptureAI.exe`, `CyGameCaptureMCP.dll`, `CyGameCaptureCLI.exe`, `Documentation` and the supplied licenses together next to the game executable, or into the configured ReShade add-on directory.
 3. Open ReShade with **Home**, select a suitable buffer and click **Use As Capture Source**. Check the output preview in **Capture**. A stream normally appears as `CyGameCaptureRS::<Game>`.
 4. For the native OBS receiver, use **64-bit OBS Studio 29.1 or later**; the plugin is built against 29.1.3. Close OBS and run `Install-OBS-Plugin.cmd` from the fully extracted OBS package. Restart OBS, then choose **Sources → + → CyGameCapture** and select the sender. An existing generic Spout2 receiver can also receive the stream.
 
@@ -85,6 +86,8 @@ Extract the package for your engine version into `<Project>/Plugins/CyGameCaptur
 ### Local manual and updates
 
 Open [Documentation/Documentation.html](Documentation/Documentation.html#/en/overview) from the extracted application or plugin folder. Keep the complete `Documentation` directory: the reader, images, scripts and both languages work through `file://`, without a server, CDN, Internet connection or Node.js installation. OBS installs its copy with the plugin's data.
+
+The archive contains the current **38-page manual in each language**. The online Pages reader remains at its previous deployment: this update runs no GitHub Actions. Use the included manual for the new assistant, CLI and MCP chapter.
 
 Close the game, OBS and Unreal before replacing loaded components. Replace binaries, the helper, documentation and license files together. Preserve `ReShade.ini`, OBS settings and scene collections; do not overwrite them with the test application's example configuration. Keep an older package for rollback.
 
@@ -113,7 +116,7 @@ build.cmd Release
 
 `GenerateObsImportLib.cmd` reads the installed OBS `obs.dll`. Without its generated import library, CMake skips the OBS plugin and builds the other components. Optional `Tools\GenerateFFmpegImportLibs.cmd` enables the video probe using FFmpeg DLLs already installed with OBS.
 
-Outputs in `bin\Release` include the ReShade add-on and AI helper, `obs-plugins\64bit\CyGameCaptureOBS.dll`, its `data\obs-plugins\CyGameCaptureOBS` folder, test applications and receiver tools. To run the D3D11 test, install the ReShade add-on build's `dxgi.dll` beside `bin\Release\TestApp\CyGameCaptureTestApp.exe`, then launch that executable.
+Outputs in `bin\Release` include the ReShade add-on, AI helper, `CyGameCaptureMCP.dll`, `CyGameCaptureCLI.exe`, `obs-plugins\64bit\CyGameCaptureOBS.dll`, its `data\obs-plugins\CyGameCaptureOBS` folder, test applications and receiver tools. To run the D3D11 test, install the ReShade add-on build's `dxgi.dll` beside `bin\Release\TestApp\CyGameCaptureTestApp.exe`, then launch that executable.
 
 ### Packages and diagnostics
 
@@ -168,14 +171,23 @@ See the [configuration reference](https://mrmybal.github.io/CyGameCapture/Docume
 This table is an index, not a replacement for complete notices. Preserve the supplied `LICENCES` folders and [source references](LICENCES/SOURCES.txt). The product's native **CyGameCaptureCore** is distinct from CyToolsCore; this application includes neither CyToolsCore nor CyUEMCPSDK, nor a Python assistant runtime. AI clients remain optional, separately installed software under their providers' terms.
 
 
-## AI and CLI integration in current sources
+## Assistant, CLI and MCP
 
-New builds add CyMCPSDK **0.7.0** (`791d4d7`), streaming/cancellable chat with restored sessions, `CyGameCaptureCLI.exe` and authenticated MCP for ReShade, OBS and Unreal. Control is read only by default. The bundled manual now has **38 pages per language**, including Assistant, terminal and MCP control. Downloads dated November 6, 2026 remain the previous version; this local update has not been published.
+CyMCPSDK **0.7.0** (`791d4d7`) provides the integrated conversation and authenticated local control. ReShade's assistant uses its existing ImGui window; Unreal has a Slate panel for Codex/API providers. OBS exposes its source tools without adding a chat dock. An already running OpenAI-compatible endpoint can provide local models; no model is installed by CyGameCapture.
+
+Use the console companion included in the archive:
 
 ```powershell
 .\CyGameCaptureCLI.exe instances
+.\CyGameCaptureCLI.exe list --instance 'C:\path\connection.json'
+.\CyGameCaptureCLI.exe describe captures.start --instance 'C:\path\connection.json'
 .\CyGameCaptureCLI.exe call app.status --instance 'C:\path\connection.json'
+.\CyGameCaptureCLI.exe mcp-config --instance 'C:\path\connection.json'
 ```
+
+Select the private connection path returned by `instances`. `mcp-config` prints a stdio MCP client configuration. The native loopback HTTP transport additionally supports resources and compatible change subscriptions. Enable mutation permission yourself inside the application before requesting capture changes; the same permission applies to chat, CLI and MCP. API credentials are read from a selected environment variable, not saved in conversation files.
+
+The offline manual's **Assistant, terminal and MCP control** chapter covers all 29 operations across the three hosts, peer-tool allowlists, pagination, compact/full discovery, retained results and independently adjustable context/cache/notification/performance settings. The CLI and MCP control paths support D3D11/D3D12; the ReShade assistant's image workflow remains D3D11-only.
 
 ## References and links
 

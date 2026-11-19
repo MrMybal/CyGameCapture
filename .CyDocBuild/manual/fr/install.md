@@ -5,7 +5,7 @@ description: Installer l’add-on et le plugin OBS avec leur dossier d’aide co
 section: Guide utilisateur
 parent: overview
 order: 1
-sourceRevision: 56747176e840
+sourceRevision: 2146ff974a10
 ---
 
 ## Prérequis {#requirements}
@@ -15,7 +15,7 @@ Utilisez Windows 10/11, un jeu 64 bits et un moteur DirectX compatible. D3D11 et
 ## ReShade {#reshade}
 
 1. Installez **ReShade 6.8.0 avec prise en charge des add-ons** pour le jeu et son API graphique réelle. La version standard ne charge pas cet add-on ; l’API ciblée est la 20.
-2. Extrayez l’archive ReShade. Copiez ensemble `CyGameCaptureRS.addon64`, `CyGameCaptureAI.exe`, `Documentation` et les licences près de l’exécutable du jeu, ou dans le répertoire d’add-ons configuré dans ReShade.
+2. Extrayez l’archive ReShade. Copiez ensemble `CyGameCaptureRS.addon64`, `CyGameCaptureAI.exe`, `CyGameCaptureMCP.dll`, `CyGameCaptureCLI.exe`, `Documentation` et les licences près de l’exécutable du jeu, ou dans le répertoire d’add-ons configuré dans ReShade.
 3. Lancez le jeu. Ouvrez ReShade avec `Home`. Repérez **CyGameCaptureRS – Buffer Inspector**. Son en-tête propose le bouton **Guide utilisateur**.
 
 ## OBS {#obs}
@@ -25,3 +25,5 @@ Utilisez OBS Studio 64 bits, version 29.1 ou ultérieure (testé avec 29.1.3). F
 ## Mettre à jour ou retirer {#update-or-remove}
 
 Fermez le jeu et OBS avant de remplacer les fichiers utilisés. Conservez un ancien paquet pour revenir en arrière. Remplacez ensemble les binaires, l’assistant, la documentation et les licences. Gardez votre `ReShade.ini`, vos réglages OBS et vos collections de scènes. Ne remplacez pas la configuration de votre jeu par l’INI de démonstration. Pour retirer l’add-on, supprimez ses fichiers de son répertoire d’installation ; utilisez le désinstallateur fourni pour OBS. L’installation Unreal est décrite au [chapitre 12](doc:unreal).
+
+Conservez la DLL SDK près de l’add-on ReShade et de la DLL du plugin OBS. Unreal l’inclut avec le CLI dans `Binaries/ThirdParty/CyMCPSDK/Win64`. Pour choisir une instance active et configurer l’assistant, consultez [Assistant, terminal et contrôle MCP](doc:automation).

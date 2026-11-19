@@ -4,7 +4,7 @@ title: Recevoir et composer dans OBS
 description: Choisir l’émetteur Spout exact et composer couleur, profondeur ou HUD dans OBS.
 section: Guide utilisateur
 order: 7
-sourceRevision: f320641d39d1
+sourceRevision: ae6725614483
 ---
 
 1. Démarrez d’abord la capture dans le jeu.
@@ -17,3 +17,7 @@ sourceRevision: f320641d39d1
 Le partage Spout est local à ce PC. Utilisez le même GPU pour le jeu et OBS, notamment sur un portable avec GPU intégré et dédié. Un nom visible prouve l’enregistrement de l’émetteur, pas la bonne livraison de l’image. L’aperçu de sortie et le récepteur de diagnostic permettent d’isoler le problème.
 
 Pour composer, placez une source HUD isolée au-dessus de la scène propre. Les pixels transparents nécessitent un flux conservant l’alpha et, pour enregistrer ce calque, un mode compatible. Les sources peuvent avoir des tailles différentes : contrôlez leurs transformations.
+
+## Assistant et automatisation {#assistant-and-automation}
+
+Chaque source expose sa connexion MCP locale authentifiée. Lisez l’état et découvrez les émetteurs depuis le CLI ; activez vous-même le droit de contrôle avant de changer d’émetteur ou de piloter les prises. Les prises concernent toutes les sources CyGameCapture ayant l’enregistrement activé dans ce processus OBS. Voir le [guide CLI/MCP](doc:automation) ; aucun dock Qt supplémentaire n’est installé.

@@ -5,7 +5,7 @@ description: Change language, shortcuts and capture defaults without losing your
 section: User guide
 parent: preferences
 order: 12
-revision: 16843945a428
+revision: ae991cd491d1
 ---
 
 The overlay starts in **English**. Choose English or Français next to the logo; the choice is saved in `ReShade.ini`. The guide button opens the corresponding edition. OBS follows its own language; unsupported languages use the English guide. The manual’s language links switch editions while keeping the same chapter. The default `Documentation.html` is always English.
@@ -31,8 +31,8 @@ AIClient=auto
 | `Verbose` | `0` | Log every tracked resource creation/destruction |
 | `AutoCapture` | *(empty)* | Test / bootstrap hook: `1280x720:R8G8B8A8_UNORM[;1280x720:D32_FLOAT:depth][;1280x720:R8G8B8A8_UNORM:hud]` selects matching buffers automatically once the frame is stable. The `:depth` and `:hud` suffixes pick the derived streams; a `:hud` entry subtracts whatever the first entry selected. An entry can also name one buffer exactly, `#42` (ids are stable within a run, see `DumpBuffers`), and read it at a moment of the frame, `#42@2` (right after its 2nd write); `#5@2;#5:hud` gives the game without its interface on stream 1 and the interface alone on stream 2 |
 | `DumpBuffers` | `0` | At that frame, write every buffer written during the frame to `ReShade.log` once (id, size, active area, format, writes, steadiness), to choose a buffer from a log file alone |
-| `AIClient` | `auto` | AI assistant client: `auto` (first installed of Claude Code, Codex, OpenCode), `claude`, `codex`, `opencode` |
-| `AIModel` | *(empty)* | Model passed to the client (`--model`); empty for the client's default |
+| `AIClient` | `auto` | AI assistant client: `auto` (first installed of Claude Code, Codex, OpenCode), `claude`, `codex`, `opencode`, `openai-compatible` |
+| `AIModel` | *(empty)* | Exact provider model ID; empty for the provider default |
 | `AIClientPath` | *(empty)* | Full path of the client's `.exe` when it is not found automatically |
 | `AILanguage` | *(the overlay's language)* | Language of the AI assistant's replies, when it should differ from the overlay's: `fr` or `en` |
 | `AISearchOnStart` | `0` | Test hook: presses the AI assistant's button once at that frame (60 at the earliest) |

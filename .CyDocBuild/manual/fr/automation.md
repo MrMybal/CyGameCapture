@@ -5,10 +5,10 @@ description: Se connecter à une instance active, découvrir ses outils et pilot
 section: Guide utilisateur
 parent: assistant
 order: 10
-sourceRevision: cymcp-070-1
+sourceRevision: 9e33cf3a9732
 ---
 
-Cette intégration est incluse dans les compilations issues des sources mises à jour. Les téléchargements 0.1.0 précédemment publiés le 6 novembre 2026 ne la contiennent pas. La capture fonctionne sans compte IA. L’application n’installe ni modèle, ni environnement Python, ni moteur d’inférence local.
+La mise à jour des paquets 0.1.0 Bêta du 20 novembre 2026 comprend cette intégration et le manuel hors ligne complet anglais/français. Les anciens téléchargements du 6 novembre ne contiennent pas CyMCPSDK : remplacez ensemble binaires, assistant, runtime, documentation et licences. La capture fonctionne sans compte IA ; l’application n’installe ni modèle, ni environnement Python, ni moteur d’inférence.
 
 ## Se connecter à la bonne instance {#connect}
 
@@ -56,7 +56,7 @@ Les listes de buffers/timeline ReShade et les listes de découverte OBS/Unreal a
 
 ## Discussion intégrée {#conversation}
 
-ReShade conserve sa fenêtre ImGui avec le service Conversation du SDK. Choisissez Codex, Claude Code, OpenCode ou `openai-compatible` ; la sélection automatique détecte toujours les clients natifs installés. Ces agents utilisent votre connexion et leur gestion native du contexte. Pour LM Studio, l’API compatible `/v1` d’Ollama ou un autre service compatible, démarrez-le vous-même, puis indiquez son URL et l’identifiant exact du modèle. L’URL locale par défaut est `http://127.0.0.1:1234/v1` ; aucun modèle n’est téléchargé. `CyGameCaptureCLI providers --discover` détecte les profils disponibles sans afficher de secrets.
+L’assistant ReShade D3D11 conserve sa fenêtre ImGui avec le service Conversation du SDK. Choisissez Codex, Claude Code, OpenCode ou `openai-compatible` ; la sélection automatique détecte toujours les clients natifs installés. Ces agents utilisent votre connexion et leur gestion native du contexte. Pour LM Studio, l’API compatible `/v1` d’Ollama ou un autre service compatible, démarrez-le vous-même, puis indiquez son URL et l’identifiant exact du modèle. L’URL locale par défaut est `http://127.0.0.1:1234/v1` ; aucun modèle n’est téléchargé. `CyGameCaptureCLI providers --discover` détecte les profils disponibles sans afficher de secrets.
 
 La réponse apparaît progressivement. **Annuler** interrompt la génération sans appliquer une proposition en attente ; les erreurs apparaissent dans la discussion. Les images de la frame conservent leur mécanisme de pièce jointe. Les sessions SDK complètes et le texte des échanges sont enregistrés dans `%LOCALAPPDATA%\CyGameCapture\AI\<jeu>` ; le texte est restauré à la réouverture, mais pas les anciennes propositions exécutables, dont les identifiants de buffers sont périmés. **Nouvelle discussion** archive le checkpoint SDK. Ces fichiers contiennent des images du jeu, des messages et des résultats privés.
 

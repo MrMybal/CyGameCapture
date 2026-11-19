@@ -23,7 +23,9 @@ The version matters: the add-on targets add-on API 20, the one of ReShade
 -------------------------------------------------------------------------------
 
 Copy  CyGameCaptureRS.addon64  next to the game executable, where ReShade put
-its dxgi.dll / d3d11.dll.
+its dxgi.dll / d3d11.dll. Copy CyGameCaptureMCP.dll there too: the native
+SDK runtime must stay beside the add-on. Keep CyGameCaptureCLI.exe there
+for terminal and external MCP access.
 
 Copy  CyGameCaptureAI.exe  into the same folder too: it runs the AI assistant
 (see below). Everything else works without it.
@@ -88,17 +90,19 @@ CyGameCapture) or the generic Spout2 plugin, or in any Spout2 application.
 At the top of the Buffer Inspector tab, "AI Assistant" section:
 
   1. show a scene of the game where the interface is VISIBLE;
-  2. pick the AI client (Claude Code, Codex or OpenCode, already installed and
-     signed in on this PC);
+  2. pick Claude Code, Codex or OpenCode (installed and signed in), or an
+     already running OpenAI-compatible API with its exact model ID;
   3. click "Find the setting that removes the game's interface";
-  4. the "CyGameCapture - AI Assistant" discussion opens; a minute or two
-     later the reply shows with its proposal: "Show" to see it in the
+  4. the "CyGameCapture - AI Assistant" discussion opens; the reply
+     appears progressively with its proposal: "Show" to see it in the
      preview, "Apply" to send it, "Apply, and send the interface alone too"
      to get the interface alone on a second stream;
   5. then answer in the discussion ("the subtitles are still there"...).
 
-Nothing is applied without your click. What goes to the AI provider, with YOUR
-account: small pictures of the frame and the list of buffers. CyGameCapture
+Proposals wait for your click. Explicit tool actions can also change capture
+when you enable remote control yourself; it is disabled by default. Cancel
+interrupts generation, and the discussion is restored when reopened.
+What goes to the chosen AI provider: small pictures of the frame and the list of buffers. CyGameCapture
 stores no key. Everything sent and received stays readable in
 %LOCALAPPDATA%\CyGameCapture\AI\<game>.
 
@@ -113,7 +117,7 @@ D3D11 games only for now.
     ViewToggleKey       key showing the selected buffer in the game
                         (default 121 = F10; 0 disables it)
     StandaloneWindow    show the standalone window with the overlay (default 1)
-    AIClient            auto | claude | codex | opencode
+    AIClient            auto | claude | codex | opencode | openai-compatible
     AIModel             model to use (default: the client's)
     AIClientPath        path of the client's .exe when it is not found
     AILanguage          fr | en, when the assistant should reply in another

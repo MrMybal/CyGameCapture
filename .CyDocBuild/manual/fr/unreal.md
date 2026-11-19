@@ -4,7 +4,7 @@ title: Émetteur et récepteur Unreal Engine
 description: Diffuser des cibles et caméras Unreal ou recevoir une texture Spout dans un matériau.
 section: Guide utilisateur
 order: 11
-sourceRevision: 293a15c713e4
+sourceRevision: 2d09294f6ad1
 ---
 
 Installez le paquet correspondant à votre version Unreal dans `<Projet>\Plugins\CyGameCaptureUE`, activez le plugin et redémarrez. Les archives précompilées couvrent les versions indiquées dans leur nom. Choisissez le paquet précompilé correspondant exactement à la version de votre moteur. Les RHI pris en charge sont Win64 D3D11 et D3D12. Le manuel hors connexion se trouve aussi dans `Documentation/Documentation.html` du plugin.
@@ -44,3 +44,7 @@ Les composants Blueprint exposent Start/Stop, les sources, l’état de connexio
 ## Aide locale {#local-help}
 
 Utilisez **Aide → Guide utilisateur CyGameCapture** dans l’éditeur, ou `CyGameCapture.Help`. La langue actuelle de l’éditeur choisit anglais ou français. `CyGameCapture.Help fr url` affiche l’URL locale encodée de la page Unreal sans ouvrir de navigateur.
+
+## Assistant et automatisation {#assistant-and-automation}
+
+Ouvrez **Help → CyGameCapture assistant** pour le chat Slate (Codex ou une API compatible OpenAI). Les appels CLI/MCP agissent sur des composants existants depuis le game ticker. Les modifications distantes sont désactivées par défaut. Voir les [connexions, opérations et réglages de session](doc:automation).

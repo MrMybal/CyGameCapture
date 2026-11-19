@@ -4,7 +4,7 @@ title: What CyGameCapture does
 description: Choose which image to play with, stream or record.
 section: User guide
 order: 0
-revision: 74fce6c5d567
+revision: 07d8a983fc05
 ---
 
 CyGameCapture selects images inside a game’s rendering pipeline and shares them through **Spout2**. You can keep the normal game image with its interface while sending a clean scene to OBS, capture depth, isolate the HUD or send several buffers at once.
@@ -23,3 +23,5 @@ Sharing and the normal capture path stay on the GPU. Encoding a recording is a s
 ```callout
 {"type": "info", "title": "Note", "body": "The screenshots use a small animated test scene so each function is easy to identify. They are actual application captures, not mock-ups."}
 ```
+
+Use the [assistant, CLI and MCP tools](doc:automation) to inspect a live instance and, with explicit permission, control its real capture functions. The integrated assistant supports streaming and restored conversations; the console companion does not require its own GUI.

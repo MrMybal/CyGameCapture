@@ -26,7 +26,9 @@ La version compte : l'add-on cible l'API add-on numero 20, celle de ReShade
 -------------------------------------------------------------------------------
 
 Copier  CyGameCaptureRS.addon64  a cote de l'executable du jeu, la ou ReShade a
-mis son dxgi.dll / d3d11.dll.
+mis son dxgi.dll / d3d11.dll. Copier aussi CyGameCaptureMCP.dll : le runtime
+SDK doit rester pres de l’add-on. Garder CyGameCaptureCLI.exe pour le terminal
+et les connexions MCP externes.
 
 Copier aussi  CyGameCaptureAI.exe  dans le meme dossier : c'est lui qui fait
 tourner l'assistant IA (voir plus bas). Sans lui, tout le reste marche.
@@ -169,6 +171,7 @@ Public License, version 3 ou ulterieure (LICENSE.txt), fourni SANS AUCUNE
 GARANTIE. Code source : https://github.com/MrMybal/CyGameCapture
 Les licences des composants tiers sont fournies avec le paquet.
 
-CyMCPSDK: keep CyGameCaptureMCP.dll beside the native add-on/plugin.
-CyGameCaptureCLI.exe instances lists hosts; --help explains CLI/MCP.
-Control is read only by default. See the bundled automation chapter.
+CyMCPSDK : conserver CyGameCaptureMCP.dll pres de l’add-on/plugin natif.
+CyGameCaptureCLI.exe instances liste les hotes ; --help presente CLI/MCP.
+Le controle est en lecture seule par defaut. Voir le chapitre du manuel
+Assistant, terminal et controle MCP pour les sessions, API locales et droits.

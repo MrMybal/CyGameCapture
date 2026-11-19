@@ -5,7 +5,7 @@ description: Changer langue, raccourcis et valeurs de capture sans perdre vos r�
 section: Guide utilisateur
 parent: preferences
 order: 12
-sourceRevision: 16843945a428
+sourceRevision: ae991cd491d1
 ---
 
 L’overlay démarre en **anglais**. Choisissez English ou Français près du logo ; le choix est conservé dans `ReShade.ini`. Le bouton du guide ouvre l’édition correspondante. OBS suit sa propre langue ; les langues non prises en charge utilisent le guide anglais. Les liens de langue du manuel conservent le chapitre courant. Le fichier initial `Documentation.html` est toujours en anglais.
@@ -31,8 +31,8 @@ AIClient=auto
 | `Verbose` | `0` | Journaliser chaque création/destruction de ressource pour diagnostic. |
 | `AutoCapture` | vide | Amorçage/test : sélectionner par taille:format, par #ID ou #ID@écriture. Séparer les flux par ;. Suffixes :depth et :hud. Exemple : #5@2;#5:hud. Les identifiants peuvent changer au redémarrage. |
 | `DumpBuffers` | `0` | À cette frame, écrire une fois la liste des buffers dans ReShade.log. |
-| `AIClient` | `auto` | Client IA : auto, claude, codex ou opencode. Auto choisit le premier installé. |
-| `AIModel` | vide | Modèle transmis au client ; vide pour son modèle par défaut. |
+| `AIClient` | `auto` | Client IA : auto, claude, codex, opencode ou openai-compatible. Auto choisit le premier client natif installé. |
+| `AIModel` | vide | Identifiant exact du modèle fournisseur ; vide pour son modèle par défaut. |
 | `AIClientPath` | vide | Chemin complet de l’exécutable du client si la détection échoue. |
 | `AILanguage` | langue de l’overlay | Langue des réponses IA : fr ou en ; vide pour suivre l’overlay. |
 | `AISearchOnStart` | `0` | Test : lancer une analyse à cette frame, au plus tôt à la frame 60. |

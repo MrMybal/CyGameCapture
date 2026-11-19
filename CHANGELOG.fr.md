@@ -2,15 +2,20 @@
 
 [English](CHANGELOG.md) · [Présentation de l’application](README.fr.md)
 
-## Non publié — intégration CyMCPSDK
-
-- Compiler le SDK 0.7.0 depuis la révision locale figée `791d4d7` : Core/Platform/Http/MCP/AI uniquement.
-- Partager les vrais handlers ReShade, OBS et Unreal entre chat, CLI et MCP, en lecture seule par défaut et sur les threads moteur.
-- Ajouter streaming, annulation, historique persistant, API locales, contexte réglable et outils pairs autorisés.
-- Ajouter catalogue complet/compact, pagination, ressources par morceaux, rétention bornée, notifications HTTP et mesures sans contenu.
-- Conserver commandes/réglages ; intégrer runtime, CLI, licences et aide bilingue aux paquets locaux. Aucun push ni téléchargement publié modifié.
-
 <a id="current-version"></a>
+
+## 0.1.0 — Bêta · mise à jour CyMCPSDK du 2026-11-20
+
+L’application reste en **0.1.0 Bêta**. Les paquets sont actualisés avec CyMCPSDK **0.7.0**, révision source figée `791d4d7d7680213b282ec8529d248a10f8494d77`. Le tag v0.1.0 est conservé ; les notes de publication indiquent le nouveau commit source.
+
+- Partage de 13 opérations métier ReShade, 5 OBS et 11 Unreal entre chat, CLI et MCP : schémas typés, lecture seule par défaut et exécution sur le thread requis du moteur.
+- Inclusion de `CyGameCaptureMCP.dll` et du compagnon MIT indépendant `CyGameCaptureCLI.exe`. Conservation des usages request.json de l’assistant et des commandes console existantes.
+- Ajout du streaming, de l’annulation, de l’historique complet persistant, de la restauration de session et des API/modèles locaux. Le budget API peut changer entre les tours sans perdre l’historique ; les agents conservent leur contexte natif.
+- Outils pairs explicitement autorisés, catalogue complet/compact, filtres/pagination, ressources retenues par morceaux, invalidation HTTP du cache et mesures optionnelles sans contenu. Le relais stdio expose les outils seuls.
+- Mise à jour des instructions d’installation et du manuel CyDoc hors ligne : 38 pages par langue en anglais/français, images et schémas conservés, notices complètes de licences en anglais.
+- Correction des métadonnées de compatibilité Unreal et actualisation des six variantes Editor 5.3–5.8. Les ZIP 5.3 et 5.8 ont été extraits et testés avec leur runtime et CLI livrés.
+- Validation locale de la capture D3D11/D3D12 réelle, réception OBS, droits, MCP, contexte/historique et hachages. Les essais IA utilisent des fournisseurs locaux contrôlés ; les comptes réels et l’aspect final du chat restent à vérifier manuellement. Les essais runtime Unreal utilisent NullRHI.
+- Publication directe des sources et binaires, sans GitHub Actions. Pages reste au déploiement précédent : le nouveau chapitre est dans le manuel HTML inclus. Configurations utilisateur conservées.
 
 ## 0.1.0 — Bêta · mise à jour des paquets du 6 novembre 2026
 

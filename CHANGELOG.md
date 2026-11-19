@@ -2,15 +2,20 @@
 
 [Français](CHANGELOG.fr.md) · [Application overview](README.md)
 
-## Unreleased — CyMCPSDK integration
-
-- Source-build SDK 0.7.0 at pinned local revision `791d4d7`: Core/Platform/Http/MCP/AI only.
-- Share real ReShade, OBS and Unreal handlers across chat, CLI and MCP with default read-only permissions and engine-thread execution.
-- Add streaming, cancellation, persisted conversations, API/local endpoints, adjustable context and explicitly allowed peer tools.
-- Add full/compact discovery, pagination, chunked resources, bounded retention, HTTP notifications and content-free measures.
-- Preserve commands/settings; ship runtime, CLI, licenses and bilingual help in local packages. No push or published download update.
-
 <a id="current-version"></a>
+
+## 0.1.0 — Beta · CyMCPSDK package update of 2026-11-20
+
+The application remains **0.1.0 Beta**. Download packages are refreshed with CyMCPSDK **0.7.0**, pinned source revision `791d4d7d7680213b282ec8529d248a10f8494d77`. The existing v0.1.0 tag is retained; the release notes identify the updated source commit.
+
+- Share 13 ReShade, 5 OBS and 11 Unreal business operations across integrated chat, CLI and MCP, with typed schemas, default read-only permissions and execution on the engine's required thread.
+- Include `CyGameCaptureMCP.dll` and the independent MIT `CyGameCaptureCLI.exe`. Keep the legacy helper request.json and console entry points.
+- Add streaming/cancellable chat, complete persisted history, session restoration and API/local endpoints. API context budgets change between turns without discarding history; native agents keep their own context management.
+- Add explicitly allowed peer tools, full/compact discovery, filtered/paginated results, chunked retained resources, HTTP cache invalidation and optional metadata-only measures. The stdio relay exposes tools only.
+- Update installation instructions and the complete English/French offline CyDoc manual: 38 pages per language, images and diagrams retained, full English license notices included.
+- Correct Unreal package compatibility metadata and refresh all six prebuilt Editor variants (5.3–5.8). ZIPs for 5.3 and 5.8 were extracted and exercised with their shipped runtime and CLI.
+- Validate actual D3D11/D3D12 capture, OBS reception, permissions, MCP, context/history retention and package hashes locally. AI protocol tests use controlled local providers; real vendor accounts and the final visual chat layout remain manual checks. Unreal runtime checks use NullRHI.
+- Publish code and release assets directly, without running GitHub Actions. GitHub Pages stays at the previous deployment; use the included HTML manual for the new chapter. Preserve existing user configurations.
 
 ## 0.1.0 — Beta · package update of 2026-11-06
 

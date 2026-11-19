@@ -5,10 +5,10 @@ description: Connect to a live instance, discover its tools and control capture 
 section: User guide
 parent: assistant
 order: 10
-revision: cymcp-070-1
+revision: 9e33cf3a9732
 ---
 
-This integration is included in builds made from the updated source tree. The previously published 0.1.0 downloads dated November 6, 2026 do not include it. Capture still works without an AI account. No model, Python runtime or local inference engine is installed by the application.
+The November 20, 2026 update of the 0.1.0 Beta packages includes this integration and the complete English/French offline manual. Older downloads dated November 6 do not include CyMCPSDK: replace the binaries, helper, runtime, documentation and licenses together. Capture works without an AI account; no model, Python runtime or inference engine is installed by the application.
 
 ## Connect to the correct instance {#connect}
 
@@ -56,7 +56,7 @@ ReShade `captures.start` supports `colour`, `depth` and `hud` transforms, an opt
 
 ## Integrated conversation {#conversation}
 
-ReShade uses its existing ImGui discussion window with SDK Conversation. Select Codex, Claude Code, OpenCode or `openai-compatible`; automatic selection still detects installed native clients. Native agents use your existing sign-in and native context management. To use LM Studio, Ollama's compatible `/v1` endpoint or another compatible service, start it yourself, enter its API URL and exact model ID. A local endpoint such as `http://127.0.0.1:1234/v1` is the default; no model is downloaded. `CyGameCaptureCLI providers --discover` reports available provider profiles without exposing credentials.
+The D3D11 ReShade assistant uses its existing ImGui discussion window with SDK Conversation. Select Codex, Claude Code, OpenCode or `openai-compatible`; automatic selection still detects installed native clients. Native agents use your existing sign-in and native context management. To use LM Studio, Ollama's compatible `/v1` endpoint or another compatible service, start it yourself, enter its API URL and exact model ID. A local endpoint such as `http://127.0.0.1:1234/v1` is the default; no model is downloaded. `CyGameCaptureCLI providers --discover` reports available provider profiles without exposing credentials.
 
 The answer appears progressively. **Cancel** interrupts generation without applying a pending proposal; errors appear in the discussion. Current-frame images retain their existing attachment workflow. Complete SDK sessions and readable discussion history are saved under `%LOCALAPPDATA%\CyGameCapture\AI\<game>`; reopening restores the text, but old buffer proposals are not restored as executable actions. **New discussion** archives the SDK checkpoint and starts again. These files contain private game images, prompts and tool results.
 
