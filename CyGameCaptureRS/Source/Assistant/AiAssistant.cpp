@@ -12,6 +12,7 @@
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include <nlohmann/json.hpp>
 
 using namespace reshade::api;
 
@@ -116,8 +117,19 @@ namespace cygc
 		device_(device),
 		tracker_(tracker),
 		snapshots_(snapshots)
-	{
-	}
+    {
+        wchar_t local[MAX_PATH] = {};
+        if (GetEnvironmentVariableW(L"LOCALAPPDATA", local, MAX_PATH)) {
+            folder_ = (std::filesystem::path(local) / L"CyGameCapture" / L"AI" / std::filesystem::u8path(GameName())).wstring();
+            try { std::ifstream input(std::filesystem::path(folder_) / L"ui-history.json", std::ios::binary);
+                if (input) { auto saved = nlohmann::json::parse(input); for (const auto& item : saved) {
+                    AiMessage message; message.from_user=item.value("user",false); message.text=item.value("text",std::string()); message.client=item.value("client",std::string());message.pictures=item.value("pictures",false);message.failed=item.value("failed",false);
+                    // Historical proposals are display-only after restart: resource IDs are session-local.
+                    conversation_.push_back(std::move(message));
+                }}
+            } catch (...) { log::Warning("Could not restore assistant display history; existing files are retained"); }
+        }
+    }
 
 	AiAssistant::~AiAssistant()
 	{
@@ -147,7 +159,14 @@ namespace cygc
 	void AiAssistant::AddMessage(AiMessage message)
 	{
 		conversation_.push_back(std::move(message));
-		++revision_;
+        if (!folder_.empty()) try {
+            std::filesystem::create_directories(folder_);
+            auto history=nlohmann::json::array(); for (const auto& item:conversation_) history.push_back({{"user",item.from_user},{"text",item.text},{"client",item.client},{"pictures",item.pictures},{"failed",item.failed}});
+            auto temporary=std::filesystem::path(folder_)/L"ui-history.pending";
+            { std::ofstream output(temporary,std::ios::binary|std::ios::trunc); output<<history.dump(); if(!output)throw std::runtime_error("History write failed"); }
+            MoveFileExW(temporary.c_str(),(std::filesystem::path(folder_)/L"ui-history.json").c_str(),MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH);
+        } catch (...) { log::Warning("Could not save assistant display history"); }
+        ++revision_;
 	}
 
 	void AiAssistant::FindSettingWithoutInterface()
@@ -167,8 +186,28 @@ namespace cygc
 		if (IsBusy())
 			return;
 		conversation_.clear();
+        if (!folder_.empty()) {
+            std::error_code ignored; const auto folder=std::filesystem::path(folder_);
+            const auto session=folder/L"sessions"/L"current.json";
+            if(std::filesystem::exists(session))std::filesystem::rename(session,folder/L"sessions"/(L"archived-"+std::to_wstring(GetTickCount64())+L".json"),ignored);
+            std::filesystem::remove(folder/L"ui-history.json",ignored);
+        }
 		++revision_;
 	}
+
+    void AiAssistant::Cancel()
+    {
+        if (!IsBusy()) return;
+        if (state_ == State::Running) {
+            std::ofstream(std::filesystem::path(folder_) / L"cancel.txt", std::ios::binary | std::ios::trunc) << run_id_;
+            progress_ = French() ? "Annulation…" : "Cancelling…";
+            return;
+        }
+        requested_ = false;
+        ReleaseTickets();
+        partial_reply_.clear();
+        Fail(French() ? "Génération annulée." : "Generation cancelled.");
+    }
 
 	void AiAssistant::Start(const std::string &text, bool attach_pictures, bool find_mode)
 	{
@@ -181,6 +220,7 @@ namespace cygc
 		AddMessage(std::move(message));
 
 		requested_ = true;
+        partial_reply_.clear();
 		find_mode_ = find_mode;
 		attach_pictures_ = attach_pictures;
 		state_ = State::Collecting;
@@ -410,6 +450,13 @@ namespace cygc
 		std::string json = "{\n\"version\": 2,\n\"run_id\": " + std::to_string(run_id_) + ",\n\"game\": ";
 		AppendJsonString(json, GameName());
 		json += ",\n\"pid\": " + std::to_string(GetCurrentProcessId());
+        json += ",\n\"automation_connection\": ";
+        AppendJsonString(json, automation_connection_);
+        json += ",\n\"endpoint\": "; AppendJsonString(json, config::GetString("AIEndpoint", "http://127.0.0.1:1234/v1"));
+        json += ",\n\"key_env\": "; AppendJsonString(json, config::GetString("AIKeyEnv", ""));
+        json += ",\n\"context_bytes\": " + std::to_string(std::max(0, config::GetInt("AIContextBytes", 0)));
+        json += ",\n\"external_tools_file\": "; AppendJsonString(json, config::GetString("AIExternalToolsFile", ""));
+        json += ",\n\"allow_peer_mutations\": "; json += config::GetBool("AutomationAllowMutations", false) ? "true" : "false";
 		json += ",\n\"mode\": ";
 		AppendJsonString(json, find_mode_ ? "find" : "chat");
 		json += ",\n\"client\": ";
@@ -643,6 +690,7 @@ namespace cygc
 			return;
 		}
 		const std::string stage = Find(status, "stage");
+        partial_reply_ = ReadFile(folder_ + L"\\partial-" + std::to_wstring(run_id_) + L".txt");
 		if (stage != "images")
 			helper_has_images_ = true;
 		if (!Find(status, "message").empty())

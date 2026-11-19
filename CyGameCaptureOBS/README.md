@@ -231,3 +231,7 @@ CyGameCaptureOBS is under the GNU AGPL v3 or later, like the rest of CyGameCaptu
 clause makes GPL-3.0 available, and section 13 of GPL-3.0 explicitly allows combining it with AGPL-3.0 code. See
 [`ThirdParty/THIRD_PARTY_NOTICES.md`](ThirdParty/THIRD_PARTY_NOTICES.md). The ReShade add-on and the
 Unreal plugin link nothing from OBS.
+
+## CyMCPSDK control (current source builds)
+
+CyMCPSDK 0.7.0 (`791d4d7`) is compiled from source. Keep CyGameCaptureMCP.dll beside the plugin. Each source creates a private connection; CyGameCaptureCLI.exe instances finds it. Changing sender/controlling takes requires the source’s explicit MCP permission. Take operations cover all recording-enabled CyGameCapture sources in that process. No Qt chat dock is installed. See the bundled automation chapter for CLI, MCP, sessions and independent optimisation settings.

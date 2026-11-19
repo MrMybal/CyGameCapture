@@ -11,12 +11,15 @@ Commit c2bcc12147711d12ace7d5f08e869d774d840f8a
 Full licences: Spout2-LICENSE.txt, Spout2-licence.txt
 Compiled subset and attributions: CyGameCaptureUE-Notices.md
 
-This plugin has one native runtime module and no CyToolsCore, CyUEMCPSDK,
-Python runtime or assistant bundle. No SDK licence is claimed for code
-that is not included. Unreal Engine is supplied under its own terms.
-
-Future integration guides:
-https://github.com/MrMybal/CyToolsCore
-https://github.com/MrMybal/CyToolsCore/blob/main/Docs/AgentGuide.md
-https://github.com/MrMybal/CyUEMCPSDK
-https://github.com/MrMybal/CyUEMCPSDK/blob/main/Docs/UpdateExistingPlugin.md
+CyMCPSDK 0.7.0, compiled from source:
+https://github.com/MrMybal/CyMCPSDK
+Commit 791d4d7d7680213b282ec8529d248a10f8494d77
+Modules: Core, Platform, Http, MCP, AI. Full license: CyMCPSDK-MIT.txt.
+Local sources are snapshotted at this commit; concurrent edits are not consumed.
+Independent runtime and console: CyGameCaptureAutomation-MIT.txt.
+Dependencies: nlohmann/json 3.12.0, cpp-httplib 0.66.0, PicoSHA2
+161cb3fc4170fa7a3eca9e582cebd27cc4d1fe29; complete MIT texts supplied.
+Details and exclusions: CyMCPSDK-Notices.md.
+No CyToolsCore, CyUEMCPSDK, CyUI, Python runtime, model weights or inference
+engine installer is bundled. CyUEMCPSDK 0.2.3 revision fd4846e was consulted
+as a C ABI integration reference; it is not a runtime dependency.

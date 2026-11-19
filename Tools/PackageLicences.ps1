@@ -18,7 +18,9 @@ function Copy-ProductLicences {
         [switch] $IncludeVideoProbe
     )
     $source = Join-Path $ProjectRoot 'LICENCES'
-    $names = @('SOURCES.txt', 'Spout2-LICENSE.txt', 'Spout2-licence.txt')
+    $names = @('SOURCES.txt', 'Spout2-LICENSE.txt', 'Spout2-licence.txt',
+        'CyMCPSDK-MIT.txt', 'CyGameCaptureAutomation-MIT.txt', 'CyMCPSDK-Notices.md',
+        'nlohmann-json-MIT.txt', 'cpp-httplib-MIT.txt', 'PicoSHA2-MIT.txt')
     switch ($Component) {
         'ReShade' { $names += @('CyGameCapture-AGPL-3.0.txt', 'CyGameCaptureRS-Notices.md', 'ReShade-LICENSE.md', 'DearImGui-MIT.txt') }
         'OBS' { $names += @('CyGameCapture-AGPL-3.0.txt', 'CyGameCaptureOBS-Notices.md', 'OBS-Studio-COPYING.txt', 'OBS-Studio-COMMITMENT.txt') }

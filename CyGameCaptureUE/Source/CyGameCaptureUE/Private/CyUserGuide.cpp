@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Cyberalien
 // SPDX-License-Identifier: MIT
 #include "CyUserGuide.h"
+#include "CyAutomation.h"
 #include "CyGameCaptureLog.h"
 #include "Interfaces/IPluginManager.h"
 #include "HAL/FileManager.h"
@@ -64,6 +65,10 @@ namespace
         FToolMenuOwnerScoped Owner(TEXT("CyGameCaptureUE.Help"));
         const bool French = FInternationalization::Get().GetCurrentLanguage()->GetTwoLetterISOLanguageName() == TEXT("fr");
         UToolMenu* Menu = UToolMenus::Get()->ExtendMenu(TEXT("LevelEditor.MainMenu.Help"));
+        Menu->FindOrAddSection(TEXT("CyGameCapture")).AddMenuEntry(TEXT("CyGameCaptureAssistant"),
+            FText::FromString(French ? TEXT("Assistant CyGameCapture") : TEXT("CyGameCapture assistant")),
+            FText::FromString(French ? TEXT("Piloter la capture avec CyMCPSDK") : TEXT("Control capture with CyMCPSDK")),
+            FSlateIcon(), FUIAction(FExecuteAction::CreateStatic(&CyAutomation::OpenAssistant)));
         Menu->FindOrAddSection(TEXT("CyGameCapture")).AddMenuEntry(TEXT("CyGameCaptureUserGuide"),
             FText::FromString(French ? TEXT("Guide utilisateur CyGameCapture") : TEXT("CyGameCapture user guide")),
             FText::FromString(French ? TEXT("Ouvrir la documentation locale CyDoc") : TEXT("Open the local CyDoc documentation")),

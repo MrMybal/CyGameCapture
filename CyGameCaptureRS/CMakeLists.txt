@@ -40,6 +40,7 @@ set(CYGC_RS_SOURCES
     Source/Capture/FrameSnapshots.cpp
     Source/Assistant/AiAssistant.hpp
     Source/Assistant/AiAssistant.cpp
+    Source/Assistant/Automation.cpp
     Source/Backends/Backend.hpp
     Source/Backends/Backend.cpp
     Source/Backends/D3D12/D3D11On12Bridge.hpp
@@ -80,7 +81,7 @@ target_compile_definitions(CyGameCaptureRS PRIVATE
     SPOUT_BUILD_STATIC             # Spout compiled straight into the add-on
     CYGC_ADDON_NAME="CyGameCaptureRS")
 
-target_link_libraries(CyGameCaptureRS PRIVATE CyGameCaptureCore CyGameCaptureBranding
+target_link_libraries(CyGameCaptureRS PRIVATE CyGameCaptureCore CyGameCaptureBranding CyGameCaptureMCP cymcp_json
     d3d11 d3d12 dxgi dxguid d3dcompiler winmm shell32 shlwapi advapi32 version comctl32 psapi user32 gdi32 ole32 windowscodecs)
 
 set_target_properties(CyGameCaptureRS PROPERTIES

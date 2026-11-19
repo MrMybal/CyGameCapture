@@ -10,7 +10,7 @@
 // conversation and the current frame: its buffers, the order they were written in, and, when the message
 // has pictures, a shared texture holding them. This process reads those pictures back into PNG files, asks
 // the chosen AI command line client (Claude Code, Codex or OpenCode, with the user's own sign-in) with the
-// whole conversation (the clients keep no session), and writes the reply back:
+// conversation through CyMCPSDK with persisted sessions, and writes the reply back:
 //
 //   status.txt   run_id / stage (images, asking, done, error) / message       -- progress, for the overlay
 //   reply.txt    the reply as the user reads it (UTF-8)
@@ -18,10 +18,12 @@
 //   prompt.txt, answer.txt, picture_NN.png                                     -- what was asked, for review
 //
 // Everything stays next to the request, in %LOCALAPPDATA%\CyGameCapture\AI\<game>. Nothing is applied to
-// the game from here: the overlay shows the proposal and the user decides.
+// proposal path: the overlay shows the proposal and the user decides. Explicit tool calls
+// additionally act through the same application registry when host permission is enabled.
 #include "AiClients.hpp"
 #include "MiniJson.hpp"
 #include "Pictures.hpp"
+#include "CyGameCaptureAutomationClient.hpp"
 
 #include <Windows.h>
 #include <algorithm>
@@ -254,6 +256,7 @@ namespace
 
 int wmain(int argc, wchar_t **argv)
 {
+    if (const int result = AutomationMain(argc, argv); result >= 0) return result;
 	if (argc < 2)
 	{
 		printf("usage: CyGameCaptureAI.exe <request.json>\n");
@@ -303,12 +306,14 @@ int wmain(int argc, wchar_t **argv)
 	if (chosen == "claude") order = { ClientKind::ClaudeCode };
 	else if (chosen == "codex") order = { ClientKind::Codex };
 	else if (chosen == "opencode") order = { ClientKind::OpenCode };
+    else if (chosen == "openai-compatible") order = { ClientKind::Http };
 	else order = { ClientKind::ClaudeCode, ClientKind::Codex, ClientKind::OpenCode };
 
 	ClientKind kind = order.front();
 	std::vector<std::wstring> command;
 	for (const ClientKind candidate : order)
 	{
+        if (candidate == ClientKind::Http) { kind = candidate; command = { L"http" }; break; }
 		command = FindClient(candidate, override_path);
 		if (!command.empty())
 		{
@@ -330,11 +335,18 @@ int wmain(int argc, wchar_t **argv)
 	ask.model = request.String("model");
 	ask.work_folder = g_folder.wstring();
 	ask.game_pid = game_pid;
+    ask.automation_connection = request.String("automation_connection");
+    ask.run_id = g_run_id;
+    ask.endpoint = request.String("endpoint", "http://127.0.0.1:1234/v1");
+    ask.key_env = request.String("key_env");
+    ask.context_bytes = static_cast<size_t>(request.Number("context_bytes"));
+    ask.external_tools_file = request.String("external_tools_file");
+    ask.allow_peer_mutations = request.Bool("allow_peer_mutations");
 	std::ofstream(g_folder / L"prompt.txt", std::ios::binary | std::ios::trunc) << ask.prompt;
 
 	Status("asking", std::string(ClientName(kind)) + Msg(" is thinking... (usually under a minute or two)", " réfléchit... (en général une à deux minutes)"));
 	std::string answer;
-	if (!AskClient(kind, command, ask, answer, error))
+	if (!AskSdkClient(kind, command, ask, answer, error))
 		return Failure(error);
 	std::ofstream(g_folder / L"answer.txt", std::ios::binary | std::ios::trunc) << answer;
 

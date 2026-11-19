@@ -8,3 +8,5 @@
 
 The full licence texts are kept next to each component (`reshade/LICENSE.md`, `imgui/LICENSE.txt`, `Spout2/LICENSE`, `Spout2/licence.txt`).
 No source file of these components is modified; CyGameCaptureRS only compiles the subset it needs.
+
+The source-built CyMCPSDK 0.7.0 integration links the independent MIT CyGameCaptureMCP.dll. The AI helper also uses its AI module. Full SDK/dependency attributions are in LICENCES/CyMCPSDK-Notices.md and the accompanying MIT texts. The product retains AGPL-3.0-or-later.

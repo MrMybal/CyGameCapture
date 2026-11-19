@@ -49,3 +49,5 @@ AIClient=auto
 
 
 Appuyez sur **F1** lorsque l’inspecteur ReShade a le focus pour ouvrir l’aide de son onglet courant. Timeline et Debug ciblent la même section explicite du guide de l’inspecteur.
+
+Pour les réglages SDK et API, consultez les [réglages du contrôle](doc:automation#optimisations).

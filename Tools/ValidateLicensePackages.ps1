@@ -10,6 +10,8 @@ $required = @{
     OBS = @('SOURCES.txt', 'CyGameCapture-AGPL-3.0.txt', 'CyGameCaptureOBS-Notices.md', 'Spout2-LICENSE.txt', 'Spout2-licence.txt', 'OBS-Studio-COPYING.txt', 'OBS-Studio-COMMITMENT.txt')
     Unreal = @('SOURCES.txt', 'CyGameCaptureUE-MIT.txt', 'CyGameCaptureUE-Notices.md', 'Spout2-LICENSE.txt', 'Spout2-licence.txt')
 }
+$sdkNotices=@('CyMCPSDK-MIT.txt','CyGameCaptureAutomation-MIT.txt','CyMCPSDK-Notices.md','nlohmann-json-MIT.txt','cpp-httplib-MIT.txt','PicoSHA2-MIT.txt')
+foreach($component in @($required.Keys)) {$required[$component]+=$sdkNotices}
 function Assert-Names($entries, $prefix, $names) {
     foreach ($name in $names) {
         if (-not $entries.Contains($prefix + $name)) { throw "Missing licence: $prefix$name" }

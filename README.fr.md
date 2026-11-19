@@ -95,7 +95,8 @@ Fermez le jeu, OBS et Unreal avant de remplacer les composants chargés. Remplac
 
 ### Prérequis
 
-- Windows x64, **Visual Studio 2022** avec MSVC v143 et les outils C++/CMake/Ninja ; **CMake 3.21+** et C++17.
+- Windows x64, **Visual Studio 2022** avec MSVC v143 et les outils C++/CMake/Ninja ; **CMake 3.24+**, C++17 pour les intégrations natives et C++20 pour le runtime/assistant SDK isolé.
+- **Git et sources CyMCPSDK** : priorité à `D:\_Project\CyMCPSDK` ; CMake extrait la révision `791d4d7`. Si le dossier est absent, Git récupère cette révision dans le dépôt privé avec l’authentification disponible. Voir les [notes de compilation](Automation/README.md).
 - **Node.js 22+ et npm**, pour générer la documentation pendant la compilation. L’archive locale de CyDoc est fournie ; aucun paquet de substitution du registre n’est nécessaire.
 - OBS Studio installé pour générer les bibliothèques d’import OBS/FFmpeg optionnelles ; une installation Unreal Engine correspondante pour compiler le plugin Unreal.
 - Les dépendances natives sont fournies sous forme des sous-ensembles de SDK/en-têtes décrits dans le tableau des licences. ReShade, OBS, Unreal et les clients des fournisseurs IA s’installent séparément.
@@ -150,6 +151,7 @@ Consultez la [référence des réglages](https://mrmybal.github.io/CyGameCapture
 | [Sous-ensemble DirectX de Spout2](https://github.com/leadedge/Spout2/tree/c2bcc12147711d12ace7d5f08e869d774d840f8a) | [BSD-2-Clause et notices fournies](LICENCES/Spout2-LICENSE.txt) | Partage natif de textures compilé avec les émetteurs, le récepteur et les outils. |
 | [OBS Studio / libobs 29.1.3](https://github.com/obsproject/obs-studio/tree/29.1.3) | [GPL-2.0-or-later ; engagement de coopération](CyGameCaptureOBS/ThirdParty/THIRD_PARTY_NOTICES.md) | En-têtes publics et libobs installé par l’utilisateur pour le plugin OBS optionnel ; bibliothèque d’import générée localement. |
 | [En-têtes FFmpeg 6.0](https://github.com/FFmpeg/FFmpeg/tree/n6.0) | [LGPL-2.1-or-later et conditions de compilation](Tests/CyGameCaptureVideoProbe/ThirdParty/THIRD_PARTY_NOTICES.md) | Outil d’analyse vidéo optionnel uniquement ; charge dynamiquement les bibliothèques FFmpeg d’OBS. Aucune DLL FFmpeg n’est incluse. |
+| [CyMCPSDK 0.7.0 · 791d4d7](https://github.com/MrMybal/CyMCPSDK/tree/791d4d7d7680213b282ec8529d248a10f8494d77) | [MIT](LICENCES/CyMCPSDK-Notices.md) | Core, Platform, Http, MCP, AI; runtime C ABI + CLI MIT. |
 | [CyDoc 0.1.0 · révision 6ddf9a5](https://github.com/MrMybal/CyDoc/tree/6ddf9a582defb2f11fbb3f992afef6f98dcadc93) | [MIT](.CyDocBuild/vendor/LICENSE.txt) | Lecteur documentaire local et module image ; les outils de génération fonctionnent à la compilation. L’accès aux sources peut nécessiter une autorisation. Ni Three.js ni module mesh n’est inclus. |
 | [Unreal Engine](https://www.unrealengine.com/) | [Conditions Unreal Engine d’Epic](https://www.unrealengine.com/eula/unreal) | Moteur et outils de compilation installés séparément pour le plugin Unreal sous MIT. Le moteur n’est pas redistribué ici. |
 
@@ -164,6 +166,16 @@ Consultez la [référence des réglages](https://mrmybal.github.io/CyGameCapture
 | [Node.js](https://github.com/nodejs/node) | [MIT et notices des composants](https://github.com/nodejs/node/blob/main/LICENSE) | Exécution des outils à la compilation uniquement ; inutile pour lire le manuel. |
 
 Ce tableau est un index, pas un remplacement des notices complètes. Conservez les dossiers `LICENCES` fournis et les [références des sources](LICENCES/SOURCES.txt). La bibliothèque native **CyGameCaptureCore** appartient au produit et est distincte de CyToolsCore ; cette application ne comprend ni CyToolsCore, ni CyUEMCPSDK, ni environnement Python pour l’assistant. Les clients IA restent des logiciels optionnels installés séparément, soumis aux conditions de leurs fournisseurs.
+
+
+## Intégration IA et CLI dans les sources actuelles
+
+Les nouvelles compilations ajoutent CyMCPSDK **0.7.0** (`791d4d7`), le chat avec streaming/annulation et sessions, `CyGameCaptureCLI.exe` et MCP authentifié pour ReShade, OBS et Unreal. Le contrôle est en lecture seule par défaut. Le manuel embarqué comporte **38 pages par langue**, dont Assistant, terminal et contrôle MCP. Les téléchargements du 6 novembre 2026 restent la version antérieure ; cette mise à jour locale n’est pas publiée.
+
+```powershell
+.\CyGameCaptureCLI.exe instances
+.\CyGameCaptureCLI.exe call app.status --instance 'C:\path\connection.json'
+```
 
 ## Références et liens
 

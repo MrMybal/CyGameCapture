@@ -95,7 +95,8 @@ Close the game, OBS and Unreal before replacing loaded components. Replace binar
 
 ### Requirements
 
-- Windows x64, **Visual Studio 2022** with MSVC v143 and the C++/CMake/Ninja tools; **CMake 3.21+** and C++17.
+- Windows x64, **Visual Studio 2022** with MSVC v143 and the C++/CMake/Ninja tools; **CMake 3.24+**, C++17 for the native integrations and C++20 for the isolated SDK runtime/helper.
+- **Git and CyMCPSDK sources**: prefer `D:\_Project\CyMCPSDK`; CMake snapshots revision `791d4d7`. If absent it fetches that revision from the private upstream using available Git authentication. See [integration build notes](Automation/README.md).
 - **Node.js 22+ and npm**, for generating the documentation during builds. The pinned local CyDoc archive is included; no registry substitute is needed.
 - An installed OBS Studio for generating the optional OBS/FFmpeg import libraries; a matching Unreal Engine installation for Unreal plugin builds.
 - The native dependencies are included as the limited SDK/header subsets described in the license table. ReShade, OBS, Unreal and AI provider clients are installed separately.
@@ -150,6 +151,7 @@ See the [configuration reference](https://mrmybal.github.io/CyGameCapture/Docume
 | [Spout2 DirectX subset](https://github.com/leadedge/Spout2/tree/c2bcc12147711d12ace7d5f08e869d774d840f8a) | [BSD-2-Clause and supplied notices](LICENCES/Spout2-LICENSE.txt) | Compiled native texture sharing for the producers, receiver and tools. |
 | [OBS Studio / libobs 29.1.3](https://github.com/obsproject/obs-studio/tree/29.1.3) | [GPL-2.0-or-later; cooperation commitment](CyGameCaptureOBS/ThirdParty/THIRD_PARTY_NOTICES.md) | Public headers and user-installed libobs for the optional OBS plugin; import library generated locally. |
 | [FFmpeg 6.0 headers](https://github.com/FFmpeg/FFmpeg/tree/n6.0) | [LGPL-2.1-or-later and build terms](Tests/CyGameCaptureVideoProbe/ThirdParty/THIRD_PARTY_NOTICES.md) | Optional video probe only; dynamically loads the user's OBS FFmpeg libraries. No FFmpeg DLL is bundled. |
+| [CyMCPSDK 0.7.0 · 791d4d7](https://github.com/MrMybal/CyMCPSDK/tree/791d4d7d7680213b282ec8529d248a10f8494d77) | [MIT](LICENCES/CyMCPSDK-Notices.md) | Core, Platform, Http, MCP, AI; runtime C ABI + CLI MIT. |
 | [CyDoc 0.1.0 · revision 6ddf9a5](https://github.com/MrMybal/CyDoc/tree/6ddf9a582defb2f11fbb3f992afef6f98dcadc93) | [MIT](.CyDocBuild/vendor/LICENSE.txt) | Local documentation reader and image module; generation tools run at build time. Source access may require permission. No Three.js or mesh module is included. |
 | [Unreal Engine](https://www.unrealengine.com/) | [Epic's Unreal Engine terms](https://www.unrealengine.com/eula/unreal) | Separately installed host/runtime and build toolchain for the MIT Unreal plugin. The engine is not redistributed here. |
 
@@ -164,6 +166,16 @@ See the [configuration reference](https://mrmybal.github.io/CyGameCapture/Docume
 | [Node.js](https://github.com/nodejs/node) | [MIT and component notices](https://github.com/nodejs/node/blob/main/LICENSE) | Build-time runtime only; not required to read the manual. |
 
 This table is an index, not a replacement for complete notices. Preserve the supplied `LICENCES` folders and [source references](LICENCES/SOURCES.txt). The product's native **CyGameCaptureCore** is distinct from CyToolsCore; this application includes neither CyToolsCore nor CyUEMCPSDK, nor a Python assistant runtime. AI clients remain optional, separately installed software under their providers' terms.
+
+
+## AI and CLI integration in current sources
+
+New builds add CyMCPSDK **0.7.0** (`791d4d7`), streaming/cancellable chat with restored sessions, `CyGameCaptureCLI.exe` and authenticated MCP for ReShade, OBS and Unreal. Control is read only by default. The bundled manual now has **38 pages per language**, including Assistant, terminal and MCP control. Downloads dated November 6, 2026 remain the previous version; this local update has not been published.
+
+```powershell
+.\CyGameCaptureCLI.exe instances
+.\CyGameCaptureCLI.exe call app.status --instance 'C:\path\connection.json'
+```
 
 ## References and links
 

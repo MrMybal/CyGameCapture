@@ -10,8 +10,10 @@ No Spout2 source file is modified. The plugin includes the `.cpp` files through 
 `CyGameCaptureUE/Private/ThirdPartyWrappers/`, guarded by the engine's `AllowWindowsPlatformTypes` /
 `PreWindowsApi` / `PostWindowsApi` / `HideWindowsPlatformTypes` headers, so no Windows macro leaks into engine code.
 
-No prebuilt library, DLL or absolute path is used: `RunUAT BuildPlugin` produces a self-contained plugin.
+Spout is compiled into the module. The source-built MIT CyMCPSDK C ABI runtime and CLI are staged in `Binaries/ThirdParty/CyMCPSDK/Win64`; retain this directory in plugin builds.
 
 The GPU work (shared texture creation, copies, D3D11On12 bridge) is implemented by CyGameCaptureUE itself on the
 engine's device; the Spout SDK is only used for the CPU-side sender registry and synchronisation primitives that
 define the Spout protocol.
+
+CyMCPSDK 0.7.0 and its native dependencies are compiled into the MIT C ABI runtime. See `CyMCPSDK-Notices.md` and the complete MIT texts in LICENCES. AGPL ReShade/OBS components are not linked into this runtime.

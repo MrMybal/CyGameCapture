@@ -3,10 +3,8 @@
 //
 // CyGameCaptureAI — finding and running the AI command line clients installed on this PC.
 //
-// Same method as CyAICodex (methodes/local_clients.py and assist.py), which already talks to these
-// clients: look for the executable where each installer puts it, never through a shell, and run it in its
-// non-interactive mode with no tools, no user configuration and no saved session. The client answers with
-// the user's own account; nothing here stores or sees a key.
+// Provider discovery, streaming, sessions and tools are owned by the source-built CyMCPSDK.
+// The existing public helper entry points remain compatible.
 #pragma once
 
 #include <Windows.h>
@@ -15,7 +13,7 @@
 
 namespace cygc
 {
-	enum class ClientKind { ClaudeCode, Codex, OpenCode };
+	enum class ClientKind { ClaudeCode, Codex, OpenCode, Http };
 
 	/**
 	 * The messages the user reads (progress and errors, shown in the overlay's discussion) follow the
@@ -37,9 +35,15 @@ namespace cygc
 		std::wstring work_folder;
 		DWORD game_pid = 0;                      // the question is dropped if the game closes
 		DWORD timeout_ms = 5 * 60 * 1000;
+        std::string automation_connection, run_id;
+        std::string endpoint = "http://127.0.0.1:1234/v1", key_env;
+        size_t context_bytes = 0;
+        std::string external_tools_file;
+        bool allow_peer_mutations = false;
 	};
 
 	/** Runs the client and returns its answer text. */
 	bool AskClient(ClientKind kind, const std::vector<std::wstring> &command, const AskRequest &request,
 		std::string &answer, std::string &error);
+    bool AskSdkClient(ClientKind, const std::vector<std::wstring>&, const AskRequest&, std::string&, std::string&);
 }

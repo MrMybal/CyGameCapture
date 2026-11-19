@@ -18,6 +18,8 @@
 //     different one, unless the user explicitly asked for auto-connect.
 #include "SpoutDiscovery.hpp"
 #include "BufferRecorder.hpp"
+#include "CyGameCaptureAutomation.h"
+#include <nlohmann/json.hpp>
 
 #include <obs-module.h>
 
@@ -56,6 +58,8 @@ namespace
 	struct CyGameCaptureSource
 	{
 		obs_source_t *source = nullptr;
+        void* automation = nullptr;
+        std::string automation_reply;
 
 		/**
 		 * OBS calls `update`, `get_properties`, `get_width` and `get_height` from the UI thread while
@@ -423,6 +427,7 @@ namespace
 		const char *const sender = obs_data_get_string(settings, kSettingSender);
 		const std::string requested = sender != nullptr ? sender : "";
 		const bool auto_connect = obs_data_get_bool(settings, kSettingAutoConnect);
+        if(ctx->automation)cygc_automation_allow_mutations(ctx->automation,obs_data_get_bool(settings,"automation_allow_control"));
 
 		// Graphics first, then our mutex: Disconnect() below destroys a GPU texture
 		obs_enter_graphics();
@@ -465,10 +470,38 @@ namespace
 		}
 	}
 
+    const char* __cdecl AutomationCall(void* owner,const char* operation,const char* input)
+    {
+        using Json=nlohmann::json;auto* ctx=static_cast<CyGameCaptureSource*>(owner);
+        try {const auto args=Json::parse(input);const std::string name=operation;Json result;
+            if(name=="source.status") {std::lock_guard<std::mutex> lock(ctx->mutex);result={{"name",obs_source_get_name(ctx->source)},{"connected",ctx->connected},{"requested_sender",ctx->requested_sender},{"sender",ctx->description.name},{"width",ctx->description.width},{"height",ctx->description.height},{"sync_frame",ctx->last_sync_frame},{"error",ctx->last_error}};}
+            else if(name=="senders.list") {auto entries=Json::array();const auto all=EnumerateSenders();size_t offset=args.value("offset",0U),limit=args.value("limit",32U);for(size_t i=offset;i<all.size()&&i<offset+limit;++i)entries.push_back({{"name",all[i].name},{"width",all[i].width},{"height",all[i].height},{"format",all[i].dxgi_format}});result={{"senders",entries},{"total",all.size()},{"next_offset",offset+entries.size()<all.size()?Json(offset+entries.size()):Json(nullptr)}};}
+            else if(name=="source.sender") {auto settings=obs_source_get_settings(ctx->source);obs_data_set_string(settings,kSettingSender,args.at("sender").get<std::string>().c_str());obs_source_update(ctx->source,settings);obs_data_release(settings);result={{"sender",args.at("sender")}};}
+            else if(name=="recording.start") {std::string error;int count=StartTake(error);if(!error.empty())throw std::runtime_error(error);result={{"started_sources",count}};}
+            else if(name=="recording.stop") result={{"stopped_sources",StopTake()}};
+            else throw std::runtime_error("Unknown operation");
+            ctx->automation_reply=result.dump();
+        }catch(const std::exception& error){ctx->automation_reply=nlohmann::json({{"error",{{"code","OperationFailed"},{"message",error.what()}}}}).dump();}
+        return ctx->automation_reply.c_str();
+    }
+    void CreateAutomation(CyGameCaptureSource* ctx,obs_data_t* settings)
+    {
+        using Json=nlohmann::json;auto options=Json({{"component","obs-source"},{"allow_mutations",obs_data_get_bool(settings,"automation_allow_control")},{"compact",obs_data_get_bool(settings,"automation_compact")},{"notifications",obs_data_get_bool(settings,"automation_notifications")},{"performance",obs_data_get_bool(settings,"automation_performance")},{"cache_ttl_ms",std::max<int64_t>(0,obs_data_get_int(settings,"automation_cache_ttl"))}});ctx->automation=cygc_automation_create(options.dump().c_str());
+        if(!ctx->automation){blog(LOG_WARNING,"[CyGameCapture] MCP unavailable: %s",cygc_automation_error());return;}
+        auto add=[&](const char* name,const char* description,bool read,Json properties={},Json required={}) {Json spec={{"name",name},{"description",description},{"readOnly",read},{"inputSchema",{{"type","object"},{"properties",properties.is_null()?Json::object():properties},{"required",required.is_null()?Json::array():required},{"additionalProperties",false}}}};if(!cygc_automation_add(ctx->automation,spec.dump().c_str(),AutomationCall,ctx))blog(LOG_WARNING,"[CyGameCapture] MCP tool: %s",cygc_automation_error());};
+        add("source.status","Read this live OBS source's connection, sender and shared frame state.",true);
+        add("senders.list","List local Spout senders with pagination, without exposing native shared handles.",true,{{"offset",{{"type","integer"},{"minimum",0}}},{"limit",{{"type","integer"},{"minimum",1},{"maximum",128}}}});
+        add("source.sender","Select the exact Spout sender for this source using its existing OBS settings.",false,{{"sender",{{"type","string"},{"minLength",1},{"maxLength",255}}}},{"sender"});
+        add("recording.start","Start a take for all recording-enabled CyGameCapture sources using their user-configured output folders and encoders.",false);
+        add("recording.stop","Stop the take for all recording-enabled CyGameCapture sources, preserving their output files.",false);
+        blog(LOG_INFO,"[CyGameCapture] MCP connection: %s",cygc_automation_connection(ctx->automation));
+    }
+
 	void *SourceCreate(obs_data_t *settings, obs_source_t *source)
 	{
 		auto *const ctx = new CyGameCaptureSource();
 		ctx->source = source;
+        CreateAutomation(ctx, settings);
 		SourceUpdate(ctx, settings);
 		{
 			std::lock_guard<std::mutex> lock(RegistryMutex());
@@ -480,6 +513,7 @@ namespace
 	void SourceDestroy(void *data)
 	{
 		auto *const ctx = static_cast<CyGameCaptureSource *>(data);
+        cygc_automation_destroy(ctx->automation);ctx->automation=nullptr;
 		{
 			std::lock_guard<std::mutex> lock(RegistryMutex());
 			Registry().erase(ctx);
@@ -516,7 +550,9 @@ namespace
 	void SourceGetDefaults(obs_data_t *settings)
 	{
 		obs_data_set_default_string(settings, kSettingSender, "");
-		obs_data_set_default_bool(settings, kSettingAutoConnect, true);
+		obs_data_set_default_bool(settings,"automation_notifications",true);
+        obs_data_set_default_int(settings,"automation_cache_ttl",1000);
+        obs_data_set_default_bool(settings, kSettingAutoConnect, true);
 		obs_data_set_default_bool(settings, kSettingShowAll, false);
 		obs_data_set_default_bool(settings, kSettingHoldLastFrame, true);
 		obs_data_set_default_bool(settings, kSettingRecord, false);
@@ -531,6 +567,7 @@ namespace
 	void SourceVideoTick(void *data, float seconds)
 	{
 		auto *const ctx = static_cast<CyGameCaptureSource *>(data);
+        cygc_automation_pump(ctx->automation);
 
 		// Same order as everywhere else; on the graphics thread this is a cheap recursive acquire
 		obs_enter_graphics();
@@ -730,6 +767,11 @@ namespace
 	{
 		auto *const ctx = static_cast<CyGameCaptureSource *>(data);
 		obs_properties_t *const props = obs_properties_create();
+        obs_properties_add_bool(props,"automation_compact","Compact MCP catalogue (recreate source to apply)");
+        obs_properties_add_bool(props,"automation_notifications","MCP change notifications (recreate source to apply)");
+        obs_properties_add_bool(props,"automation_performance","MCP metadata-only measures (recreate source to apply)");
+        obs_properties_add_int(props,"automation_cache_ttl","MCP cache TTL, milliseconds (recreate source to apply)",0,60000,100);
+        obs_properties_add_bool(props,"automation_allow_control",obs_get_locale()&&std::string(obs_get_locale()).find("fr")==0?"Autoriser le contrôle MCP de cette source":"Allow MCP control of this source");
 		obs_property_t *const guide = obs_properties_add_button(props, "user_guide", obs_module_text("Guide.Title"), UserGuideClicked);
 		obs_property_set_long_description(guide, obs_module_text("Guide.Description"));
 

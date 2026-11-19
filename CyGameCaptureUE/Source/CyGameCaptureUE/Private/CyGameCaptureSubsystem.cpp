@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "CyGameCaptureSubsystem.h"
+#include "CyAutomation.h"
 #include "CyGameCaptureSettings.h"
 #include "CyGameCaptureLog.h"
 #include "RHI/CyRHICompat.h"
@@ -73,6 +74,7 @@ UCyGameCaptureSubsystem* UCyGameCaptureSubsystem::Get()
 void UCyGameCaptureSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+    CyAutomation::Start();
 
 	ViewportCapture = MakeShared<FCyViewportCapture>();
 
@@ -92,6 +94,7 @@ void UCyGameCaptureSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UCyGameCaptureSubsystem::Deinitialize()
 {
+    CyAutomation::Stop();
 	StopAllStreams();
 	ViewportCapture.Reset();
 
@@ -398,6 +401,7 @@ void UCyGameCaptureSubsystem::StopAllStreams()
 
 bool UCyGameCaptureSubsystem::Tick(float DeltaTime)
 {
+    CyAutomation::Tick();
 	// Ghost prevention: streams whose owner object died are stopped here
 	for (int32 i = Senders.Num() - 1; i >= 0; --i)
 	{

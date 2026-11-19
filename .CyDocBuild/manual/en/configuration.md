@@ -49,3 +49,5 @@ AIClient=auto
 
 
 Press **F1** while the ReShade inspector is focused to open help for its current tab. Timeline and Debug target the same explicit section in the inspector guide.
+
+For SDK host and API settings, see [automation settings](doc:automation#optimisations).

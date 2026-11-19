@@ -23,3 +23,5 @@ sourceRevision: 568fe2b20fc7
 Les composants natifs CyGameCapture utilisent **AGPL-3.0-or-later**. CyGameCaptureUE utilise **MIT**. Les composants tiers conservent leurs licences respectives. Les textes complets en anglais, attributions et liens sources se trouvent dans le dossier `LICENCES` de chaque composant. Les textes juridiques restent dans leur langue d’origine ; le guide français est explicatif.
 
 Sources et signalements : [github.com/MrMybal/CyGameCapture](https://github.com/MrMybal/CyGameCapture) (Internet nécessaire). Le logiciel est fourni sans garantie. Ce manuel décrit les fonctions réellement implémentées et leurs limites.
+
+CyMCPSDK 0.7.0 et le runtime/CLI indépendant utilisent MIT. Leurs textes anglais complets et les licences des dépendances sont fournis dans LICENCES. Ni CyUI, ni poids de modèles, ni installateur de moteur ne sont distribués.

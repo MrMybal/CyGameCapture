@@ -2,6 +2,14 @@
 
 [Français](CHANGELOG.fr.md) · [Application overview](README.md)
 
+## Unreleased — CyMCPSDK integration
+
+- Source-build SDK 0.7.0 at pinned local revision `791d4d7`: Core/Platform/Http/MCP/AI only.
+- Share real ReShade, OBS and Unreal handlers across chat, CLI and MCP with default read-only permissions and engine-thread execution.
+- Add streaming, cancellation, persisted conversations, API/local endpoints, adjustable context and explicitly allowed peer tools.
+- Add full/compact discovery, pagination, chunked resources, bounded retention, HTTP notifications and content-free measures.
+- Preserve commands/settings; ship runtime, CLI, licenses and bilingual help in local packages. No push or published download update.
+
 <a id="current-version"></a>
 
 ## 0.1.0 — Beta · package update of 2026-11-06

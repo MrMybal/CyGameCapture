@@ -168,3 +168,7 @@ Copyright (C) 2026 Cyberalien. Logiciel libre sous licence GNU Affero General
 Public License, version 3 ou ulterieure (LICENSE.txt), fourni SANS AUCUNE
 GARANTIE. Code source : https://github.com/MrMybal/CyGameCapture
 Les licences des composants tiers sont fournies avec le paquet.
+
+CyMCPSDK: keep CyGameCaptureMCP.dll beside the native add-on/plugin.
+CyGameCaptureCLI.exe instances lists hosts; --help explains CLI/MCP.
+Control is read only by default. See the bundled automation chapter.

@@ -29,3 +29,5 @@ CyGameCaptureUE (Unreal plugin) link nothing from OBS.
 
 `obs-studio/COMMITMENT` is the GPL Cooperation Commitment of the OBS project (GPL v3's cure and
 reinstatement terms, extended to its GPL v2 code); it is kept with the licence text.
+
+The source-built CyMCPSDK 0.7.0 integration links the independent MIT CyGameCaptureMCP.dll. The AI helper also uses its AI module. Full SDK/dependency attributions are in LICENCES/CyMCPSDK-Notices.md and the accompanying MIT texts. The product retains AGPL-3.0-or-later.

@@ -80,3 +80,7 @@ sous licence GNU Affero General Public License, version 3 ou ulterieure
 (Unreal-Plugin\...\LICENSE), il peut donc servir dans n'importe quel projet
 Unreal. Le tout est fourni SANS AUCUNE GARANTIE. Chaque partie est livree avec
 les licences du code tiers qu'elle utilise.
+
+CyMCPSDK: keep CyGameCaptureMCP.dll beside the native add-on/plugin.
+CyGameCaptureCLI.exe instances lists hosts; --help explains CLI/MCP.
+Control is read only by default. See the bundled automation chapter.

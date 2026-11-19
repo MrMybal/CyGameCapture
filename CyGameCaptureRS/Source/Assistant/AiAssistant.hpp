@@ -77,6 +77,9 @@ namespace cygc
 		void Send(const std::string &text, bool attach_pictures);
 		/** Forgets the conversation (the files of the last exchange stay in the folder). */
 		void NewConversation();
+        void Cancel();
+        const std::string &PartialReply() const { return partial_reply_; }
+        void SetAutomationConnection(std::string connection) { automation_connection_ = std::move(connection); }
 
 		/** Present time, after the captures: renders the pictures when asked, then starts the helper. */
 		void OnPresent(reshade::api::command_queue *queue, reshade::api::resource current_back_buffer);
@@ -93,6 +96,7 @@ namespace cygc
 		const AiMessage *LatestProposal() const;
 
 	private:
+        std::string partial_reply_, automation_connection_;
 		struct Tile
 		{
 			uint32_t id = 0;

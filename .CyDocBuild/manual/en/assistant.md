@@ -5,10 +5,10 @@ description: Ask an installed AI client to propose a buffer and capture moment.
 section: User guide
 parent: inspector
 order: 9
-revision: cacf74a5f587
+revision: cymcp-070-assistant
 ---
 
-The assistant uses an installed, signed-in **Claude Code, Codex or OpenCode** client. It is optional; manual capture works without it. CyGameCapture does not include a model or store a provider API key.
+The assistant uses an installed, signed-in **Claude Code, Codex or OpenCode** client, or a separately running OpenAI-compatible API. It is optional; manual capture works without it. CyGameCapture does not include a model or store a provider API key.
 
 1. On D3D11, show real gameplay with the interface visible.
 2. Choose a client in **AI Assistant** and click the search button. A discussion window opens.
@@ -20,6 +20,10 @@ The proposal includes a buffer ID and, where appropriate, a write moment. It is 
 
 ## Privacy and diagnosis {#privacy-and-diagnosis}
 
-Your chosen client’s provider receives the sampled pictures, buffer metadata and conversation through your account. The last 12 messages can accompany the next request. Client activity may use your provider allowance. Review local files at `%LOCALAPPDATA%\CyGameCapture\AI\<game>`: `prompt.txt`, `answer.txt` and `picture_NN.png`. They can contain game images and conversation text. Delete them when no longer needed; redact them before sharing.
+Your chosen client’s provider receives the sampled pictures, buffer metadata and conversation through your account. The full SDK conversation is retained locally; the legacy image-analysis prompt can additionally include the last 12 display messages. Client activity may use your provider allowance. Review local files at `%LOCALAPPDATA%\CyGameCapture\AI\<game>`: `prompt.txt`, `answer.txt` and `picture_NN.png`. They can contain game images and conversation text. Delete them when no longer needed; redact them before sharing.
 
 Optional settings: `AIClient`, `AIModel`, `AIClientPath` and `AILanguage`. If a client is missing, install/sign in to it separately, then select its executable path if automatic discovery fails. If the helper is absent, restore it next to the add-on. Analysis at frame moments is not available in D3D12.
+
+## Live tools and sessions {#live-tools}
+
+Updated source builds add streaming, cancellation, restored sessions and local/API endpoints. Read [Assistant, terminal and MCP control](doc:automation) for permissions, CLI, peer tools and retention. Show/Apply proposals still require your review.

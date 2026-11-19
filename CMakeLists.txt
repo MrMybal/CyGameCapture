@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.24)
 project(CyGameCapture VERSION 0.1.0 LANGUAGES CXX RC)
 
 # ---------------------------------------------------------------------------
@@ -35,9 +35,12 @@ add_compile_options(/W4 /permissive- /Zc:__cplusplus /utf-8 /MP /EHsc)
 option(CYGC_BUILD_OBS "Build the OBS Studio plugin (needs ThirdParty/obs-studio/lib/obs.lib)" ON)
 
 add_subdirectory(Resources/Branding)
+add_subdirectory(Automation)
 add_subdirectory(CyGameCaptureCore)
 add_subdirectory(CyGameCaptureRS)
 add_subdirectory(CyGameCaptureAI)
+
+add_dependencies(CyGameCaptureAI CyGameCaptureMCP)
 if(CYGC_BUILD_OBS)
     add_subdirectory(CyGameCaptureOBS)
 endif()

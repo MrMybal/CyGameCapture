@@ -2,6 +2,14 @@
 
 [English](CHANGELOG.md) · [Présentation de l’application](README.fr.md)
 
+## Non publié — intégration CyMCPSDK
+
+- Compiler le SDK 0.7.0 depuis la révision locale figée `791d4d7` : Core/Platform/Http/MCP/AI uniquement.
+- Partager les vrais handlers ReShade, OBS et Unreal entre chat, CLI et MCP, en lecture seule par défaut et sur les threads moteur.
+- Ajouter streaming, annulation, historique persistant, API locales, contexte réglable et outils pairs autorisés.
+- Ajouter catalogue complet/compact, pagination, ressources par morceaux, rétention bornée, notifications HTTP et mesures sans contenu.
+- Conserver commandes/réglages ; intégrer runtime, CLI, licences et aide bilingue aux paquets locaux. Aucun push ni téléchargement publié modifié.
+
 <a id="current-version"></a>
 
 ## 0.1.0 — Bêta · mise à jour des paquets du 6 novembre 2026

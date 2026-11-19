@@ -23,6 +23,7 @@
 
 namespace cygc
 {
+    class Automation;
 	// What the player sees on screen
 	enum class ViewMode
 	{
@@ -51,6 +52,7 @@ namespace cygc
 		std::unique_ptr<FrameSnapshots> snapshots;
 		/** The AI assistant's side in the game: its conversation, and the pictures it sends. */
 		std::unique_ptr<AiAssistant> ai;
+        std::unique_ptr<Automation> automation;
 		/** The CyGameCapture logo for the overlay; the texture is only made the first time it is drawn. */
 		std::unique_ptr<LogoTexture> logo;
 		/** Contact sheet of the listed buffers; only refreshed while the overlay shows it. */

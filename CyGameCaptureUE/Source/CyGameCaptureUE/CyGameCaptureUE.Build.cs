@@ -18,6 +18,8 @@ public class CyGameCaptureUE : ModuleRules
 
 		// Browser documentation must stay as loose local files, outside cooked pak data.
 		RuntimeDependencies.Add("$(PluginDir)/Documentation/...", StagedFileType.NonUFS);
+        RuntimeDependencies.Add("$(PluginDir)/Binaries/ThirdParty/CyMCPSDK/Win64/CyGameCaptureMCP.dll", StagedFileType.NonUFS);
+        RuntimeDependencies.Add("$(PluginDir)/Binaries/ThirdParty/CyMCPSDK/Win64/CyGameCaptureCLI.exe", StagedFileType.NonUFS);
 		if (Target.Version.MajorVersion < 5)
 		{
 			CppStandard = CppStandardVersion.Cpp17; // CyDoc's native route helper uses string_view.
@@ -36,6 +38,8 @@ public class CyGameCaptureUE : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
 			"Projects",
+            "Json",
+            "JsonUtilities",
 			"Slate",
 			"SlateCore",
 			"InputCore",

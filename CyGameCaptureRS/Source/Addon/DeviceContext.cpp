@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 #include "DeviceContext.hpp"
+#include "Assistant/Automation.hpp"
 #include "GpuPass/PassInput.hpp"
 #include "Backends/D3D12/D3D11On12Bridge.hpp"
 #include "Config.hpp"
@@ -76,12 +77,16 @@ namespace cygc
 		flush_after_copy = config::GetBool("FlushAfterCopy", false);
 
 		view_toggle_key = static_cast<uint32_t>(config::GetInt("ViewToggleKey", 0x79 /* VK_F10 */));
+        if (config::GetBool("AutomationEnabled", true))
+            automation = std::make_unique<Automation>(*this);
+        if (automation) ai->SetAutomationConnection(automation->Connection());
 
 		log::Info("Renderer: %s%s%s", backend.api_name, backend.spout_capture ? " (Spout output available)" : " - ", backend.spout_capture ? "" : backend.reason.c_str());
 	}
 
 	DeviceContext::~DeviceContext()
 	{
+        automation.reset();
 		// Order matters: GPU objects owned by capture / preview are destroyed while the device is still alive
 		logo.reset();
 		thumbnails.reset();
@@ -247,6 +252,7 @@ namespace cygc
 
 		// 2. Close the frame: statistics of this frame become "last frame"
 		tracker->EndFrame();
+        if (automation) automation->Pump();
 		// Snapshots whose moment did not come this frame are taken now, before anything reads them
 		snapshots->EndFrame(queue);
 

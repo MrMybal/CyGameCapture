@@ -96,6 +96,10 @@ function New-Folder($path) {
 # ----------------------------------------------------------------- inputs
 $addonBinary = Join-Path $bin "CyGameCaptureRS.addon64"
 $aiBinary = Join-Path $bin "CyGameCaptureAI.exe"
+$automationBinary = Join-Path $bin 'CyGameCaptureMCP.dll'
+$cliBinary = Join-Path $bin 'CyGameCaptureCLI.exe'
+Require $automationBinary 'The source-built CyMCPSDK runtime'
+Require $cliBinary 'The native automation console companion'
 $obsBinary = Join-Path $bin "obs-plugins\64bit\CyGameCaptureOBS.dll"
 $obsData = Join-Path $bin "data\obs-plugins\CyGameCaptureOBS"
 Require $addonBinary "The ReShade add-on (build.cmd Release)"
@@ -105,7 +109,9 @@ Require $obsData "The OBS plugin data"
 
 foreach ($binary in $addonBinary, $aiBinary, $obsBinary) { Assert-Version $binary }
 Assert-Fresh $addonBinary @("CyGameCaptureRS\Source", "CyGameCaptureCore", "Resources\Branding")
-Assert-Fresh $aiBinary @("CyGameCaptureAI", "CyGameCaptureCore", "Resources\Branding")
+Assert-Fresh $automationBinary @("Automation\Source\Host.cpp", "Automation\Source\OutputSchemas.hpp", "Automation\Include\CyGameCaptureAutomation.h")
+Assert-Fresh $cliBinary @("Automation\Source\Client.cpp", "Automation\Source\CLI.cpp", "Automation\Include\CyGameCaptureAutomationClient.hpp")
+Assert-Fresh $aiBinary @("Automation\Source\Client.cpp", "CyGameCaptureAI", "CyGameCaptureCore", "Resources\Branding")
 Assert-Fresh $obsBinary @("CyGameCaptureOBS\Source", "CyGameCaptureCore", "Resources\Branding")
 
 $unrealPackages = @(Get-ChildItem (Join-Path $root "build") -Directory -Filter "Plugin_UE*" -ErrorAction SilentlyContinue |
@@ -128,6 +134,12 @@ Write-Host "  CyGameCapture $version release"
 Write-Host "  to $OutputDirectory"
 Write-Host ""
 
+# Resolve and check the exact directory before any recursive replacement.
+$OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
+$resolvedRoot = [IO.Path]::GetFullPath($root).TrimEnd('\')
+$resolvedOutput = $OutputDirectory.TrimEnd('\')
+if ($resolvedOutput -eq [IO.Path]::GetPathRoot($OutputDirectory).TrimEnd('\') -or $resolvedRoot -eq $resolvedOutput -or $resolvedRoot.StartsWith($resolvedOutput+'\',[StringComparison]::OrdinalIgnoreCase)) { throw 'Refusing to replace a project ancestor or drive root' }
+
 if (Test-Path $OutputDirectory) {
     Remove-Item $OutputDirectory -Recurse -Force
 }
@@ -141,6 +153,8 @@ $addon = New-Folder (Join-Path $package "ReShade-Addon")
 Copy-Item $addonBinary $addon
 # The AI assistant's helper; the add-on starts it from its own folder
 Copy-Item $aiBinary $addon
+Copy-Item $automationBinary $addon
+Copy-Item $cliBinary $addon
 Copy-Item (Join-Path $files "ReShade-Addon\README.txt") $addon
 Copy-Item (Join-Path $PSScriptRoot "PackageFiles\LISEZMOI-installer-dans-un-jeu.txt") (Join-Path $addon "LISEZMOI.txt")
 Copy-Item $licence (Join-Path $addon "LICENSE.txt")
@@ -152,6 +166,8 @@ Section "OBS plugin"
 $obs = New-Folder (Join-Path $package "OBS-Plugin")
 $obsPlugin = New-Folder (Join-Path $obs "CyGameCaptureOBS\bin\64bit")
 Copy-Item $obsBinary $obsPlugin
+Copy-Item $automationBinary $obsPlugin
+Copy-Item $cliBinary $obsPlugin
 Copy-Item $obsData (Join-Path $obs "CyGameCaptureOBS\data") -Recurse
 Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $obs 'CyGameCaptureOBS/data/Documentation')
 Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $obs 'Documentation')
@@ -175,6 +191,10 @@ foreach ($unrealPackage in $unrealPackages) {
     # The documentation and the licence as they are now, not as they were when that engine version was built
     Copy-Item (Join-Path $unrealSource "README.md") $target -Force
     Copy-Item (Join-Path $unrealSource "LICENSE") $target -Force
+    $nativeRuntime = Join-Path $target 'Binaries/ThirdParty/CyMCPSDK/Win64'
+    New-Item -ItemType Directory -Force $nativeRuntime | Out-Null
+    Copy-Item -LiteralPath $automationBinary -Destination $nativeRuntime -Force
+    Copy-Item -LiteralPath $cliBinary -Destination $nativeRuntime -Force
     Copy-ProductLicences -ProjectRoot $root -Destination $target -Component Unreal
     Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $target 'Documentation')
     Write-Host ("      Unreal " + $engine)
@@ -182,6 +202,7 @@ foreach ($unrealPackage in $unrealPackages) {
 
 # ----------------------------------------------------------------- documentation and top level
 Section "documentation"
+Copy-Item $cliBinary $package
 $docs = New-Folder (Join-Path $package "ProductInformation")
 Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $package 'Documentation')
 Copy-ReadmeImages -ProjectRoot $root -DocumentationRoot $docs
@@ -242,7 +263,9 @@ $changelog = Get-Content (Join-Path $root "CHANGELOG.md") -Raw -Encoding UTF8
 $pattern = "(?ms)^## " + [regex]::Escape($version) + "\b.*?(?=^## |\z)"
 $notes = [regex]::Match($changelog, $pattern)
 if (-not $notes.Success) { throw "No section for $version in CHANGELOG.md" }
-[System.IO.File]::WriteAllText((Join-Path $OutputDirectory "RELEASE_NOTES.md"), $notes.Value.TrimEnd() + "`n")
+[System.IO.File]::WriteAllText((Join-Path $OutputDirectory "RELEASE_NOTES.md"), ([regex]::Match($changelog,"(?ms)^## Unreleased.*?(?=^## |\z)").Value + $notes.Value).TrimEnd() + "`n")
+
+& (Join-Path $PSScriptRoot 'ValidateAutomationPackages.ps1') -PackageDirectory $OutputDirectory
 
 # Verify the archives themselves, not just the staging folders.
 & (Join-Path $PSScriptRoot 'ValidateLicensePackages.ps1') -ReleaseDirectory $OutputDirectory

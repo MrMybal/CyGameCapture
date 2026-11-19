@@ -42,6 +42,12 @@ Write-Host "  Assemblage du dossier de test"
 Write-Host "  vers $OutputDirectory"
 Write-Host ""
 
+# Resolve and check the exact directory before any recursive replacement.
+$OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
+$resolvedRoot = [IO.Path]::GetFullPath($root).TrimEnd('\')
+$resolvedOutput = $OutputDirectory.TrimEnd('\')
+if ($resolvedOutput -eq [IO.Path]::GetPathRoot($OutputDirectory).TrimEnd('\') -or $resolvedRoot -eq $resolvedOutput -or $resolvedRoot.StartsWith($resolvedOutput+'\',[StringComparison]::OrdinalIgnoreCase)) { throw 'Refusing to replace a project ancestor or drive root' }
+
 if (Test-Path $OutputDirectory) {
     Remove-Item $OutputDirectory -Recurse -Force
 }
@@ -56,6 +62,8 @@ New-Item -ItemType Directory -Force $addon | Out-Null
 Copy-Item (Join-Path $bin "CyGameCaptureRS.addon64") $addon
 # The AI assistant's helper; the add-on starts it from its own folder
 Copy-Item (Join-Path $bin "CyGameCaptureAI.exe") $addon
+Copy-Item (Join-Path $bin 'CyGameCaptureMCP.dll') $addon
+Copy-Item (Join-Path $bin 'CyGameCaptureCLI.exe') $addon
 if ($WithSymbols) { Copy-Item (Join-Path $bin "CyGameCaptureRS.pdb") $addon -ErrorAction SilentlyContinue }
 Copy-Item (Join-Path $files "LISEZMOI-installer-dans-un-jeu.txt") $addon
 Copy-Item (Join-Path $root "LICENSE") (Join-Path $addon "LICENSE.txt")
@@ -67,6 +75,8 @@ Section "plugin OBS"
 $obs = Join-Path $OutputDirectory "Plugin-OBS"
 New-Item -ItemType Directory -Force (Join-Path $obs "bin\64bit") | Out-Null
 Copy-Item (Join-Path $bin "obs-plugins\64bit\CyGameCaptureOBS.dll") (Join-Path $obs "bin\64bit")
+Copy-Item (Join-Path $bin 'CyGameCaptureMCP.dll') (Join-Path $obs 'bin/64bit')
+Copy-Item (Join-Path $bin 'CyGameCaptureCLI.exe') (Join-Path $obs 'bin/64bit')
 Copy-Item (Join-Path $bin "data\obs-plugins\CyGameCaptureOBS") (Join-Path $obs "data") -Recurse
 Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $obs 'data/Documentation')
 Copy-ProductLicences -ProjectRoot $root -Destination $obs -Component OBS
@@ -78,6 +88,7 @@ foreach ($pair in @(@("TestApp", "D3D11"), @("TestAppD3D12", "D3D12"))) {
     $source = Join-Path $bin $pair[0]
     $target = Join-Path $apps $pair[1]
     New-Item -ItemType Directory -Force $target | Out-Null
+    Copy-Item (Join-Path $bin 'CyGameCaptureCLI.exe') $target
     # everything but the logs (ReShade keeps rotated ones: .log1, .log2...) and the ini, replaced by the demo one below
     Get-ChildItem $source -File | Where-Object { $_.Name -notmatch '\.(log\d*|ini)$' -and ($WithSymbols -or $_.Extension -ne '.pdb') } | ForEach-Object {
         Copy-Item $_.FullName $target
@@ -91,6 +102,7 @@ foreach ($pair in @(@("TestApp", "D3D11"), @("TestAppD3D12", "D3D12"))) {
 Section "outils de verification"
 $tools = Join-Path $OutputDirectory "Outils"
 New-Item -ItemType Directory -Force $tools | Out-Null
+Copy-Item (Join-Path $bin 'CyGameCaptureCLI.exe') $tools
 Copy-Item (Join-Path $bin "CyGameCaptureSpoutReceiverTest.exe") $tools
 if (Test-Path (Join-Path $bin "CyGameCaptureVideoProbe.exe")) {
     Copy-Item (Join-Path $bin "CyGameCaptureVideoProbe.exe") $tools
@@ -118,6 +130,10 @@ if (-not $NoUnreal) {
             $exclude = if ($WithSymbols) { @() } else { @('/XF', '*.pdb') }
             robocopy $package.FullName $target /E /XD Intermediate Docs Documentation @exclude /NFL /NDL /NJH /NJS /NP | Out-Null
             if ($LASTEXITCODE -ge 8) { throw "Unreal package copy failed: $($package.FullName)" }
+            $nativeRuntime = Join-Path $target 'Binaries/ThirdParty/CyMCPSDK/Win64'
+            New-Item -ItemType Directory -Force $nativeRuntime | Out-Null
+            Copy-Item -LiteralPath (Join-Path $bin 'CyGameCaptureMCP.dll') -Destination $nativeRuntime -Force
+            Copy-Item -LiteralPath (Join-Path $bin 'CyGameCaptureCLI.exe') -Destination $nativeRuntime -Force
             Copy-ProductLicences -ProjectRoot $root -Destination $target -Component Unreal
             Copy-UserGuide -ProjectRoot $root -Destination (Join-Path $target 'Documentation')
             Write-Host ("      Unreal " + $version)
@@ -171,6 +187,8 @@ $built = Get-Date -Format "yyyy-MM-dd HH:mm"
     "Genere par Tools\MakeTestPackage.cmd depuis bin\Release.",
     "Relancez ce script apres chaque build pour rafraichir le dossier."
 ) | Set-Content (Join-Path $OutputDirectory "VERSION.txt") -Encoding utf8
+
+& (Join-Path $PSScriptRoot 'ValidateAutomationPackages.ps1') -PackageDirectory $OutputDirectory
 
 & node (Join-Path $root '.CyDocBuild/scripts/ValidateDocumentation.mjs') $OutputDirectory
 if ($LASTEXITCODE -ne 0) { throw 'CyDoc test package validation failed' }

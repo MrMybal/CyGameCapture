@@ -14,6 +14,7 @@
 #include "ResourceTracker/FormatUtils.hpp"
 #include "Capture/SpoutSender.hpp"
 #include "UI/Localization.hpp"
+#include "Assistant/Automation.hpp"
 
 #include <CyGameCaptureCore/Version.hpp>
 #include <CyGameCaptureCore/UserGuide.hpp>
@@ -580,8 +581,8 @@ namespace cygc
 
 		void DrawAiClientChoice()
 		{
-			static const char *const client_keys[] = { "auto", "claude", "codex", "opencode" };
-			const char *const client_names[] = { TR("Auto (first one installed)"), "Claude Code", "Codex", "OpenCode" };
+			static const char *const client_keys[] = { "auto", "claude", "codex", "opencode", "openai-compatible" };
+			const char *const client_names[] = { TR("Auto (first one installed)"), "Claude Code", "Codex", "OpenCode", "Local / API" };
 			static int client = -1;
 			if (client < 0)
 			{
@@ -736,6 +737,31 @@ namespace cygc
 			if (ImGui::Button(TR("New discussion")))
 				ai.NewConversation();
 			ImGui::EndDisabled();
+            ImGui::SameLine();
+            ImGui::BeginDisabled(!ai.IsBusy());
+            if (ImGui::Button(i18n::Current() == i18n::Language::French ? "Annuler" : "Cancel")) ai.Cancel();
+            ImGui::EndDisabled();
+            if (ImGui::CollapsingHeader(i18n::Current() == i18n::Language::French ? "Réglages assistant et MCP" : "Assistant and MCP settings"))
+            {
+                bool allow = config::GetBool("AutomationAllowMutations", false);
+                if (ImGui::Checkbox(i18n::Current() == i18n::Language::French ? "Autoriser le contrôle MCP de cette instance" : "Allow MCP control of this instance", &allow)) {
+                    config::SetBool("AutomationAllowMutations", allow);
+                    if (ctx->automation) ctx->automation->AllowMutations(allow);
+                }
+                ImGui::TextWrapped("%s", i18n::Current() == i18n::Language::French ? "Désactivé : lecture seule. Activé : les clients authentifiés et l’assistant peuvent modifier la capture et l’affichage." : "Off: read only. On: authenticated clients and the assistant can change capture and the in-game view.");
+                if (ctx->automation) { ImGui::TextUnformatted(ctx->automation->Connection().c_str()); }
+                auto edit = [](const char* label, const char* key, const char* fallback) {
+                    char value[512] = {}; auto saved = config::GetString(key, fallback); snprintf(value, sizeof(value), "%s", saved.c_str());
+                    if (ImGui::InputText(label, value, sizeof(value))) config::SetString(key, value);
+                };
+                edit(i18n::Current() == i18n::Language::French ? "Modèle exact" : "Exact model", "AIModel", "");
+                edit("API URL", "AIEndpoint", "http://127.0.0.1:1234/v1");
+                edit(i18n::Current() == i18n::Language::French ? "Fichier d’outils MCP autorisés" : "Allowed MCP tools file", "AIExternalToolsFile", "");
+                edit(i18n::Current() == i18n::Language::French ? "Variable d’environnement de clé" : "Key environment variable", "AIKeyEnv", "");
+                int bytes = config::GetInt("AIContextBytes", 0);
+                if (ImGui::InputInt(i18n::Current() == i18n::Language::French ? "Contexte API (octets, 0 = complet)" : "API context (bytes, 0 = full)", &bytes)) config::SetInt("AIContextBytes", std::max(0, bytes));
+                ImGui::TextDisabled("CyMCPSDK 0.7.0");
+            }
 			ImGui::Separator();
 
 			// The messages, keeping the room for the answer field below
@@ -763,7 +789,10 @@ namespace cygc
 					ImGui::Separator();
 				}
 				if (ai.IsBusy())
-					ImGui::TextDisabled("%s", TR(ai.Progress().c_str()));
+                {
+                    ImGui::TextDisabled("%s", TR(ai.Progress().c_str()));
+                    if (!ai.PartialReply().empty()) ImGui::TextWrapped("%s", ai.PartialReply().c_str());
+                }
 				// Follow the conversation as it grows
 				if (s_chat_seen_revision != ai.Revision())
 				{

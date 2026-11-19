@@ -58,3 +58,7 @@ WARRANTY. Source code: https://github.com/MrMybal/CyGameCapture
 The plugin links libobs (GNU GPL v2 or later) and compiles part of the Spout2
 SDK (BSD 2-clause): their full licence texts and source references are in
 LICENCES. Install-OBS-Plugin.cmd also copies LICENCES to the installed plugin.
+
+CyMCPSDK: keep CyGameCaptureMCP.dll beside the native add-on/plugin.
+CyGameCaptureCLI.exe instances lists hosts; --help explains CLI/MCP.
+Control is read only by default. See the bundled automation chapter.

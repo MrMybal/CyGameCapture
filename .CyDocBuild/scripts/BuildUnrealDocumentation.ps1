@@ -20,6 +20,13 @@ foreach ($version in $Versions) {
     New-Item -ItemType Directory -Force -Path $hostPlugin | Out-Null
     robocopy $SourcePlugin $hostPlugin /E /XD Intermediate Binaries Saved DerivedDataCache .git /XJ /NFL /NDL /NJH /NJS /NP | Out-Null
     if ($LASTEXITCODE -ge 8) { throw 'Could not prepare the isolated host' }
+    $mcpRelative = 'Binaries/ThirdParty/CyMCPSDK/Win64/CyGameCaptureMCP.dll'
+    $mcpRuntime = Join-Path $SourcePlugin $mcpRelative
+    if (Test-Path -LiteralPath $mcpRuntime) {
+        New-Item -ItemType Directory -Force -Path (Split-Path -Parent (Join-Path $hostPlugin $mcpRelative)) | Out-Null
+        Copy-Item -LiteralPath $mcpRuntime -Destination (Join-Path $hostPlugin $mcpRelative) -Force
+        Copy-Item -LiteralPath (Join-Path $SourcePlugin 'Binaries/ThirdParty/CyMCPSDK/Win64/CyGameCaptureCLI.exe') -Destination (Join-Path $hostPlugin 'Binaries/ThirdParty/CyMCPSDK/Win64/CyGameCaptureCLI.exe') -Force
+    }
     $project = Join-Path $hostRoot 'HostProject.uproject'
     [IO.File]::WriteAllText($project,'{"FileVersion":3,"Plugins":[{"Name":"CyGameCaptureUE","Enabled":true}]}')
     Write-Host "Building UnrealEditor $version (source and runtime data are preserved; no engine build)"
@@ -34,6 +41,11 @@ foreach ($version in $Versions) {
     New-Item -ItemType Directory -Force -Path $target | Out-Null
     robocopy $SourcePlugin $target /E /XD Intermediate Binaries Saved DerivedDataCache .git /XJ /NFL /NDL /NJH /NJS /NP | Out-Null
     if ($LASTEXITCODE -ge 8) { throw 'Could not stage the matching plugin source' }
+    if (Test-Path -LiteralPath $mcpRuntime) {
+        New-Item -ItemType Directory -Force -Path (Split-Path -Parent (Join-Path $target $mcpRelative)) | Out-Null
+        Copy-Item -LiteralPath $mcpRuntime -Destination (Join-Path $target $mcpRelative) -Force
+        Copy-Item -LiteralPath (Join-Path $SourcePlugin 'Binaries/ThirdParty/CyMCPSDK/Win64/CyGameCaptureCLI.exe') -Destination (Join-Path $target 'Binaries/ThirdParty/CyMCPSDK/Win64/CyGameCaptureCLI.exe') -Force
+    }
     $binaryTarget = Join-Path $target 'Binaries/Win64'
     New-Item -ItemType Directory -Force -Path $binaryTarget | Out-Null
     foreach ($file in 'UnrealEditor-CyGameCaptureUE.dll','UnrealEditor.modules') {
@@ -41,7 +53,9 @@ foreach ($version in $Versions) {
     }
     $descriptor = Get-Content -LiteralPath (Join-Path $SourcePlugin 'CyGameCaptureUE.uplugin') -Raw | ConvertFrom-Json
     $engineVersion = Get-Content -LiteralPath (Join-Path $engine 'Engine/Build/Build.version') -Raw | ConvertFrom-Json
-    $descriptor.EngineVersion = "$($engineVersion.MajorVersion).$($engineVersion.MinorVersion).$($engineVersion.PatchVersion)"
+    # PluginManager compares CompatibleWith(), whose supported minor baseline is x.y.0,
+    # rather than the installed hotfix patch. The .modules BuildId still checks the binary ABI.
+    $descriptor.EngineVersion = "$($engineVersion.MajorVersion).$($engineVersion.MinorVersion).0"
     $descriptor.Installed = $true
     [IO.File]::WriteAllText((Join-Path $target 'CyGameCaptureUE.uplugin'), ($descriptor | ConvertTo-Json -Depth 8),[Text.UTF8Encoding]::new($false))
     Write-Host "PASS UnrealEditor ${version}: compiled local help; matching release input $target"
