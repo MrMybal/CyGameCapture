@@ -123,6 +123,6 @@ The 4.27 installation available here is missing the Win64 editor generated heade
 `ERHIAccess::CopySrc/CopyDest/SRVMask`, `TexCreate_Shared`, `OnBackBufferReadyToPresent(SWindow&, const FTexture2DRHIRef&)`,
 `SubmitCommandsHint`, `FTicker`, `UEngineSubsystem`, `DeveloperSettings`), but a real 4.27 compile is still pending.
 
-## CyMCPSDK control (current source build)
+## CyMCPSDK control (0.1.0 Free-profile package update)
 
 CyMCPSDK 0.7.1 (`34d4bca`) is compiled from source. Build the native project first, then retain Binaries/ThirdParty/CyMCPSDK/Win64 (DLL and CLI). Help → CyGameCapture assistant opens the Slate panel. Free is the default: use the displayed loopback URL without a token or extra confirmation. Missing profile selections migrate to Free; explicit choices are preserved. CyGameCapture.Automation.AccessProfile selects 0 Free, 1 Local controlled, 2 Token only, 3 Protected (restart editor to apply). CyGameCapture.Automation.AllowMutations only gates the two controlled profiles. Argument validation and execution on the game ticker remain enforced. No CyUEMCPSDK, CyUI or Python runtime is bundled. See the bundled automation chapter for CLI, MCP, sessions and independent optimisation settings.

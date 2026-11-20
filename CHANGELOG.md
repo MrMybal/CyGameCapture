@@ -2,15 +2,15 @@
 
 [Français](CHANGELOG.fr.md) · [Application overview](README.md)
 
-## Unreleased — Free MCP profiles
+<a id="current-version"></a>
+
+## 0.1.0 — Beta · Free MCP profiles update of 2026-11-20
 
 - Compile CyMCPSDK 0.7.1 from local source revision `34d4bcae126bc83d1a2925b5047dac36e3d09d92`.
 - Default missing profile selections to Free: address-only loopback HTTP, no token or extra confirmation, all exposed operations allowed; retain argument validation.
 - Preserve explicit profiles and user settings. Keep Local controlled, Token only and Protected, with token and mutation gates appropriate to each profile.
 - Support URL-only CLI/stdio connections and tokenless integrated chat; update profile controls and the bilingual offline manual. Legacy CLI and descriptor paths remain supported.
-- Validate locally, without GitHub workflows. This update is not yet published.
-
-<a id="current-version"></a>
+- Refresh all nine download archives with the current runtime, CLI, complete English/French offline manual and license notices. Validate locally and publish directly without GitHub workflows; the application remains 0.1.0 Beta and the original tag is retained.
 
 ## 0.1.0 — Beta · CyMCPSDK package update of 2026-11-20
 

@@ -232,6 +232,6 @@ clause makes GPL-3.0 available, and section 13 of GPL-3.0 explicitly allows comb
 [`ThirdParty/THIRD_PARTY_NOTICES.md`](ThirdParty/THIRD_PARTY_NOTICES.md). The ReShade add-on and the
 Unreal plugin link nothing from OBS.
 
-## CyMCPSDK control (current source build)
+## CyMCPSDK control (0.1.0 Free-profile package update)
 
 CyMCPSDK 0.7.1 (`34d4bca`) is compiled from source. Keep CyGameCaptureMCP.dll beside the plugin. Each source creates a private connection; CyGameCaptureCLI.exe instances finds it. Free is the default: connect to the displayed loopback URL without a token or extra confirmation. Missing profile selections migrate to Free; explicit selections are preserved. Local controlled and Protected retain the source’s mutation switch; Token only and Protected require a token. Recreate the source after selecting a profile. Argument validation remains enabled. Take operations cover all recording-enabled CyGameCapture sources in that process. No Qt chat dock is installed. See the bundled automation chapter for CLI, MCP, sessions and independent optimisation settings.

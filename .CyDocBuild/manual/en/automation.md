@@ -5,10 +5,10 @@ description: Connect to a live instance, discover its tools and control capture 
 section: User guide
 parent: assistant
 order: 10
-revision: a7a8279a3835
+revision: eb7a67eb99e8
 ---
 
-This build of 0.1.0 Beta uses CyMCPSDK **0.7.1**, compiled from source revision `34d4bcae126bc83d1a2925b5047dac36e3d09d92`, and includes the complete English/French offline manual. Earlier published 0.7.0 packages use the previous access defaults; replace binaries, helper, runtime, documentation and licenses together when upgrading. Capture works without an AI account; no model, Python runtime or inference engine is installed by the application.
+The Free-profile update of the 0.1.0 Beta packages uses CyMCPSDK **0.7.1**, compiled from source revision `34d4bcae126bc83d1a2925b5047dac36e3d09d92`, and includes the complete English/French offline manual. Earlier published 0.7.0 packages use the previous access defaults; replace binaries, helper, runtime, documentation and licenses together when upgrading. Capture works without an AI account; no model, Python runtime or inference engine is installed by the application.
 
 ## Connect to the correct instance {#connect}
 

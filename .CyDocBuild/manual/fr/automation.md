@@ -5,10 +5,10 @@ description: Se connecter à une instance active, découvrir ses outils et pilot
 section: Guide utilisateur
 parent: assistant
 order: 10
-sourceRevision: a7a8279a3835
+sourceRevision: eb7a67eb99e8
 ---
 
-Cette compilation 0.1.0 Bêta utilise CyMCPSDK **0.7.1**, compilé depuis la révision `34d4bcae126bc83d1a2925b5047dac36e3d09d92`, et le manuel hors ligne complet anglais/français. Les paquets publiés auparavant avec 0.7.0 utilisent les anciens droits par défaut : remplacez ensemble binaires, assistant, runtime, documentation et licences lors de la mise à jour. La capture fonctionne sans compte IA ; l’application n’installe ni modèle, ni environnement Python, ni moteur d’inférence.
+La mise à jour des profils Free des paquets 0.1.0 Bêta utilise CyMCPSDK **0.7.1**, compilé depuis la révision `34d4bcae126bc83d1a2925b5047dac36e3d09d92`, et le manuel hors ligne complet anglais/français. Les paquets publiés auparavant avec 0.7.0 utilisent les anciens droits par défaut : remplacez ensemble binaires, assistant, runtime, documentation et licences lors de la mise à jour. La capture fonctionne sans compte IA ; l’application n’installe ni modèle, ni environnement Python, ni moteur d’inférence.
 
 ## Se connecter à la bonne instance {#connect}
 

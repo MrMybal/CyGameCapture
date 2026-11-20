@@ -25,7 +25,7 @@ Capture the image you need from a game's rendering pipeline and share it with OB
 
 > **BETA · 0.1.0**
 >
-> Available for testing and validation before a stable release. Check the [version notes, fixes and known limitations](CHANGELOG.md#current-version) before updating. The November 20, 2026 package update includes CyMCPSDK 0.7.0, the console companion and the updated offline manual.
+> Available for testing and validation before a stable release. Check the [version notes, fixes and known limitations](CHANGELOG.md#current-version) before updating. The November 20, 2026 Free-profile package update includes CyMCPSDK 0.7.1, address-only local MCP access, the console companion and the updated offline manual.
 
 [![CyGameCapture Buffer Inspector with the render target list, resource properties and live preview](Docs/Images/m1_buffer_inspector.png)](Docs/Images/m1_buffer_inspector.png)
 
@@ -56,7 +56,7 @@ The Unreal plugin publishes render targets, scene captures or the game viewport,
 - **Choose a frame moment:** D3D11 capture after a selected write, before the game adds its interface.
 - **Play with the selected image:** **F10** toggles a compatible selected buffer in game; capture remains a separate action.
 - **Optional AI assistance:** the D3D11 ReShade assistant uses Claude Code, Codex, OpenCode or an OpenAI-compatible endpoint, with streaming, cancellation and restored sessions. Review buffer proposals yourself, or explicitly permit the assistant to control capture. Your selected provider receives the supplied images, metadata and conversation; manual capture needs no AI client.
-- **CLI and MCP:** inspect and control a running ReShade, OBS or Unreal instance using the same typed business operations. Current source builds default to Free, permitting exposed operations by address alone; published 0.7.0 packages use the previous read-only defaults. The Unreal assistant is available from **Help → CyGameCapture assistant**.
+- **CLI and MCP:** inspect and control a running ReShade, OBS or Unreal instance using the same typed business operations. Free is the default, permitting exposed operations by address alone. Local controlled, Token only and Protected remain available. The Unreal assistant is available from **Help → CyGameCapture assistant**.
 - **Unreal workflows:** multiple senders and receivers, render targets, scene captures and viewport sources on Win64 D3D11/D3D12.
 - **English/French help:** 38 fully translated pages with search, images, annotations, comparisons and SVG diagrams. Open **User guide** in ReShade or OBS, **Help → CyGameCapture user guide** in Unreal, or press **F1** while the ReShade inspector is focused.
 
@@ -173,9 +173,9 @@ This table is an index, not a replacement for complete notices. Preserve the sup
 
 ## Assistant, CLI and MCP
 
-Current source builds compile CyMCPSDK **0.7.1** (`34d4bca`) for integrated conversation and local control. This profile update is not yet published in the download packages. ReShade's assistant uses its existing ImGui window; Unreal has a Slate panel for Codex/API providers. OBS exposes its source tools without adding a chat dock. An already running OpenAI-compatible endpoint can provide local models; no model is installed by CyGameCapture.
+The application includes CyMCPSDK **0.7.1** (`34d4bca`), compiled from source, for integrated conversation and local control. ReShade's assistant uses its existing ImGui window; Unreal has a Slate panel for Codex/API providers. OBS exposes its source tools without adding a chat dock. An already running OpenAI-compatible endpoint can provide local models; no model is installed by CyGameCapture.
 
-With a current source build, use the console companion and the address shown in the application:
+Use the included console companion and the address shown in the application:
 
 ```powershell
 .\CyGameCaptureCLI.exe instances

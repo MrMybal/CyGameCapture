@@ -25,7 +25,7 @@ Capturez l’image qui vous intéresse dans le rendu d’un jeu et partagez-la a
 
 > **BÊTA · 0.1.0**
 >
-> Disponible pour les essais et la validation avant une version stable. Consultez les [notes de version, correctifs et limites connues](CHANGELOG.fr.md#current-version) avant une mise à jour. La mise à jour des paquets du 20 novembre 2026 comprend CyMCPSDK 0.7.0, le compagnon console et le manuel hors ligne actualisé.
+> Disponible pour les essais et la validation avant une version stable. Consultez les [notes de version, correctifs et limites connues](CHANGELOG.fr.md#current-version) avant une mise à jour. La mise à jour des profils Free du 20 novembre 2026 comprend CyMCPSDK 0.7.1, l’accès MCP local par adresse seule, le compagnon console et le manuel hors ligne actualisé.
 
 [![Inspecteur de buffers CyGameCapture avec la liste des cibles de rendu, leurs propriétés et l’aperçu en direct](Docs/Images/m1_buffer_inspector.png)](Docs/Images/m1_buffer_inspector.png)
 
@@ -56,7 +56,7 @@ Le plugin Unreal publie des render targets, des scene captures ou le viewport du
 - **Choix du moment de la frame** : capture D3D11 après une écriture sélectionnée, avant que le jeu ajoute son interface.
 - **Affichage de l’image sélectionnée en jeu** : **F10** bascule vers un buffer compatible ; le démarrage d’une capture reste une action distincte.
 - **Assistant IA optionnel** : l’assistant ReShade D3D11 utilise Claude Code, Codex, OpenCode ou une API compatible OpenAI, avec streaming, annulation et sessions restaurées. Examinez les propositions vous-même ou autorisez explicitement le pilotage de la capture. Le fournisseur choisi reçoit les images, métadonnées et échanges fournis ; la capture manuelle ne nécessite aucun client IA.
-- **CLI et MCP** : inspectez et pilotez une instance ReShade, OBS ou Unreal avec les mêmes opérations métier typées. Les compilations actuelles utilisent Free par défaut pour les opérations exposées par adresse seule ; les paquets publiés avec 0.7.0 conservent l’ancien défaut en lecture seule. L’assistant Unreal s’ouvre depuis **Help → CyGameCapture assistant**.
+- **CLI et MCP** : inspectez et pilotez une instance ReShade, OBS ou Unreal avec les mêmes opérations métier typées. Free est le défaut pour les opérations exposées par adresse seule. Local contrôlé, Jeton seul et Protégé restent disponibles. L’assistant Unreal s’ouvre depuis **Help → CyGameCapture assistant**.
 - **Intégration Unreal** : plusieurs émetteurs et récepteurs, render targets, scene captures et viewport sous Win64 D3D11/D3D12.
 - **Aide en anglais et français** : 38 pages entièrement traduites, avec recherche, images, annotations, comparaisons et schémas SVG. Ouvrez **User guide** dans ReShade ou OBS, **Help → CyGameCapture user guide** dans Unreal, ou appuyez sur **F1** lorsque l’inspecteur ReShade a le focus.
 
@@ -173,9 +173,9 @@ Ce tableau est un index, pas un remplacement des notices complètes. Conservez l
 
 ## Assistant, CLI et MCP
 
-Les sources actuelles compilent CyMCPSDK **0.7.1** (`34d4bca`) pour la discussion intégrée et le contrôle local. Cette mise à jour des profils n’est pas encore publiée dans les téléchargements. ReShade conserve sa fenêtre ImGui ; Unreal propose un panneau Slate pour Codex et les API. OBS expose ses outils de source sans ajouter de dock de chat. Un point d’accès compatible OpenAI déjà démarré peut fournir des modèles locaux ; CyGameCapture n’installe pas de modèle.
+L’application inclut CyMCPSDK **0.7.1** (`34d4bca`), compilé depuis les sources, pour la discussion intégrée et le contrôle local. ReShade conserve sa fenêtre ImGui ; Unreal propose un panneau Slate pour Codex et les API. OBS expose ses outils de source sans ajouter de dock de chat. Un point d’accès compatible OpenAI déjà démarré peut fournir des modèles locaux ; CyGameCapture n’installe pas de modèle.
 
-Avec une compilation des sources actuelles, utilisez le compagnon console et l’adresse affichée dans l’application :
+Utilisez le compagnon console inclus et l’adresse affichée dans l’application :
 
 ```powershell
 .\CyGameCaptureCLI.exe instances
