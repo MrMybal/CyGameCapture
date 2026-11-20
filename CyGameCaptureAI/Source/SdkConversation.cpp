@@ -37,23 +37,25 @@ bool AskSdkClient(ClientKind kind, const std::vector<std::wstring> &command, con
         {
             Json descriptor;
             auto remote = ConnectInstance(std::filesystem::u8path(request.automation_connection), &descriptor);
+            Json token_headers = Json::object();
+            const auto token = descriptor.value("token", std::string());
+            if (!token.empty())
+                token_headers["Authorization"] = "Bearer " + token;
             if (kind == ClientKind::ClaudeCode)
             {
                 config.settings["mcp_servers"] = {
-                    {"CyGameCapture",
-                     {{"type", "http"},
-                      {"url", descriptor.at("url")},
-                      {"headers", {{"Authorization", "Bearer " + descriptor.at("token").get<std::string>()}}}}}};
+                    {"CyGameCapture", {{"type", "http"}, {"url", descriptor.at("url")}, {"headers", token_headers}}}};
                 config.settings["allowed_tools"] = {"mcp__CyGameCapture__*"};
             }
             else if (kind == ClientKind::OpenCode)
             {
-                config.settings["mcp_servers"] = Json::array(
-                    {{{"type", "http"},
-                      {"name", "CyGameCapture"},
-                      {"url", descriptor.at("url")},
-                      {"headers", Json::array({{{"name", "Authorization"},
-                                                {"value", "Bearer " + descriptor.at("token").get<std::string>()}}})}}});
+                auto headers = Json::array();
+                if (!token.empty())
+                    headers.push_back({{"name", "Authorization"}, {"value", "Bearer " + token}});
+                config.settings["mcp_servers"] = Json::array({{{"type", "http"},
+                                                               {"name", "CyGameCapture"},
+                                                               {"url", descriptor.at("url")},
+                                                               {"headers", headers}}});
             }
             else
             {

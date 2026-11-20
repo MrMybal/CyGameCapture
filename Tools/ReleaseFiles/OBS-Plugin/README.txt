@@ -61,4 +61,6 @@ LICENCES. Install-OBS-Plugin.cmd also copies LICENCES to the installed plugin.
 
 CyMCPSDK: keep CyGameCaptureMCP.dll beside the native add-on/plugin.
 CyGameCaptureCLI.exe instances lists hosts; --help explains CLI/MCP.
-Control is read only by default. See the bundled automation chapter.
+Free is the default MCP profile: exposed operations need no token or extra confirmation.
+Local controlled, Token only and Protected remain available. Existing explicit
+profile selections are preserved. See the bundled automation chapter.

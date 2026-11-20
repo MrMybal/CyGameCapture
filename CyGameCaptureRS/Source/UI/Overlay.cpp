@@ -743,13 +743,23 @@ namespace cygc
             ImGui::EndDisabled();
             if (ImGui::CollapsingHeader(i18n::Current() == i18n::Language::French ? "Réglages assistant et MCP" : "Assistant and MCP settings"))
             {
-                bool allow = config::GetBool("AutomationAllowMutations", false);
-                if (ImGui::Checkbox(i18n::Current() == i18n::Language::French ? "Autoriser le contrôle MCP de cette instance" : "Allow MCP control of this instance", &allow)) {
-                    config::SetBool("AutomationAllowMutations", allow);
-                    if (ctx->automation) ctx->automation->AllowMutations(allow);
+                const bool french=i18n::Current()==i18n::Language::French;
+                const char* profiles[]={"free","local_controlled","token_only","protected_access"};
+                const char* labels[]={"Free",french?"Local contrôlé":"Local controlled",french?"Jeton seul":"Token only",french?"Protégé":"Protected"};
+                auto selected=config::GetString("AutomationAccessProfile","free");int index=0;
+                for(int i=0;i<4;i++)if(selected==profiles[i]||selected==std::to_string(i))index=i;
+                if(ImGui::Combo(french?"Profil MCP (relancer le jeu)":"MCP profile (restart game)",&index,labels,4))config::SetString("AutomationAccessProfile",profiles[index]);
+                if(ctx->automation){
+                    ImGui::Text("%s: %s",french?"Profil actif":"Active profile",ctx->automation->Profile().c_str());
+                    ImGui::TextUnformatted(ctx->automation->Address().c_str());
+                    if(ctx->automation->ControlsOperations()){
+                        bool allow=config::GetBool("AutomationAllowMutations",false);
+                        if(ImGui::Checkbox(french?"Autoriser le contrôle MCP de cette instance":"Allow MCP control of this instance",&allow)){
+                            config::SetBool("AutomationAllowMutations",allow);ctx->automation->AllowMutations(allow);
+                        }
+                    }else ImGui::TextWrapped("%s",french?"Toutes les opérations exposées sont autorisées dans le profil actif.":"All exposed operations are allowed in the active profile.");
+                    ImGui::TextUnformatted(ctx->automation->Connection().c_str());
                 }
-                ImGui::TextWrapped("%s", i18n::Current() == i18n::Language::French ? "Désactivé : lecture seule. Activé : les clients authentifiés et l’assistant peuvent modifier la capture et l’affichage." : "Off: read only. On: authenticated clients and the assistant can change capture and the in-game view.");
-                if (ctx->automation) { ImGui::TextUnformatted(ctx->automation->Connection().c_str()); }
                 auto edit = [](const char* label, const char* key, const char* fallback) {
                     char value[512] = {}; auto saved = config::GetString(key, fallback); snprintf(value, sizeof(value), "%s", saved.c_str());
                     if (ImGui::InputText(label, value, sizeof(value))) config::SetString(key, value);
@@ -760,7 +770,7 @@ namespace cygc
                 edit(i18n::Current() == i18n::Language::French ? "Variable d’environnement de clé" : "Key environment variable", "AIKeyEnv", "");
                 int bytes = config::GetInt("AIContextBytes", 0);
                 if (ImGui::InputInt(i18n::Current() == i18n::Language::French ? "Contexte API (octets, 0 = complet)" : "API context (bytes, 0 = full)", &bytes)) config::SetInt("AIContextBytes", std::max(0, bytes));
-                ImGui::TextDisabled("CyMCPSDK 0.7.0");
+                ImGui::TextDisabled("CyMCPSDK 0.7.1");
             }
 			ImGui::Separator();
 

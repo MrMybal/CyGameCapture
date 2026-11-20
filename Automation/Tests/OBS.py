@@ -12,7 +12,7 @@ def main():
     ptr=c.c_void_p;string=c.c_char_p
     startup=fn('obs_startup',[string,string,ptr],c.c_bool);shutdown=fn('obs_shutdown',[],None)
     assert startup(b'en-US',str(folder).encode(),None)
-    source=None;settings=None;process=None
+    source=None;settings=None;free_source=None;free_settings=None;process=None
     release=fn('obs_source_release',[ptr],None);data_release=fn('obs_data_release',[ptr],None)
     try:
         fn('obs_add_data_path',[string],None)(str(installed/'data/libobs').encode())
@@ -23,8 +23,28 @@ def main():
         module=ptr();plugin=ROOT/'bin/Release/obs-plugins/64bit/CyGameCaptureOBS.dll'
         assert fn('obs_open_module',[c.POINTER(ptr),string,string],c.c_int)(c.byref(module),str(plugin).encode(),str(ROOT/'bin/Release/data/obs-plugins/CyGameCaptureOBS').encode())==0
         assert fn('obs_init_module',[ptr],c.c_bool)(module)
-        settings=fn('obs_data_create',[],ptr)();set_bool=fn('obs_data_set_bool',[ptr,string,c.c_bool],None)
+        # Legacy source settings without an explicit profile migrate to Free, retaining other values.
+        free_settings=fn('obs_data_create',[],ptr)()
+        set_bool=fn('obs_data_set_bool',[ptr,string,c.c_bool],None)
+        set_string=fn('obs_data_set_string',[ptr,string,string],None)
+        set_bool(free_settings,b'auto_connect',False)
+        set_bool(free_settings,b'automation_allow_control',False)
+        set_string(free_settings,b'sender_name',b'Existing sender setting')
+        free_source=fn('obs_source_create_private',[string,string,ptr],ptr)(b'cygamecapture_source',b'SDK Free source',free_settings);assert free_source
+        free_descriptor=next((folder/'UserData/CyGameCapture/Automation').glob('obs-source-*.json'))
+        descriptor=json.loads(free_descriptor.read_text());assert descriptor['access_profile']=='free' and 'token' not in descriptor
+        get_settings=fn('obs_source_get_settings',[ptr],ptr)
+        current=get_settings(free_source)
+        get_string=fn('obs_data_get_string',[ptr,string],string)
+        assert get_string(current,b'automation_access_profile')==b'free'
+        assert get_string(current,b'sender_name')==b'Existing sender setting'
+        data_release(current)
+        assert cli(descriptor['url'],'call','source.status')['name']=='SDK Free source'
+        assert cli(descriptor['url'],'call','source.sender','--args','{"sender":"Free updated sender"}')['sender']=='Free updated sender'
+        release(free_source);free_source=None;data_release(free_settings);free_settings=None
+        settings=fn('obs_data_create',[],ptr)()
         set_bool(settings,b'auto_connect',False)
+        fn('obs_data_set_string',[ptr,string,string],None)(settings,b'automation_access_profile',b'protected_access')
         source=fn('obs_source_create_private',[string,string,ptr],ptr)(b'cygamecapture_source',b'SDK isolated live source',settings);assert source
         fn('obs_source_inc_active',[ptr],None)(source)
         connection=next((folder/'UserData/CyGameCapture/Automation').glob('obs-source-*.json'))
@@ -46,11 +66,13 @@ def main():
             time.sleep(.1)
         assert state['connected'] and state['width']==target['width'],state
         cli(game,'call','captures.stop','--args','{"all":true}')
-        print('PASS real libobs source: default refusal, authorized source update, shared CLI/MCP schemas, real D3D12 producer -> Spout -> OBS reception and stop.',flush=True)
+        print('PASS real libobs source: legacy settings migrate to Free, address-only read/write without token, Protected denial, authorized controlled source update, shared CLI/MCP schemas, real D3D12 producer -> Spout -> OBS reception and stop.',flush=True)
     finally:
         if process and process.poll() is None:process.terminate();process.wait(timeout=60)
         if source:fn('obs_source_dec_active',[ptr],None)(source);release(source)
         if settings:data_release(settings)
+        if free_source:release(free_source)
+        if free_settings:data_release(free_settings)
         shutdown();directory.close()
 
 if __name__=='__main__':main()

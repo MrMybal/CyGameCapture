@@ -456,7 +456,7 @@ namespace cygc
         json += ",\n\"key_env\": "; AppendJsonString(json, config::GetString("AIKeyEnv", ""));
         json += ",\n\"context_bytes\": " + std::to_string(std::max(0, config::GetInt("AIContextBytes", 0)));
         json += ",\n\"external_tools_file\": "; AppendJsonString(json, config::GetString("AIExternalToolsFile", ""));
-        json += ",\n\"allow_peer_mutations\": "; json += config::GetBool("AutomationAllowMutations", false) ? "true" : "false";
+        json += ",\n\"allow_peer_mutations\": "; json += (automation_unrestricted_ || config::GetBool("AutomationAllowMutations", false)) ? "true" : "false";
 		json += ",\n\"mode\": ";
 		AppendJsonString(json, find_mode_ ? "find" : "chat");
 		json += ",\n\"client\": ";

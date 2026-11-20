@@ -5,7 +5,7 @@ description: Change language, shortcuts and capture defaults without losing your
 section: User guide
 parent: preferences
 order: 12
-revision: ae991cd491d1
+revision: d854f4591935
 ---
 
 The overlay starts in **English**. Choose English or Français next to the logo; the choice is saved in `ReShade.ini`. The guide button opens the corresponding edition. OBS follows its own language; unsupported languages use the English guide. The manual’s language links switch editions while keeping the same chapter. The default `Documentation.html` is always English.
@@ -51,3 +51,5 @@ AIClient=auto
 Press **F1** while the ReShade inspector is focused to open help for its current tab. Timeline and Debug target the same explicit section in the inspector guide.
 
 For SDK host and API settings, see [automation settings](doc:automation#optimisations).
+
+MCP starts with the Free profile. See [access profiles and migration](doc:automation#permissions) for token requirements and controlled profiles.

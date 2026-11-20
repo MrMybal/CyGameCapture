@@ -38,8 +38,15 @@ Json Buffer(const TrackedResource &item)
 } // namespace
 Automation::Automation(DeviceContext &device) : device_(device)
 {
+    auto profile = config::GetString("AutomationAccessProfile", "");
+    if (profile.empty())
+    {
+        profile = "free";
+        config::SetString("AutomationAccessProfile", profile);
+    }
     Json options = {
         {"component", "reshade"},
+        {"access_profile", profile},
         {"allow_mutations", config::GetBool("AutomationAllowMutations", false)},
         {"compact", config::GetBool("AutomationCompact", false)},
         {"notifications", config::GetBool("AutomationNotifications", true)},
@@ -71,7 +78,7 @@ Automation::Automation(DeviceContext &device) : device_(device)
                 {"format", {{"type", "string"}, {"maxLength", 100}}}}));
     add("buffers.inspect", "Read one live buffer's metadata; use buffers.list to discover its ID.", true,
         Schema({{"id", Id()}}, {"id"}));
-    add("buffers.select", "Select a live buffer in the inspector. Requires remote control enabled in the application.",
+    add("buffers.select", "Select a live buffer in the inspector. Controlled profiles apply the host operation policy.",
         false, Schema({{"id", Id()}}, {"id"}));
     add("buffers.moment",
         "Select the intermediate write moment for inspection; zero means end of frame. D3D11 only for nonzero moments.",
@@ -105,7 +112,7 @@ Automation::Automation(DeviceContext &device) : device_(device)
                 {"persistent", {{"type", "boolean"}}}}));
     add("assistant.cancel", "Cancel the current assistant generation without applying any pending proposal.", false,
         Schema());
-    log::Info("CyMCPSDK 0.7.0 connection: %s", Connection().c_str());
+    log::Info("CyMCPSDK 0.7.1 connection: %s", Connection().c_str());
 }
 Automation::~Automation()
 {
@@ -118,6 +125,22 @@ void Automation::Pump()
 void Automation::AllowMutations(bool allow)
 {
     cygc_automation_allow_mutations(host_, allow ? 1 : 0);
+}
+std::string Automation::Profile() const
+{
+    return Json::parse(cygc_automation_access(host_)).value("profile", std::string("unavailable"));
+}
+std::string Automation::Address() const
+{
+    return Json::parse(cygc_automation_access(host_)).value("url", std::string());
+}
+bool Automation::ControlsOperations() const
+{
+    return Json::parse(cygc_automation_access(host_)).value("control_operations", true);
+}
+bool Automation::AllowsMutations() const
+{
+    return Json::parse(cygc_automation_access(host_)).value("allow_mutations", false);
 }
 std::string Automation::Connection() const
 {
@@ -138,8 +161,10 @@ const char *__cdecl Automation::Invoke(void *owner, const char *operation, const
                       {"selected_id", d.inspector.selected_id},
                       {"moment", d.inspector.moment},
                       {"selected_view", d.view_mode == ViewMode::SelectedBuffer},
-                      {"sdk", "0.7.0"},
-                      {"remote_control", config::GetBool("AutomationAllowMutations", false)}};
+                      {"sdk", "0.7.1"},
+                      {"remote_control", self.AllowsMutations()},
+                      {"access_profile", self.Profile()},
+                      {"mcp_url", self.Address()}};
         else if (name == "buffers.list")
         {
             auto list = Json::array();

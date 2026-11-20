@@ -4,7 +4,7 @@ title: Unreal Engine sender and receiver
 description: Send Unreal targets and cameras or receive a Spout texture in a material.
 section: User guide
 order: 11
-revision: 2d09294f6ad1
+revision: 5b6b1fbd7026
 ---
 
 Install the package matching your Unreal version into `<Project>\Plugins\CyGameCaptureUE`, enable the plugin and restart. Supplied prebuilt archives cover the engine versions named on those archives. Source compatibility targets UE 4.27–5.8; use the version labelled on your prebuilt archive. Win64 D3D11 and D3D12 are the supported RHIs. The offline manual is also at `Documentation/Documentation.html` in the plugin.
@@ -47,4 +47,4 @@ Use **Help → CyGameCapture user guide** in the editor, or `CyGameCapture.Help`
 
 ## Assistant and automation {#assistant-and-automation}
 
-Open **Help → CyGameCapture assistant** for the Slate chat (Codex or an OpenAI-compatible endpoint). CLI/MCP calls operate on existing capture components on the game ticker. Remote modifications are disabled by default. See [connection, operations and session settings](doc:automation).
+Open **Help → CyGameCapture assistant** for the Slate chat (Codex or an OpenAI-compatible endpoint). CLI/MCP calls operate on existing capture components on the game ticker. Free is the default: exposed reads and mutations work by loopback address alone. Local controlled, Token only and Protected remain selectable; explicit selections are preserved. See [connection, operations and session settings](doc:automation).

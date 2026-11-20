@@ -11,14 +11,14 @@ set(CYGC_CYMCP_SOURCE_DIR "D:/_Project/CyMCPSDK" CACHE PATH "CyMCPSDK source che
     set(CYMCP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 if(NOT EXISTS "${CYGC_CYMCP_SOURCE_DIR}/CMakeLists.txt")
     include(FetchContent)
-    FetchContent_Declare(cygc_cymcp GIT_REPOSITORY https://github.com/MrMybal/CyMCPSDK.git GIT_TAG 791d4d7d7680213b282ec8529d248a10f8494d77)
+    FetchContent_Declare(cygc_cymcp GIT_REPOSITORY https://github.com/MrMybal/CyMCPSDK.git GIT_TAG 34d4bcae126bc83d1a2925b5047dac36e3d09d92)
     FetchContent_MakeAvailable(cygc_cymcp)
     set(CYGC_CYMCP_SOURCE_DIR "${cygc_cymcp_SOURCE_DIR}")
 else()
     # Compile an immutable snapshot from the local checkout. Other projects may be
     # editing that checkout concurrently; their uncommitted changes are never touched.
     find_package(Git REQUIRED)
-    set(CYGC_CYMCP_REVISION "791d4d7d7680213b282ec8529d248a10f8494d77")
+    set(CYGC_CYMCP_REVISION "34d4bcae126bc83d1a2925b5047dac36e3d09d92")
     set(CYGC_CYMCP_BUILD_SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/source-${CYGC_CYMCP_REVISION}")
     if(NOT EXISTS "${CYGC_CYMCP_BUILD_SOURCE_DIR}/CMakeLists.txt")
         set(sdk_archive "${CMAKE_CURRENT_BINARY_DIR}/CyMCPSDK-${CYGC_CYMCP_REVISION}.tar")

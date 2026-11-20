@@ -14,7 +14,7 @@ int wmain(int argc, wchar_t **argv)
         std::ifstream file(argv[1]);
         Json descriptor;
         file >> descriptor;
-        McpClient client(descriptor.at("url"), descriptor.at("token"));
+        McpClient client(descriptor.at("url"), descriptor.value("token", std::string()));
         client.connect();
         auto require = [](bool condition, const char *message) {
             if (!condition)
@@ -25,7 +25,7 @@ int wmain(int argc, wchar_t **argv)
         require(client.cache_stats().hits > 0, "Discovery was not cached");
         client.start_notifications();
         require(client.notification_status().value("running", false), "HTTP subscription did not start");
-        McpClient second(descriptor.at("url"), descriptor.at("token"));
+        McpClient second(descriptor.at("url"), descriptor.value("token", std::string()));
         second.connect();
         second.start_notifications();
         client.clear_cache();

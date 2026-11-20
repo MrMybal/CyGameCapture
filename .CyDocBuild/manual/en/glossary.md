@@ -5,7 +5,7 @@ description: Understand capture terminology and the licences of the distributed 
 section: User guide
 parent: preferences
 order: 16
-revision: 568fe2b20fc7
+revision: 28752281c86e
 ---
 
 | Term | Meaning |
@@ -24,4 +24,4 @@ Native CyGameCapture components use **AGPL-3.0-or-later**. CyGameCaptureUE uses 
 
 Source and issue tracker: [github.com/MrMybal/CyGameCapture](https://github.com/MrMybal/CyGameCapture) (Internet required). The software is provided without warranty. This manual describes the current implemented behaviour, including its limitations.
 
-CyMCPSDK 0.7.0 and the independent automation runtime/CLI use MIT. Their complete English notices and native dependency licenses are supplied in LICENCES. No CyUI, model weights or engine installer is shipped.
+CyMCPSDK 0.7.1 and the independent automation runtime/CLI use MIT. Their complete English notices and native dependency licenses are supplied in LICENCES. No CyUI, model weights or engine installer is shipped.

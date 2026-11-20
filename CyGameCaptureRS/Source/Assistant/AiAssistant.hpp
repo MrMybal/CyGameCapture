@@ -79,7 +79,7 @@ namespace cygc
 		void NewConversation();
         void Cancel();
         const std::string &PartialReply() const { return partial_reply_; }
-        void SetAutomationConnection(std::string connection) { automation_connection_ = std::move(connection); }
+        void SetAutomationConnection(std::string connection, bool unrestricted=false) { automation_connection_ = std::move(connection); automation_unrestricted_=unrestricted; }
 
 		/** Present time, after the captures: renders the pictures when asked, then starts the helper. */
 		void OnPresent(reshade::api::command_queue *queue, reshade::api::resource current_back_buffer);
@@ -97,6 +97,7 @@ namespace cygc
 
 	private:
         std::string partial_reply_, automation_connection_;
+        bool automation_unrestricted_=false;
 		struct Tile
 		{
 			uint32_t id = 0;

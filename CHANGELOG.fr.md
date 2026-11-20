@@ -2,6 +2,14 @@
 
 [English](CHANGELOG.md) · [Présentation de l’application](README.fr.md)
 
+## Non publié — Profils MCP Free
+
+- Compiler CyMCPSDK 0.7.1 depuis la révision locale `34d4bcae126bc83d1a2925b5047dac36e3d09d92`.
+- Migrer les configurations sans profil vers Free : HTTP loopback par adresse seule, sans jeton ni confirmation supplémentaire, toutes les opérations exposées autorisées ; conserver la validation des arguments.
+- Préserver les profils explicites et les réglages utilisateur. Conserver Local contrôlé, Jeton seul et Protégé avec leurs droits et jetons respectifs.
+- Accepter l’URL seule en CLI/stdio et le chat intégré sans jeton ; actualiser les réglages et le manuel hors ligne bilingue. Les usages CLI et descripteurs existants restent disponibles.
+- Valider localement, sans workflow GitHub. Cette mise à jour n’est pas encore publiée.
+
 <a id="current-version"></a>
 
 ## 0.1.0 — Bêta · mise à jour CyMCPSDK du 2026-11-20

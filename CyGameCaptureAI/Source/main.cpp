@@ -200,8 +200,14 @@ namespace
 			"framing, so their difference is the interface alone. found: false when there is nothing to propose.\n"
 			"- Under your reply, a proposal becomes buttons: \"Show\" (preview), \"Apply\" (streams the picture) and, "
 			"when hud_stream is true, \"Apply, and send the interface alone too\" (a second stream with the interface alone). "
-			"Refer to those buttons, never to the JSON or its fields, and do not claim to have changed anything yourself.\n"
-			"- Do not run commands or use tools: everything needed is here.\n";
+			"Refer to those buttons, never to the JSON or its fields. A proposal alone does not change the application.\n";
+		if (!request.String("automation_connection").empty())
+			prompt += "- Use the supplied application tools to inspect live state and perform changes the user requests. "
+				"Respect the active access profile; Free authorizes all exposed operations without another confirmation. "
+				"Only claim a change after a successful tool result. For a buffer recommendation, present the proposal "
+				"buttons unless the user asks you to apply it.\n";
+		else
+			prompt += "- Do not run commands or use tools: everything needed is here.\n";
 		return prompt;
 	}
 

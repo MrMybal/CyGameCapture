@@ -1,5 +1,6 @@
 // Copyright (C) 2026 Cyberalien
 // SPDX-License-Identifier: MIT
+#include "AccessProfiles.hpp"
 #include "CyGameCaptureAutomation.h"
 #include "OutputSchemas.hpp"
 #include <Windows.h>
@@ -26,6 +27,13 @@ struct Task
 struct Host
 {
     std::atomic_bool stopping{false}, writable{false};
+    LocalAccessProfile profile = LocalAccessProfile::free;
+    LocalAccessSettings access = local_access_settings(LocalAccessProfile::free);
+    std::string endpoint_url, access_json;
+    bool AllowsMutations() const
+    {
+        return !access.control_operations || writable.load();
+    }
     std::mutex queue_mutex;
     std::deque<std::shared_ptr<Task>> queue;
     std::set<std::string> reads;
@@ -198,11 +206,14 @@ struct Host
         free(local);
         private_directory(directory);
         component = options.value("component", std::string("native"));
+        profile = AccessProfile(options);
+        access = local_access_settings(profile);
         writable = options.value("allow_mutations", false);
-        registry =
-            std::make_shared<Registry>(Policy([this](const CallContext &, const std::string &name, const Json &) {
+        registry = std::make_shared<Registry>(
+            access.control_operations ? Policy([this](const CallContext &, const std::string &name, const Json &) {
                 return !stopping && (IsRead(name) || writable) ? Decision::allow : Decision::deny;
-            }));
+            })
+                                      : Policy::allow_all());
         ResourceOptions storage;
         storage.max_stored_bytes = options.value("result_memory_bytes", 8 * 1024 * 1024);
         storage.result_ttl = std::chrono::milliseconds(options.value("result_ttl_ms", 300000));
@@ -238,15 +249,17 @@ struct Host
         }
         mcp = std::make_unique<McpServer>(
             *exposed, "CyGameCapture " + options.value("component", std::string("native")), server_options);
-        const auto token = random_token();
-        http = std::make_unique<LocalHttpServer>(
-            token,
-            [this](const Json &input, const CallContext &ctx) {
-                return input.contains("jsonrpc") ? mcp->handle(input, ctx) : dispatch_app(*registry, input, ctx);
-            },
-            // Reserve two dispatch workers beyond the two permitted long-lived subscriptions.
-            4);
+        const auto token = access.require_token ? random_token() : std::string();
+        JsonEndpoint endpoint = [this](const Json &input, const CallContext &ctx) {
+            return input.contains("jsonrpc") ? mcp->handle(input, ctx) : dispatch_app(*registry, input, ctx);
+        };
+        // Reserve two dispatch workers beyond the two permitted long-lived subscriptions.
+        if (access.require_token)
+            http = std::make_unique<LocalHttpServer>(token, endpoint, 4);
+        else
+            http = std::make_unique<LocalHttpServer>(LocalHttpServer::UnauthenticatedLoopback{}, endpoint, 4);
         const int port = http->start();
+        endpoint_url = "http://127.0.0.1:" + std::to_string(port) + "/mcp";
         chat_directory = directory / L"Conversations" /
                          std::filesystem::u8path(options.value("component", std::string("native")) + "-" +
                                                  sha256(options.value("scope", std::string("default"))).substr(0, 16));
@@ -256,8 +269,12 @@ struct Host
                            {"sdk", version},
                            {"pid", GetCurrentProcessId()},
                            {"component", options.value("component", std::string("native"))},
-                           {"url", "http://127.0.0.1:" + std::to_string(port) + "/mcp"},
-                           {"token", token}};
+                           {"url", endpoint_url},
+                           {"access_profile", AccessProfileName(profile)},
+                           {"require_token", access.require_token},
+                           {"control_operations", access.control_operations}};
+        if (access.require_token)
+            descriptor["token"] = token;
         const auto bytes = descriptor.dump();
         auto file = open_private_output_file(connection);
         if (fwrite(bytes.data(), 1, bytes.size(), file.get()) != bytes.size())
@@ -356,7 +373,7 @@ struct Host
             try
             {
                 task->context.cancellation.check();
-                if (!IsRead(task->name) && !writable)
+                if (access.control_operations && !IsRead(task->name) && !writable)
                     throw Error("PermissionDenied", "Remote mutations are disabled in this application instance");
                 const auto args = task->args.dump();
                 const char *reply = task->handler(task->owner, task->name.c_str(), args.c_str());
@@ -419,6 +436,20 @@ extern "C"
     const char *cygc_automation_connection(void *host)
     {
         return host ? static_cast<Host *>(host)->connection_utf8.c_str() : "";
+    }
+    const char *cygc_automation_access(void *host)
+    {
+        if (!host)
+            return "{}";
+        auto &h = *static_cast<Host *>(host);
+        h.access_json = Json({{"profile", AccessProfileName(h.profile)},
+                              {"profile_index", static_cast<int>(h.profile)},
+                              {"require_token", h.access.require_token},
+                              {"control_operations", h.access.control_operations},
+                              {"allow_mutations", h.AllowsMutations()},
+                              {"url", h.endpoint_url}})
+                            .dump();
+        return h.access_json.c_str();
     }
     const char *cygc_automation_error()
     {

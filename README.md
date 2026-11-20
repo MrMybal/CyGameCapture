@@ -56,7 +56,7 @@ The Unreal plugin publishes render targets, scene captures or the game viewport,
 - **Choose a frame moment:** D3D11 capture after a selected write, before the game adds its interface.
 - **Play with the selected image:** **F10** toggles a compatible selected buffer in game; capture remains a separate action.
 - **Optional AI assistance:** the D3D11 ReShade assistant uses Claude Code, Codex, OpenCode or an OpenAI-compatible endpoint, with streaming, cancellation and restored sessions. Review buffer proposals yourself, or explicitly permit the assistant to control capture. Your selected provider receives the supplied images, metadata and conversation; manual capture needs no AI client.
-- **CLI and MCP:** inspect and control a running ReShade, OBS or Unreal instance using the same typed business operations. Remote modifications are disabled by default. The Unreal assistant is available from **Help → CyGameCapture assistant**.
+- **CLI and MCP:** inspect and control a running ReShade, OBS or Unreal instance using the same typed business operations. Current source builds default to Free, permitting exposed operations by address alone; published 0.7.0 packages use the previous read-only defaults. The Unreal assistant is available from **Help → CyGameCapture assistant**.
 - **Unreal workflows:** multiple senders and receivers, render targets, scene captures and viewport sources on Win64 D3D11/D3D12.
 - **English/French help:** 38 fully translated pages with search, images, annotations, comparisons and SVG diagrams. Open **User guide** in ReShade or OBS, **Help → CyGameCapture user guide** in Unreal, or press **F1** while the ReShade inspector is focused.
 
@@ -99,7 +99,7 @@ Close the game, OBS and Unreal before replacing loaded components. Replace binar
 ### Requirements
 
 - Windows x64, **Visual Studio 2022** with MSVC v143 and the C++/CMake/Ninja tools; **CMake 3.24+**, C++17 for the native integrations and C++20 for the isolated SDK runtime/helper.
-- **Git and CyMCPSDK sources**: prefer `D:\_Project\CyMCPSDK`; CMake snapshots revision `791d4d7`. If absent it fetches that revision from the private upstream using available Git authentication. See [integration build notes](Automation/README.md).
+- **Git and CyMCPSDK sources**: prefer `D:\_Project\CyMCPSDK`; CMake snapshots revision `34d4bca`. If absent it fetches that revision from the private upstream using available Git authentication. See [integration build notes](Automation/README.md).
 - **Node.js 22+ and npm**, for generating the documentation during builds. The pinned local CyDoc archive is included; no registry substitute is needed.
 - An installed OBS Studio for generating the optional OBS/FFmpeg import libraries; a matching Unreal Engine installation for Unreal plugin builds.
 - The native dependencies are included as the limited SDK/header subsets described in the license table. ReShade, OBS, Unreal and AI provider clients are installed separately.
@@ -154,7 +154,7 @@ See the [configuration reference](https://mrmybal.github.io/CyGameCapture/Docume
 | [Spout2 DirectX subset](https://github.com/leadedge/Spout2/tree/c2bcc12147711d12ace7d5f08e869d774d840f8a) | [BSD-2-Clause and supplied notices](LICENCES/Spout2-LICENSE.txt) | Compiled native texture sharing for the producers, receiver and tools. |
 | [OBS Studio / libobs 29.1.3](https://github.com/obsproject/obs-studio/tree/29.1.3) | [GPL-2.0-or-later; cooperation commitment](CyGameCaptureOBS/ThirdParty/THIRD_PARTY_NOTICES.md) | Public headers and user-installed libobs for the optional OBS plugin; import library generated locally. |
 | [FFmpeg 6.0 headers](https://github.com/FFmpeg/FFmpeg/tree/n6.0) | [LGPL-2.1-or-later and build terms](Tests/CyGameCaptureVideoProbe/ThirdParty/THIRD_PARTY_NOTICES.md) | Optional video probe only; dynamically loads the user's OBS FFmpeg libraries. No FFmpeg DLL is bundled. |
-| [CyMCPSDK 0.7.0 · 791d4d7](https://github.com/MrMybal/CyMCPSDK/tree/791d4d7d7680213b282ec8529d248a10f8494d77) | [MIT](LICENCES/CyMCPSDK-Notices.md) | Core, Platform, Http, MCP, AI; runtime C ABI + CLI MIT. |
+| [CyMCPSDK 0.7.1 · 34d4bca](https://github.com/MrMybal/CyMCPSDK/tree/34d4bcae126bc83d1a2925b5047dac36e3d09d92) | [MIT](LICENCES/CyMCPSDK-Notices.md) | Core, Platform, Http, MCP, AI; runtime C ABI + CLI MIT. |
 | [CyDoc 0.1.0 · revision 6ddf9a5](https://github.com/MrMybal/CyDoc/tree/6ddf9a582defb2f11fbb3f992afef6f98dcadc93) | [MIT](.CyDocBuild/vendor/LICENSE.txt) | Local documentation reader and image module; generation tools run at build time. Source access may require permission. No Three.js or mesh module is included. |
 | [Unreal Engine](https://www.unrealengine.com/) | [Epic's Unreal Engine terms](https://www.unrealengine.com/eula/unreal) | Separately installed host/runtime and build toolchain for the MIT Unreal plugin. The engine is not redistributed here. |
 
@@ -173,19 +173,19 @@ This table is an index, not a replacement for complete notices. Preserve the sup
 
 ## Assistant, CLI and MCP
 
-CyMCPSDK **0.7.0** (`791d4d7`) provides the integrated conversation and authenticated local control. ReShade's assistant uses its existing ImGui window; Unreal has a Slate panel for Codex/API providers. OBS exposes its source tools without adding a chat dock. An already running OpenAI-compatible endpoint can provide local models; no model is installed by CyGameCapture.
+Current source builds compile CyMCPSDK **0.7.1** (`34d4bca`) for integrated conversation and local control. This profile update is not yet published in the download packages. ReShade's assistant uses its existing ImGui window; Unreal has a Slate panel for Codex/API providers. OBS exposes its source tools without adding a chat dock. An already running OpenAI-compatible endpoint can provide local models; no model is installed by CyGameCapture.
 
-Use the console companion included in the archive:
+With a current source build, use the console companion and the address shown in the application:
 
 ```powershell
 .\CyGameCaptureCLI.exe instances
-.\CyGameCaptureCLI.exe list --instance 'C:\path\connection.json'
-.\CyGameCaptureCLI.exe describe captures.start --instance 'C:\path\connection.json'
-.\CyGameCaptureCLI.exe call app.status --instance 'C:\path\connection.json'
-.\CyGameCaptureCLI.exe mcp-config --instance 'C:\path\connection.json'
+.\CyGameCaptureCLI.exe list --url 'http://127.0.0.1:PORT/mcp'
+.\CyGameCaptureCLI.exe describe captures.start --url 'http://127.0.0.1:PORT/mcp'
+.\CyGameCaptureCLI.exe call app.status --url 'http://127.0.0.1:PORT/mcp'
+.\CyGameCaptureCLI.exe mcp-config --url 'http://127.0.0.1:PORT/mcp'
 ```
 
-Select the private connection path returned by `instances`. `mcp-config` prints a stdio MCP client configuration. The native loopback HTTP transport additionally supports resources and compatible change subscriptions. Enable mutation permission yourself inside the application before requesting capture changes; the same permission applies to chat, CLI and MCP. API credentials are read from a selected environment variable, not saved in conversation files.
+Replace PORT with the running host’s port, or use the private connection path returned by `instances` with `--instance`. `mcp-config` prints a stdio MCP client configuration. The native loopback HTTP transport additionally supports resources and compatible change subscriptions. **Free is the default:** no token or extra confirmation for exposed operations. Missing profile selections migrate to Free; explicit choices remain unchanged. Local controlled keeps the mutation switch, Token only requires a token, and Protected requires both token and mutation permission. Profiles apply after host restart; argument validation remains active for CLI, MCP and chat. API credentials are read from a selected environment variable, not saved in conversation files.
 
 The offline manual's **Assistant, terminal and MCP control** chapter covers all 29 operations across the three hosts, peer-tool allowlists, pagination, compact/full discovery, retained results and independently adjustable context/cache/notification/performance settings. The CLI and MCP control paths support D3D11/D3D12; the ReShade assistant's image workflow remains D3D11-only.
 

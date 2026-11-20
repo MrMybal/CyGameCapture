@@ -14,6 +14,8 @@ extern "C"
     CYGC_MCP_API void *cygc_automation_create(const char *options_json);
     CYGC_MCP_API int cygc_automation_add(void *, const char *operation_json, cygc_operation_handler, void *);
     CYGC_MCP_API const char *cygc_automation_connection(void *);
+    // Public access metadata only; never returns a token. Profile changes apply on host restart.
+    CYGC_MCP_API const char *cygc_automation_access(void *);
     CYGC_MCP_API const char *cygc_automation_error();
     CYGC_MCP_API void cygc_automation_pump(void *);
     CYGC_MCP_API void cygc_automation_allow_mutations(void *, int allow);

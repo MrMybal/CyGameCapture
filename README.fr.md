@@ -56,7 +56,7 @@ Le plugin Unreal publie des render targets, des scene captures ou le viewport du
 - **Choix du moment de la frame** : capture D3D11 après une écriture sélectionnée, avant que le jeu ajoute son interface.
 - **Affichage de l’image sélectionnée en jeu** : **F10** bascule vers un buffer compatible ; le démarrage d’une capture reste une action distincte.
 - **Assistant IA optionnel** : l’assistant ReShade D3D11 utilise Claude Code, Codex, OpenCode ou une API compatible OpenAI, avec streaming, annulation et sessions restaurées. Examinez les propositions vous-même ou autorisez explicitement le pilotage de la capture. Le fournisseur choisi reçoit les images, métadonnées et échanges fournis ; la capture manuelle ne nécessite aucun client IA.
-- **CLI et MCP** : inspectez et pilotez une instance ReShade, OBS ou Unreal avec les mêmes opérations métier typées. Les modifications distantes sont désactivées par défaut. L’assistant Unreal s’ouvre depuis **Help → CyGameCapture assistant**.
+- **CLI et MCP** : inspectez et pilotez une instance ReShade, OBS ou Unreal avec les mêmes opérations métier typées. Les compilations actuelles utilisent Free par défaut pour les opérations exposées par adresse seule ; les paquets publiés avec 0.7.0 conservent l’ancien défaut en lecture seule. L’assistant Unreal s’ouvre depuis **Help → CyGameCapture assistant**.
 - **Intégration Unreal** : plusieurs émetteurs et récepteurs, render targets, scene captures et viewport sous Win64 D3D11/D3D12.
 - **Aide en anglais et français** : 38 pages entièrement traduites, avec recherche, images, annotations, comparaisons et schémas SVG. Ouvrez **User guide** dans ReShade ou OBS, **Help → CyGameCapture user guide** dans Unreal, ou appuyez sur **F1** lorsque l’inspecteur ReShade a le focus.
 
@@ -99,7 +99,7 @@ Fermez le jeu, OBS et Unreal avant de remplacer les composants chargés. Remplac
 ### Prérequis
 
 - Windows x64, **Visual Studio 2022** avec MSVC v143 et les outils C++/CMake/Ninja ; **CMake 3.24+**, C++17 pour les intégrations natives et C++20 pour le runtime/assistant SDK isolé.
-- **Git et sources CyMCPSDK** : priorité à `D:\_Project\CyMCPSDK` ; CMake extrait la révision `791d4d7`. Si le dossier est absent, Git récupère cette révision dans le dépôt privé avec l’authentification disponible. Voir les [notes de compilation](Automation/README.md).
+- **Git et sources CyMCPSDK** : priorité à `D:\_Project\CyMCPSDK` ; CMake extrait la révision `34d4bca`. Si le dossier est absent, Git récupère cette révision dans le dépôt privé avec l’authentification disponible. Voir les [notes de compilation](Automation/README.md).
 - **Node.js 22+ et npm**, pour générer la documentation pendant la compilation. L’archive locale de CyDoc est fournie ; aucun paquet de substitution du registre n’est nécessaire.
 - OBS Studio installé pour générer les bibliothèques d’import OBS/FFmpeg optionnelles ; une installation Unreal Engine correspondante pour compiler le plugin Unreal.
 - Les dépendances natives sont fournies sous forme des sous-ensembles de SDK/en-têtes décrits dans le tableau des licences. ReShade, OBS, Unreal et les clients des fournisseurs IA s’installent séparément.
@@ -154,7 +154,7 @@ Consultez la [référence des réglages](https://mrmybal.github.io/CyGameCapture
 | [Sous-ensemble DirectX de Spout2](https://github.com/leadedge/Spout2/tree/c2bcc12147711d12ace7d5f08e869d774d840f8a) | [BSD-2-Clause et notices fournies](LICENCES/Spout2-LICENSE.txt) | Partage natif de textures compilé avec les émetteurs, le récepteur et les outils. |
 | [OBS Studio / libobs 29.1.3](https://github.com/obsproject/obs-studio/tree/29.1.3) | [GPL-2.0-or-later ; engagement de coopération](CyGameCaptureOBS/ThirdParty/THIRD_PARTY_NOTICES.md) | En-têtes publics et libobs installé par l’utilisateur pour le plugin OBS optionnel ; bibliothèque d’import générée localement. |
 | [En-têtes FFmpeg 6.0](https://github.com/FFmpeg/FFmpeg/tree/n6.0) | [LGPL-2.1-or-later et conditions de compilation](Tests/CyGameCaptureVideoProbe/ThirdParty/THIRD_PARTY_NOTICES.md) | Outil d’analyse vidéo optionnel uniquement ; charge dynamiquement les bibliothèques FFmpeg d’OBS. Aucune DLL FFmpeg n’est incluse. |
-| [CyMCPSDK 0.7.0 · 791d4d7](https://github.com/MrMybal/CyMCPSDK/tree/791d4d7d7680213b282ec8529d248a10f8494d77) | [MIT](LICENCES/CyMCPSDK-Notices.md) | Core, Platform, Http, MCP, AI; runtime C ABI + CLI MIT. |
+| [CyMCPSDK 0.7.1 · 34d4bca](https://github.com/MrMybal/CyMCPSDK/tree/34d4bcae126bc83d1a2925b5047dac36e3d09d92) | [MIT](LICENCES/CyMCPSDK-Notices.md) | Core, Platform, Http, MCP, AI; runtime C ABI + CLI MIT. |
 | [CyDoc 0.1.0 · révision 6ddf9a5](https://github.com/MrMybal/CyDoc/tree/6ddf9a582defb2f11fbb3f992afef6f98dcadc93) | [MIT](.CyDocBuild/vendor/LICENSE.txt) | Lecteur documentaire local et module image ; les outils de génération fonctionnent à la compilation. L’accès aux sources peut nécessiter une autorisation. Ni Three.js ni module mesh n’est inclus. |
 | [Unreal Engine](https://www.unrealengine.com/) | [Conditions Unreal Engine d’Epic](https://www.unrealengine.com/eula/unreal) | Moteur et outils de compilation installés séparément pour le plugin Unreal sous MIT. Le moteur n’est pas redistribué ici. |
 
@@ -173,19 +173,19 @@ Ce tableau est un index, pas un remplacement des notices complètes. Conservez l
 
 ## Assistant, CLI et MCP
 
-CyMCPSDK **0.7.0** (`791d4d7`) fournit la discussion intégrée et le contrôle local authentifié. ReShade conserve sa fenêtre ImGui ; Unreal propose un panneau Slate pour Codex et les API. OBS expose ses outils de source sans ajouter de dock de chat. Un point d’accès compatible OpenAI déjà démarré peut fournir des modèles locaux ; CyGameCapture n’installe pas de modèle.
+Les sources actuelles compilent CyMCPSDK **0.7.1** (`34d4bca`) pour la discussion intégrée et le contrôle local. Cette mise à jour des profils n’est pas encore publiée dans les téléchargements. ReShade conserve sa fenêtre ImGui ; Unreal propose un panneau Slate pour Codex et les API. OBS expose ses outils de source sans ajouter de dock de chat. Un point d’accès compatible OpenAI déjà démarré peut fournir des modèles locaux ; CyGameCapture n’installe pas de modèle.
 
-Utilisez le compagnon console fourni dans l’archive :
+Avec une compilation des sources actuelles, utilisez le compagnon console et l’adresse affichée dans l’application :
 
 ```powershell
 .\CyGameCaptureCLI.exe instances
-.\CyGameCaptureCLI.exe list --instance 'C:\chemin\connexion.json'
-.\CyGameCaptureCLI.exe describe captures.start --instance 'C:\chemin\connexion.json'
-.\CyGameCaptureCLI.exe call app.status --instance 'C:\chemin\connexion.json'
-.\CyGameCaptureCLI.exe mcp-config --instance 'C:\chemin\connexion.json'
+.\CyGameCaptureCLI.exe list --url 'http://127.0.0.1:PORT/mcp'
+.\CyGameCaptureCLI.exe describe captures.start --url 'http://127.0.0.1:PORT/mcp'
+.\CyGameCaptureCLI.exe call app.status --url 'http://127.0.0.1:PORT/mcp'
+.\CyGameCaptureCLI.exe mcp-config --url 'http://127.0.0.1:PORT/mcp'
 ```
 
-Choisissez le chemin privé renvoyé par `instances`. `mcp-config` affiche la configuration d’un client MCP stdio. Le transport HTTP loopback natif propose aussi les ressources et les abonnements compatibles. Activez vous-même le droit de modification dans l’application avant de demander une action sur la capture ; il s’applique au chat, au CLI et à MCP. Les clés API sont lues dans une variable d’environnement choisie et ne sont pas enregistrées dans les conversations.
+Remplacez PORT par celui de l’hôte actif, ou utilisez le chemin privé renvoyé par `instances` avec `--instance`. `mcp-config` affiche la configuration d’un client MCP stdio. Le transport HTTP loopback natif propose aussi les ressources et les abonnements compatibles. **Free est le défaut :** aucun jeton ni confirmation supplémentaire pour les opérations exposées. Les configurations sans profil migrent vers Free ; les choix explicites sont conservés. Local contrôlé garde le réglage de contrôle, Jeton seul exige un jeton, et Protégé exige jeton et droit de modification. Le profil s’applique après redémarrage de l’hôte ; les arguments restent validés pour CLI, MCP et chat. Les clés API sont lues dans une variable d’environnement choisie et ne sont pas enregistrées dans les conversations.
 
 Le chapitre **Assistant, terminal et contrôle MCP** du manuel hors ligne décrit les 29 opérations des trois hôtes, les listes d’outils pairs autorisés, la pagination, les catalogues compact/complet, la rétention et les réglages indépendants du contexte/cache/notifications/mesures. Le pilotage CLI/MCP fonctionne en D3D11/D3D12 ; le mécanisme d’images de l’assistant ReShade reste limité à D3D11.
 

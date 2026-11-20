@@ -79,7 +79,7 @@ namespace cygc
 		view_toggle_key = static_cast<uint32_t>(config::GetInt("ViewToggleKey", 0x79 /* VK_F10 */));
         if (config::GetBool("AutomationEnabled", true))
             automation = std::make_unique<Automation>(*this);
-        if (automation) ai->SetAutomationConnection(automation->Connection());
+        if (automation) ai->SetAutomationConnection(automation->Connection(), !automation->ControlsOperations());
 
 		log::Info("Renderer: %s%s%s", backend.api_name, backend.spout_capture ? " (Spout output available)" : " - ", backend.spout_capture ? "" : backend.reason.c_str());
 	}

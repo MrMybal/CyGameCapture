@@ -15,8 +15,8 @@ def cli(connection,*args,expect=0):
     if expect: assert 'error' in value and result.stderr.strip()
     return value
 
-def app(writable,compact=False,gui=False,endpoint="",backend="D3D11"):
-    fixture=WORK/(('gui' if gui else 'compact' if compact else 'write' if writable else 'read')+'-'+backend);fixture.mkdir()
+def app(writable,compact=False,gui=False,endpoint="",backend="D3D11",profile="protected_access",legacy=False):
+    fixture=WORK/(('gui' if gui else 'compact' if compact else 'write' if writable else 'read')+'-'+backend+'-'+(profile or 'implicit'));fixture.mkdir()
     for file in [('CyGameCaptureTestAppD3D12.exe' if backend=='D3D12' else 'CyGameCaptureTestApp.exe'),'dxgi.dll','CyGameCaptureRS.addon64','CyGameCaptureAI.exe','CyGameCaptureMCP.dll']:
         source=ROOT/('bin/Release/TestAppD3D12' if backend=='D3D12' else 'bin/Release/TestApp')/file
         if not source.exists():source=ROOT/'bin/Release'/file
@@ -24,6 +24,8 @@ def app(writable,compact=False,gui=False,endpoint="",backend="D3D11"):
     ini=(ROOT/('Tools/PackageFiles/ini/ReShade-'+backend+'.ini')).read_text(encoding='utf-8-sig')
     ini+='\n[CYGAMECAPTURE]\n' if '[CYGAMECAPTURE]' not in ini else '\n'
     ini+='AutomationEnabled=1\nAutomationAllowMutations='+str(int(writable))+'\nAutomationCompact='+str(int(compact))+'\n'
+    if profile is not None:ini+='AutomationAccessProfile='+profile+'\n'
+    if legacy:ini+='SenderName=Existing-user-value\nDepthFarPlane=777\n'
     if gui:ini+='OpenOverlayOnStart=1\nAISearchOnStart=120\nAIClient=openai-compatible\nAIEndpoint='+endpoint+'\nAIModel=capture-fixture\n'
     (fixture/'ReShade.ini').write_text(ini,encoding='utf-8')
     env=dict(os.environ);env['LOCALAPPDATA']=str(fixture/'UserData')
@@ -42,7 +44,7 @@ def app(writable,compact=False,gui=False,endpoint="",backend="D3D11"):
 
 def main():
     assert subprocess.run([str(CLI),'--help'],capture_output=True).returncode==0
-    assert json.loads(subprocess.check_output([str(CLI),'--version']))['sdk']=='0.7.0'
+    assert json.loads(subprocess.check_output([str(CLI),'--version']))['sdk']=='0.7.1'
     assert json.loads(subprocess.check_output([str(CLI),'providers']))['providers']
     invalid=subprocess.run([str(CLI),'call','app.status'],capture_output=True);assert invalid.returncode==2 and invalid.stderr
     for writable in [False,True]:

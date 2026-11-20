@@ -4,7 +4,7 @@ title: Receive and compose in OBS
 description: Select the exact Spout sender and compose its colour, depth or HUD in OBS.
 section: User guide
 order: 7
-revision: ae6725614483
+revision: 2d0f2dbbe965
 ---
 
 1. Start the game’s capture first.
@@ -20,4 +20,4 @@ For composition, put an isolated HUD source above the clean source. Transparent 
 
 ## Assistant and automation {#assistant-and-automation}
 
-Each source exposes its own authenticated local MCP connection. Read status and discover senders from the CLI; enable the source’s control permission yourself before changing its sender or controlling takes. Take actions concern all recording-enabled CyGameCapture sources in that OBS process. See [the CLI/MCP guide](doc:automation); no extra Qt chat dock is installed.
+Each source exposes its own local MCP connection. Free is the default: read status, discover senders and change the selected sender or control takes by loopback address without a token or additional confirmation. Local controlled and Protected retain the source’s mutation permission; Token only and Protected require a token. Take actions concern all recording-enabled CyGameCapture sources in that OBS process. See [the CLI/MCP guide](doc:automation); no extra Qt chat dock is installed.

@@ -5,16 +5,16 @@ description: Connect to a live instance, discover its tools and control capture 
 section: User guide
 parent: assistant
 order: 10
-revision: 9e33cf3a9732
+revision: a7a8279a3835
 ---
 
-The November 20, 2026 update of the 0.1.0 Beta packages includes this integration and the complete English/French offline manual. Older downloads dated November 6 do not include CyMCPSDK: replace the binaries, helper, runtime, documentation and licenses together. Capture works without an AI account; no model, Python runtime or inference engine is installed by the application.
+This build of 0.1.0 Beta uses CyMCPSDK **0.7.1**, compiled from source revision `34d4bcae126bc83d1a2925b5047dac36e3d09d92`, and includes the complete English/French offline manual. Earlier published 0.7.0 packages use the previous access defaults; replace binaries, helper, runtime, documentation and licenses together when upgrading. Capture works without an AI account; no model, Python runtime or inference engine is installed by the application.
 
 ## Connect to the correct instance {#connect}
 
 Keep `CyGameCaptureMCP.dll` beside the ReShade add-on and beside `CyGameCaptureOBS.dll`. Keep `CyGameCaptureAI.exe` beside the add-on. `CyGameCaptureCLI.exe` is the console companion. Unreal includes the MIT SDK runtime and console companion in `Binaries/ThirdParty/CyMCPSDK/Win64`; it does not depend on the AGPL ReShade helper.
 
-Start the game, create an OBS CyGameCapture source, or open an Unreal project with the plugin enabled. Each instance writes a private connection descriptor under `%LOCALAPPDATA%\CyGameCapture\Automation`. The filename includes its component and process ID. ReShade/OBS/Unreal also log the descriptor's path. The descriptor contains an authentication token: do not publish or attach it to a bug report. It is removed on orderly shutdown. Stale descriptors after a crash are harmless; choose a live instance again.
+Start the game, create an OBS CyGameCapture source, or open an Unreal project with the plugin enabled. Each instance writes a private connection descriptor under `%LOCALAPPDATA%\CyGameCapture\Automation`. The filename includes its component and process ID. ReShade/OBS/Unreal also log the descriptor's path. The active profile and loopback address appear in the application's MCP settings. Free and Local controlled descriptors contain no token. Token only and Protected descriptors contain a private authentication token: do not publish or attach them to a bug report. It is removed on orderly shutdown. Stale descriptors after a crash are harmless; choose a live instance again.
 
 ```powershell
 .\CyGameCaptureCLI.exe instances
@@ -25,9 +25,31 @@ Start the game, create an OBS CyGameCapture source, or open an Unreal project wi
 
 Calls need the live renderer, OBS source or Unreal world. The companion does not start a game, load an asset or create a capture scene for you. Listing providers and printing help/version do not require a GUI or a running instance.
 
+
+For an address-only Free connection (replace PORT with the displayed port):
+
+```powershell
+.\CyGameCaptureCLI.exe call app.status --url 'http://127.0.0.1:PORT/mcp'
+.\CyGameCaptureCLI.exe mcp-config --url 'http://127.0.0.1:PORT/mcp'
+.\CyGameCaptureCLI.exe --mcp --url 'http://127.0.0.1:PORT/mcp'
+```
+
+An external HTTP MCP client can use that same address without an Authorization header. The server still requires normal MCP initialization and protocol/session headers.
+
 ## Permissions and execution {#permissions}
 
-Remote control is **read only by default**. Enable it yourself in the ReShade assistant settings, the OBS source's **Allow MCP control of this source** property, or Unreal's assistant checkbox / `CyGameCapture.Automation.AllowMutations 1`. The same permission gates CLI, MCP and chat tools on every call. There is no `--confirm` bypass and no tool that enables its own permission. ReShade's existing Show/Apply proposal buttons remain available for manual decisions.
+**Free is the default MCP access profile.** When the local host is enabled, connect directly to its `http://127.0.0.1:PORT/mcp` address without a token, descriptor or extra confirmation. All exposed operations, including mutations, are authorized by `Policy::allow_all()`. Argument schemas, object checks and renderer constraints remain enforced. The server binds only to `127.0.0.1` and retains Host/Origin validation.
+
+| Profile | Token required | Business mutation permission |
+| --- | --- | --- |
+| Free | No | All exposed operations allowed |
+| Local controlled | No | Existing allow-control setting |
+| Token only | Yes | All exposed operations allowed |
+| Protected | Yes | Existing allow-control setting |
+
+Configurations without an explicit profile migrate to Free, even when an old allow-control switch is off. Explicitly selected profiles are preserved. The old switch is retained and only affects Local controlled and Protected. Change it in the ReShade assistant settings, OBS source properties or Unreal assistant / `CyGameCapture.Automation.AllowMutations 1`. CLI, MCP and integrated chat use the same active profile; none can bypass a controlled profile's permission. ReShade's Show/Apply buttons remain available for buffer recommendations.
+
+Choose the profile in the ReShade assistant, OBS source properties or Unreal assistant. Restart the game/editor or recreate the OBS source to apply the selection; the displayed active profile/address describes the running host. Configuration keys are ReShade `[CYGAMECAPTURE] AutomationAccessProfile=free`, OBS `automation_access_profile=free`, and Unreal `CyGameCapture.Automation.AccessProfile` (0 Free, 1 Local controlled, 2 Token only, 3 Protected). String profiles also accept `local_controlled`, `token_only`, `protected_access`. Unreal stores its choice in `[CyGameCapture.Automation] AccessProfile` in the editor's per-project settings (game config outside the editor); explicit console-variable configuration takes precedence.
 
 ReShade executes business calls during presentation, OBS on its source video tick, and Unreal on its game ticker. Network and provider workers do not manipulate GPU or engine objects. A command waiting more than 15 seconds for its host tick fails and is cancelled; it is not replayed when the host resumes. A failure can still occur after an action has begun, so read the state before deciding to repeat a mutation.
 
@@ -35,7 +57,7 @@ ReShade executes business calls during presentation, OBS on its source video tic
 
 Use `describe NAME` for the authoritative input and output schemas. IDs and component paths refer to the current instance. No arbitrary shell, filesystem, asset-loading or source-code execution tool is exposed.
 
-| Host | Read operations | Operations requiring control |
+| Host | Read operations | Mutations (permission gated in controlled profiles) |
 | --- | --- | --- |
 | ReShade | `app.status`, `buffers.list`, `buffers.inspect`, `captures.list`, `timeline.list` | `buffers.select`, `buffers.moment`, `captures.start`, `captures.stop`, `captures.alpha`, `view.set`, `inspector.filters`, `assistant.cancel` |
 | OBS source | `source.status`, `senders.list` | `source.sender`, `recording.start`, `recording.stop` |
@@ -47,7 +69,7 @@ ReShade `captures.start` supports `colour`, `depth` and `hud` transforms, an opt
 
 ```powershell
 .\CyGameCaptureCLI.exe call buffers.list --args '{"limit":16,"width":1280}' --instance 'C:\path\to\connection.json'
-# After selecting a real ID from that response and enabling control:
+# After selecting a real ID; controlled profiles also require allow-control:
 .\CyGameCaptureCLI.exe call captures.start --args '{"id":42}' --instance 'C:\path\to\connection.json'
 .\CyGameCaptureCLI.exe call captures.stop --args '{"all":true}' --instance 'C:\path\to\connection.json'
 ```
@@ -71,7 +93,7 @@ OBS remains a native libobs source plugin without a separate Qt chat dock. Use a
 .\CyGameCaptureCLI.exe --mcp --instance 'C:\path\to\connection.json'
 ```
 
-The first command prints a client configuration containing the executable and descriptor path; the second is a stdio MCP relay. The relay exposes tools only. The native loopback HTTP `/mcp` endpoint also exposes resources and, for compatible clients, change subscriptions. Both use the same registry and per-instance permission. The native authenticated `/v1` endpoint retains full discovery when compact MCP is selected (`--full` for list/describe/call/stdio). The SDK negotiates MCP 2026-07-28 and legacy 2025-11-25 / 2025-06-18. Legacy stdio clients use initialize; HTTP requires the matching protocol/session headers. Prefer the supplied relay or SDK client over handcrafted requests. Tokens and private descriptor files are local credentials, not a public remote service.
+The first command prints a client configuration containing the executable and descriptor path (or use `--url` for Free/Local controlled); the second is a stdio MCP relay. The relay exposes tools only. The native loopback HTTP `/mcp` endpoint also exposes resources and, for compatible clients, change subscriptions. Both use the same registry and per-instance permission. The native `/v1` endpoint follows the same access profile and retains full discovery when compact MCP is selected (`--full` for list/describe/call/stdio). The SDK negotiates MCP 2026-07-28 and legacy 2025-11-25 / 2025-06-18. Legacy stdio clients use initialize; HTTP requires the matching protocol/session headers. Prefer the supplied relay or SDK client over handcrafted requests. Use the address directly for tokenless profiles; token-protected profiles can use the private descriptor for the supplied CLI/relay. No public remote service is started.
 
 ReShade's Codex/API chat optionally loads a user-selected **External tools allowlist file** (`AIExternalToolsFile`). Only the named tools are imported with their exact schemas. Example, for another local CyGameCapture OBS instance:
 
@@ -87,16 +109,17 @@ ReShade's Codex/API chat optionally loads a user-selected **External tools allow
 ]
 ```
 
-Writes require an explicit peer grant, current primary-application control permission and the peer application's own permission. Remote failures return a typed error to the assistant. Notifications are opt-in and require server support. Connections are restricted to user-selected local loopback descriptors. Claude/OpenCode peer allowlists are not implemented in this panel and produce an explicit unsupported error; their primary application MCP connection remains supported. No arbitrary remote server is silently discovered.
+Peer writes still require an explicit peer allowlist grant. The current primary and peer application profiles must also permit the operation; Free/Token only do not require the legacy allow-control switch. Remote failures return a typed error to the assistant. Notifications are opt-in and require server support. Connections are restricted to user-selected local loopback descriptors. Claude/OpenCode peer allowlists are not implemented in this panel and produce an explicit unsupported error; their primary application MCP connection remains supported. No arbitrary remote server is silently discovered.
 
 ## Independent optimisation settings {#optimisations}
 
-These ReShade INI keys are under `[CYGAMECAPTURE]`. Transport/storage options apply when the device/host starts; change them before restarting the game. Control permission can change live.
+These ReShade INI keys are under `[CYGAMECAPTURE]`. Transport/storage options apply when the device/host starts; change them before restarting the game. The allow-control switch can change live in controlled profiles.
 
 | Key | Default | Effect |
 | --- | --- | --- |
-| `AutomationEnabled` | 1 | Start the authenticated local host |
-| `AutomationAllowMutations` | 0 | Permit business mutations |
+| `AutomationEnabled` | 1 | Start the local host |
+| `AutomationAccessProfile` | `free` | MCP profile; restart the game to apply |
+| `AutomationAllowMutations` | 0 | Permit mutations in Local controlled / Protected only |
 | `AutomationCompact` | 0 | Expose five discovery/resource gateway tools instead of the full small catalogue |
 | `AutomationNotifications` | 1 | Publish tool/resource changes for compatible HTTP subscriptions |
 | `AutomationCacheTTL` | 1000 | Discovery TTL in milliseconds; explicit refresh remains possible |

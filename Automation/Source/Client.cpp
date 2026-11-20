@@ -19,14 +19,32 @@ Json Read(const std::filesystem::path &path)
     std::string bytes((std::istreambuf_iterator<char>(file)), {});
     return parse_json(bytes);
 }
+Json ConnectionConfig(const std::filesystem::path &input)
+{
+    auto address = path_utf8(input);
+    if (address.starts_with("http://") || address.starts_with("https://"))
+    {
+        auto parsed = parse_url(address);
+        if (!parsed.loopback)
+            throw Error("PermissionDenied", "Expected a loopback MCP address");
+        if (parsed.target == "/")
+        {
+            while (address.ends_with('/'))
+                address.pop_back();
+            address += "/mcp";
+        }
+        return {{"url", address}};
+    }
+    return Read(input);
+}
 } // namespace
 std::shared_ptr<McpClient> ConnectInstance(const std::filesystem::path &path, Json *descriptor)
 {
-    auto config = Read(path);
+    auto config = ConnectionConfig(path);
     auto url = config.at("url").get<std::string>();
     if (!parse_url(url).loopback)
         throw Error("PermissionDenied", "Application connection files must address a loopback instance");
-    auto client = std::make_shared<McpClient>(url, config.at("token"));
+    auto client = std::make_shared<McpClient>(url, config.value("token", std::string()));
     client->connect();
     if (descriptor)
         *descriptor = std::move(config);
@@ -143,15 +161,16 @@ namespace
 {
 Json NativeCall(const std::filesystem::path &file, const Json &body, const Cancellation &cancel = {})
 {
-    auto config = Read(file);
+    auto config = ConnectionConfig(file);
     std::string url = config.at("url");
     if (!parse_url(url).loopback || !url.ends_with("/mcp"))
         throw Error("PermissionDenied", "Expected a loopback application connection");
     HttpRequest request;
     request.method = "POST";
     request.url = url.substr(0, url.size() - 3) + "v1";
-    request.headers = {{"Authorization", "Bearer " + config.at("token").get<std::string>()},
-                       {"Content-Type", "application/json"}};
+    request.headers = {{"Content-Type", "application/json"}};
+    if (auto token = config.value("token", std::string()); !token.empty())
+        request.headers["Authorization"] = "Bearer " + token;
     request.body = body.dump();
     auto response = HttpClient().perform(request, cancel);
     auto result = parse_json(response.body);
@@ -196,11 +215,14 @@ int AutomationMain(int argc, wchar_t **argv)
         if (entry == L"--help")
         {
             std::cout
-                << "CyGameCaptureAI <request.json>  (existing frame assistant)\nCyGameCaptureCLI instances | providers "
+                << "Free is the default profile. Use --url http://127.0.0.1:PORT/mcp without credentials.\nOther "
+                   "profiles may require a token or host operation permission.\nCyGameCaptureAI <request.json>  "
+                   "(existing frame assistant)\nCyGameCaptureCLI instances | providers "
                    "[--discover]\nCyGameCaptureCLI list|describe NAME|call NAME --instance FILE [--args JSON|@FILE] "
                    "[--full]\nCyGameCaptureCLI mcp-config --instance FILE\nCyGameCaptureAI --cli list|describe "
                    "NAME|call NAME --instance CONNECTION.json [--args JSON|@FILE]\nCyGameCaptureAI --mcp --instance "
-                   "CONNECTION.json\n--version returns JSON. Diagnostics go to stderr. Mutations require permission in "
+                   "CONNECTION.json\n--version returns JSON. Diagnostics go to stderr. Controlled profiles require "
+                   "permission in "
                    "the running application; --confirm cannot bypass it.\n";
             return 0;
         }
@@ -208,7 +230,7 @@ int AutomationMain(int argc, wchar_t **argv)
         {
             std::cout << Json({{"application", "0.1.0"},
                                {"sdk", version},
-                               {"sdk_revision", "791d4d7d7680213b282ec8529d248a10f8494d77"}})
+                               {"sdk_revision", "34d4bcae126bc83d1a2925b5047dac36e3d09d92"}})
                              .dump()
                       << '\n';
             return 0;
@@ -224,7 +246,7 @@ int AutomationMain(int argc, wchar_t **argv)
                 full = true;
             else if (arg == L"--discover")
                 discover = true;
-            else if (arg == L"--instance" && i + 1 < argc)
+            else if ((arg == L"--instance" || arg == L"--url") && i + 1 < argc)
                 connection = argv[++i];
             else if (arg == L"--args" && i + 1 < argc)
             {
@@ -276,9 +298,12 @@ int AutomationMain(int argc, wchar_t **argv)
                     bool alive = WaitForSingleObject(process, 0) == WAIT_TIMEOUT;
                     CloseHandle(process);
                     if (alive)
-                        instances.push_back({{"component", config.at("component")},
-                                             {"pid", config.at("pid")},
-                                             {"connection", path_utf8(item.path())}});
+                        instances.push_back(
+                            {{"component", config.at("component")},
+                             {"pid", config.at("pid")},
+                             {"connection", path_utf8(item.path())},
+                             {"url", config.at("url")},
+                             {"access_profile", config.value("access_profile", std::string("protected_access"))}});
                 }
                 catch (...)
                 {
@@ -288,20 +313,22 @@ int AutomationMain(int argc, wchar_t **argv)
             return 0;
         }
         if (connection.empty())
-            throw Error(
-                "InvalidArguments",
-                "Select a running application with --instance CONNECTION.json; use --cli instances to list them");
+            throw Error("InvalidArguments", "Select a running application with --url ADDRESS or --instance "
+                                            "CONNECTION.json; use instances to list them");
         if (command == "mcp-config")
         {
             wchar_t module[32768] = {};
             GetModuleFileNameW(nullptr, module, 32768);
-            std::cout
-                << Json({{"mcpServers",
-                          {{"CyGameCapture",
-                            {{"command", path_utf8(module)},
-                             {"args", {"--mcp", "--instance", path_utf8(std::filesystem::absolute(connection))}}}}}}})
-                       .dump()
-                << '\n';
+            const auto selected = path_utf8(connection);
+            const bool address = selected.starts_with("http://") || selected.starts_with("https://");
+            std::cout << Json({{"mcpServers",
+                                {{"CyGameCapture",
+                                  {{"command", path_utf8(module)},
+                                   {"args",
+                                    {"--mcp", address ? "--url" : "--instance",
+                                     address ? selected : path_utf8(std::filesystem::absolute(connection))}}}}}}})
+                             .dump()
+                      << '\n';
             return 0;
         }
         if (full)

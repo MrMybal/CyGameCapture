@@ -486,7 +486,9 @@ namespace
     }
     void CreateAutomation(CyGameCaptureSource* ctx,obs_data_t* settings)
     {
-        using Json=nlohmann::json;auto options=Json({{"component","obs-source"},{"allow_mutations",obs_data_get_bool(settings,"automation_allow_control")},{"compact",obs_data_get_bool(settings,"automation_compact")},{"notifications",obs_data_get_bool(settings,"automation_notifications")},{"performance",obs_data_get_bool(settings,"automation_performance")},{"cache_ttl_ms",std::max<int64_t>(0,obs_data_get_int(settings,"automation_cache_ttl"))}});ctx->automation=cygc_automation_create(options.dump().c_str());
+        using Json=nlohmann::json;
+        if(!obs_data_has_user_value(settings,"automation_access_profile"))obs_data_set_string(settings,"automation_access_profile","free");
+        auto options=Json({{"access_profile",obs_data_get_string(settings,"automation_access_profile")},{"component","obs-source"},{"allow_mutations",obs_data_get_bool(settings,"automation_allow_control")},{"compact",obs_data_get_bool(settings,"automation_compact")},{"notifications",obs_data_get_bool(settings,"automation_notifications")},{"performance",obs_data_get_bool(settings,"automation_performance")},{"cache_ttl_ms",std::max<int64_t>(0,obs_data_get_int(settings,"automation_cache_ttl"))}});ctx->automation=cygc_automation_create(options.dump().c_str());
         if(!ctx->automation){blog(LOG_WARNING,"[CyGameCapture] MCP unavailable: %s",cygc_automation_error());return;}
         auto add=[&](const char* name,const char* description,bool read,Json properties={},Json required={}) {Json spec={{"name",name},{"description",description},{"readOnly",read},{"inputSchema",{{"type","object"},{"properties",properties.is_null()?Json::object():properties},{"required",required.is_null()?Json::array():required},{"additionalProperties",false}}}};if(!cygc_automation_add(ctx->automation,spec.dump().c_str(),AutomationCall,ctx))blog(LOG_WARNING,"[CyGameCapture] MCP tool: %s",cygc_automation_error());};
         add("source.status","Read this live OBS source's connection, sender and shared frame state.",true);
@@ -550,7 +552,8 @@ namespace
 	void SourceGetDefaults(obs_data_t *settings)
 	{
 		obs_data_set_default_string(settings, kSettingSender, "");
-		obs_data_set_default_bool(settings,"automation_notifications",true);
+		obs_data_set_default_string(settings,"automation_access_profile","free");
+        obs_data_set_default_bool(settings,"automation_notifications",true);
         obs_data_set_default_int(settings,"automation_cache_ttl",1000);
         obs_data_set_default_bool(settings, kSettingAutoConnect, true);
 		obs_data_set_default_bool(settings, kSettingShowAll, false);
@@ -767,11 +770,17 @@ namespace
 	{
 		auto *const ctx = static_cast<CyGameCaptureSource *>(data);
 		obs_properties_t *const props = obs_properties_create();
+        auto profile=obs_properties_add_list(props,"automation_access_profile",obs_get_locale()&&std::string(obs_get_locale()).find("fr")==0?"Profil MCP (recréer la source)":"MCP profile (recreate source)",OBS_COMBO_TYPE_LIST,OBS_COMBO_FORMAT_STRING);
+        obs_property_list_add_string(profile,"Free","free");
+        obs_property_list_add_string(profile,obs_get_locale()&&std::string(obs_get_locale()).find("fr")==0?"Local contrôlé":"Local controlled","local_controlled");
+        obs_property_list_add_string(profile,obs_get_locale()&&std::string(obs_get_locale()).find("fr")==0?"Jeton seul":"Token only","token_only");
+        obs_property_list_add_string(profile,obs_get_locale()&&std::string(obs_get_locale()).find("fr")==0?"Protégé":"Protected","protected_access");
+        if(ctx&&ctx->automation){auto access=nlohmann::json::parse(cygc_automation_access(ctx->automation));auto active=access.value("profile",std::string());auto text=std::string("Active MCP profile: ")+active+" — "+access.value("url",std::string());obs_property_set_long_description(profile,text.c_str());}
         obs_properties_add_bool(props,"automation_compact","Compact MCP catalogue (recreate source to apply)");
         obs_properties_add_bool(props,"automation_notifications","MCP change notifications (recreate source to apply)");
         obs_properties_add_bool(props,"automation_performance","MCP metadata-only measures (recreate source to apply)");
         obs_properties_add_int(props,"automation_cache_ttl","MCP cache TTL, milliseconds (recreate source to apply)",0,60000,100);
-        obs_properties_add_bool(props,"automation_allow_control",obs_get_locale()&&std::string(obs_get_locale()).find("fr")==0?"Autoriser le contrôle MCP de cette source":"Allow MCP control of this source");
+        obs_properties_add_bool(props,"automation_allow_control",obs_get_locale()&&std::string(obs_get_locale()).find("fr")==0?"Autoriser les modifications (profils contrôlés)":"Allow mutations (controlled profiles)");
 		obs_property_t *const guide = obs_properties_add_button(props, "user_guide", obs_module_text("Guide.Title"), UserGuideClicked);
 		obs_property_set_long_description(guide, obs_module_text("Guide.Description"));
 

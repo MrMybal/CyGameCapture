@@ -5,7 +5,7 @@ description: Comprendre les termes de capture et les licences des composants dis
 section: Guide utilisateur
 parent: preferences
 order: 16
-sourceRevision: 568fe2b20fc7
+sourceRevision: 28752281c86e
 ---
 
 | Terme | Sens |
@@ -24,4 +24,4 @@ Les composants natifs CyGameCapture utilisent **AGPL-3.0-or-later**. CyGameCaptu
 
 Sources et signalements : [github.com/MrMybal/CyGameCapture](https://github.com/MrMybal/CyGameCapture) (Internet nécessaire). Le logiciel est fourni sans garantie. Ce manuel décrit les fonctions réellement implémentées et leurs limites.
 
-CyMCPSDK 0.7.0 et le runtime/CLI indépendant utilisent MIT. Leurs textes anglais complets et les licences des dépendances sont fournis dans LICENCES. Ni CyUI, ni poids de modèles, ni installateur de moteur ne sont distribués.
+CyMCPSDK 0.7.1 et le runtime/CLI indépendant utilisent MIT. Leurs textes anglais complets et les licences des dépendances sont fournis dans LICENCES. Ni CyUI, ni poids de modèles, ni installateur de moteur ne sont distribués.

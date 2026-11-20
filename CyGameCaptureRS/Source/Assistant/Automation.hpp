@@ -19,5 +19,9 @@ class Automation
     void Pump();
     void AllowMutations(bool allow);
     std::string Connection() const;
+    std::string Profile() const;
+    std::string Address() const;
+    bool ControlsOperations() const;
+    bool AllowsMutations() const;
 };
 } // namespace cygc

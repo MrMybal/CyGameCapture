@@ -1,6 +1,6 @@
 # CyMCPSDK integration
 
-CyMCPSDK 0.7.0, source revision 791d4d7d7680213b282ec8529d248a10f8494d77.
+CyMCPSDK 0.7.1, source revision 34d4bcae126bc83d1a2925b5047dac36e3d09d92.
 Source: https://github.com/MrMybal/CyMCPSDK (access may require permission).
 Built from the local checkout when present; the pinned Git revision is the fallback.
 

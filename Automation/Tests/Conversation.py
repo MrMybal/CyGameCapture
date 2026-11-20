@@ -31,7 +31,8 @@ class API(BaseHTTPRequestHandler):
 def main():
     global mode
     server=ThreadingHTTPServer(('127.0.0.1',0),API);threading.Thread(target=server.serve_forever,daemon=True).start()
-    process,connection=app(True)
+    profile=os.environ.get("CYGC_TEST_ACCESS_PROFILE","protected_access")
+    process,connection=app(profile!="free",profile=None if profile=="free" else profile)
     try:
         for _ in range(30):
             state=cli(connection,'call','app.status')
@@ -51,6 +52,9 @@ def main():
             time.sleep(.05)
         out,error=turn.communicate(timeout=10);assert turn.returncode==0,(out,error,(folder/'result.txt').read_text())
         assert saw_partial,'No text streaming observed before completion'
+        instructions=json.dumps(requests[0]['messages'])
+        assert 'Do not run commands or use tools' not in instructions
+        assert 'Use the supplied application tools' in instructions
         assert cli(connection,'call','app.status')['selected_view'] is True
         checkpoint=folder/'sessions/current.json';before=json.loads(checkpoint.read_text());assert len(before['messages'])>=4
         assert any(message['role']=='tool' for message in before['messages'])

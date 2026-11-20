@@ -173,5 +173,7 @@ Les licences des composants tiers sont fournies avec le paquet.
 
 CyMCPSDK : conserver CyGameCaptureMCP.dll pres de l’add-on/plugin natif.
 CyGameCaptureCLI.exe instances liste les hotes ; --help presente CLI/MCP.
-Le controle est en lecture seule par defaut. Voir le chapitre du manuel
+Free est le profil MCP par defaut, sans jeton ni confirmation supplementaire.
+Les profils Local controle, Jeton seul et Protege restent disponibles ; les choix
+explicites sont conserves. Voir le chapitre du manuel
 Assistant, terminal et controle MCP pour les sessions, API locales et droits.

@@ -12,6 +12,7 @@
 #include "JsonObjectConverter.h"
 #include "Misc/App.h"
 #include "Misc/CommandLine.h"
+#include "Misc/ConfigCacheIni.h"
 #include "Misc/Paths.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
@@ -42,14 +43,60 @@ CreateFn Create = nullptr;
 AddFn Add = nullptr;
 PumpFn Pump = nullptr, Destroy = nullptr, Cancel = nullptr, Clear = nullptr;
 AllowFn Allow = nullptr;
-TextFn Connection = nullptr, Events = nullptr, History = nullptr;
+TextFn Connection = nullptr, Events = nullptr, History = nullptr, Access = nullptr;
 using ErrorFn = const char *(*)();
 ErrorFn LastError = nullptr;
 ChatFn Send = nullptr;
+int32 SelectedProfile = 0;
+FAutoConsoleVariableRef AccessProfileCvar(
+    TEXT("CyGameCapture.Automation.AccessProfile"), SelectedProfile,
+    TEXT("MCP access profile on next start: 0=Free (default), 1=Local controlled, 2=Token only, 3=Protected"));
+const FString &ProfileConfigFile()
+{
+#if WITH_EDITOR
+    return GEditorPerProjectIni;
+#else
+    return GGameIni;
+#endif
+}
+void SaveAccessProfile()
+{
+    if (GConfig)
+    {
+        GConfig->SetInt(TEXT("CyGameCapture.Automation"), TEXT("AccessProfile"), SelectedProfile, ProfileConfigFile());
+        GConfig->Flush(false, ProfileConfigFile());
+    }
+}
+void LoadAccessProfile()
+{
+    auto *Var = IConsoleManager::Get().FindConsoleVariable(TEXT("CyGameCapture.Automation.AccessProfile"));
+    int32 Saved = 0;
+    const bool HasSaved =
+        GConfig && GConfig->GetInt(TEXT("CyGameCapture.Automation"), TEXT("AccessProfile"), Saved, ProfileConfigFile());
+    if (HasSaved && Var && (Var->GetFlags() & ECVF_SetByMask) == ECVF_SetByConstructor)
+        SelectedProfile = Saved;
+    if (!HasSaved)
+        SaveAccessProfile();
+}
+const TCHAR *ProfileLabel(int32 Profile)
+{
+    switch (Profile)
+    {
+    case 0:
+        return TEXT("Free");
+    case 1:
+        return TEXT("Local controlled");
+    case 2:
+        return TEXT("Token only");
+    case 3:
+        return TEXT("Protected");
+    default:
+        return TEXT("Invalid");
+    }
+}
 int32 Control = 0;
-FAutoConsoleVariableRef ControlCvar(
-    TEXT("CyGameCapture.Automation.AllowMutations"), Control,
-    TEXT("0=read only (default), 1=allow authenticated CyGameCapture MCP and assistant control"));
+FAutoConsoleVariableRef ControlCvar(TEXT("CyGameCapture.Automation.AllowMutations"), Control,
+                                    TEXT("For controlled profiles only: 0=read only, 1=allow capture mutations"));
 int32 Compact = 0, Notifications = 1, CacheTTL = 1000, Performance = 0;
 FAutoConsoleVariableRef CompactCvar(TEXT("CyGameCapture.Automation.Compact"), Compact,
                                     TEXT("Compact MCP catalogue, applied on next subsystem start"));
@@ -332,6 +379,7 @@ void Start()
     Pump = reinterpret_cast<PumpFn>(FPlatformProcess::GetDllExport(Library, TEXT("cygc_automation_pump")));
     Destroy = reinterpret_cast<PumpFn>(FPlatformProcess::GetDllExport(Library, TEXT("cygc_automation_destroy")));
     Allow = reinterpret_cast<AllowFn>(FPlatformProcess::GetDllExport(Library, TEXT("cygc_automation_allow_mutations")));
+    Access = reinterpret_cast<TextFn>(FPlatformProcess::GetDllExport(Library, TEXT("cygc_automation_access")));
     Connection = reinterpret_cast<TextFn>(FPlatformProcess::GetDllExport(Library, TEXT("cygc_automation_connection")));
     Send = reinterpret_cast<ChatFn>(FPlatformProcess::GetDllExport(Library, TEXT("cygc_automation_chat_send")));
     Events = reinterpret_cast<TextFn>(FPlatformProcess::GetDllExport(Library, TEXT("cygc_automation_chat_events")));
@@ -340,13 +388,16 @@ void Start()
     LastError = reinterpret_cast<ErrorFn>(FPlatformProcess::GetDllExport(Library, TEXT("cygc_automation_error")));
     History = reinterpret_cast<TextFn>(FPlatformProcess::GetDllExport(Library, TEXT("cygc_automation_chat_history")));
     if (!Create || !Add || !Pump || !Destroy || !Allow || !Connection || !Send || !Events || !Cancel || !Clear ||
-        !History || !LastError)
+        !History || !LastError || !Access)
     {
         FPlatformProcess::FreeDllHandle(Library);
         Library = nullptr;
         return;
     }
+    LoadAccessProfile();
     auto Options = Object();
+    Options->SetNumberField(TEXT("access_profile"), SelectedProfile);
+    Options->SetBoolField(TEXT("allow_mutations"), Control != 0);
     Options->SetBoolField(TEXT("compact"), Compact != 0);
     Options->SetBoolField(TEXT("notifications"), Notifications != 0);
     Options->SetBoolField(TEXT("performance"), Performance != 0);
@@ -381,7 +432,7 @@ void Start()
         Register(Name, TEXT("Change an existing capture component's sender name using its public API."), false, Props,
                  {TEXT("component"), TEXT("name")});
     }
-    CYGC_LOG(Display, TEXT("CyMCPSDK 0.7.0 connection: %s"), UTF8_TO_TCHAR(Connection(Host)));
+    CYGC_LOG(Display, TEXT("CyMCPSDK 0.7.1 connection: %s"), UTF8_TO_TCHAR(Connection(Host)));
 #endif
 }
 void Tick()
@@ -506,15 +557,42 @@ void OpenAssistant()
                               .OnTextChanged_Lambda([Context](const FText &Text) {
                                   *Context = FMath::Clamp(FCString::Atoi(*Text.ToString()), 0, 10000000);
                               })] +
-        SVerticalBox::Slot()
-            .AutoHeight()[SNew(SCheckBox)
-                              .IsChecked_Lambda(
-                                  [] { return Control ? ECheckBoxState::Checked : ECheckBoxState::Unchecked; })
-                              .OnCheckStateChanged_Lambda(
-                                  [](ECheckBoxState State) { Control = State == ECheckBoxState::Checked ? 1 : 0; })
-                              .Content()[SNew(STextBlock)
-                                             .Text(FText::FromString(
-                                                 TEXT("Allow authenticated MCP and assistant control of capture")))]] +
+        SVerticalBox::Slot().AutoHeight()[SNew(SButton)
+                                              .Text_Lambda([] {
+                                                  return FText::FromString(
+                                                      FString(TEXT("MCP profile (restart editor to apply): ")) +
+                                                      ProfileLabel(SelectedProfile));
+                                              })
+                                              .OnClicked_Lambda([] {
+                                                  SelectedProfile = (SelectedProfile + 1) % 4;
+                                                  SaveAccessProfile();
+                                                  return FReply::Handled();
+                                              })] +
+        SVerticalBox::Slot().AutoHeight()[SNew(STextBlock)
+                                              .Text_Lambda([] {
+                                                  if (!Host)
+                                                      return FText::GetEmpty();
+                                                  auto State = Decode(UTF8_TO_TCHAR(Access(Host)));
+                                                  return FText::FromString(
+                                                      State ? FString(TEXT("Active: ")) +
+                                                                  State->GetStringField(TEXT("profile")) + TEXT(" · ") +
+                                                                  State->GetStringField(TEXT("url"))
+                                                            : FString());
+                                              })
+                                              .AutoWrapText(true)] +
+        SVerticalBox::Slot().AutoHeight()
+            [SNew(SCheckBox)
+                 .IsEnabled_Lambda([] {
+                     if (!Host)
+                         return false;
+                     auto State = Decode(UTF8_TO_TCHAR(Access(Host)));
+                     return State && State->GetBoolField(TEXT("control_operations"));
+                 })
+                 .IsChecked_Lambda([] { return Control ? ECheckBoxState::Checked : ECheckBoxState::Unchecked; })
+                 .OnCheckStateChanged_Lambda(
+                     [](ECheckBoxState State) { Control = State == ECheckBoxState::Checked ? 1 : 0; })
+                 .Content()[SNew(STextBlock)
+                                .Text(FText::FromString(TEXT("Allow capture mutations (controlled profiles only)")))]] +
         SVerticalBox::Slot().FillHeight(
             1)[SNew(SScrollBox) +
                SScrollBox::Slot()[SNew(STextBlock)
@@ -572,10 +650,9 @@ void OpenAssistant()
                      Partial.Empty();
                      return FReply::Handled();
                  })]] +
-        SVerticalBox::Slot()
-            .AutoHeight()[SNew(STextBlock)
-                              .Text(FText::FromString(
-                                  TEXT("CyMCPSDK 0.7.0 · local authenticated MCP · read only by default")))]);
+        SVerticalBox::Slot().AutoHeight()[SNew(STextBlock)
+                                              .Text(FText::FromString(TEXT(
+                                                  "CyMCPSDK 0.7.1 · local MCP · Free by default")))]);
     AssistantWindow = Window;
     FSlateApplication::Get().AddWindow(Window);
 #endif

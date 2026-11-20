@@ -11,9 +11,9 @@ Commit c2bcc12147711d12ace7d5f08e869d774d840f8a
 Full licences: Spout2-LICENSE.txt, Spout2-licence.txt
 Compiled subset and attributions: CyGameCaptureUE-Notices.md
 
-CyMCPSDK 0.7.0, compiled from source:
+CyMCPSDK 0.7.1, compiled from source:
 https://github.com/MrMybal/CyMCPSDK
-Commit 791d4d7d7680213b282ec8529d248a10f8494d77
+Commit 34d4bcae126bc83d1a2925b5047dac36e3d09d92
 Modules: Core, Platform, Http, MCP, AI. Full license: CyMCPSDK-MIT.txt.
 Local sources are snapshotted at this commit; concurrent edits are not consumed.
 Independent runtime and console: CyGameCaptureAutomation-MIT.txt.

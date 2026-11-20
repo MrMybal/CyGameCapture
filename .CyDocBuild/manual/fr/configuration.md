@@ -5,7 +5,7 @@ description: Changer langue, raccourcis et valeurs de capture sans perdre vos r�
 section: Guide utilisateur
 parent: preferences
 order: 12
-sourceRevision: ae991cd491d1
+sourceRevision: d854f4591935
 ---
 
 L’overlay démarre en **anglais**. Choisissez English ou Français près du logo ; le choix est conservé dans `ReShade.ini`. Le bouton du guide ouvre l’édition correspondante. OBS suit sa propre langue ; les langues non prises en charge utilisent le guide anglais. Les liens de langue du manuel conservent le chapitre courant. Le fichier initial `Documentation.html` est toujours en anglais.
@@ -51,3 +51,5 @@ AIClient=auto
 Appuyez sur **F1** lorsque l’inspecteur ReShade a le focus pour ouvrir l’aide de son onglet courant. Timeline et Debug ciblent la même section explicite du guide de l’inspecteur.
 
 Pour les réglages SDK et API, consultez les [réglages du contrôle](doc:automation#optimisations).
+
+MCP démarre avec le profil Free. Consultez les [profils d’accès et la migration](doc:automation#permissions) pour les jetons et les profils contrôlés.

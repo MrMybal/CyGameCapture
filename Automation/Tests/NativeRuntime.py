@@ -29,7 +29,7 @@ class Host:
     def loop(self):
         while self.running:self.pump(self.host);time.sleep(.01)
     def rpc(self,method,params):
-        params=dict(params);params['_meta']={'io.modelcontextprotocol/protocolVersion':'2026-07-28','io.modelcontextprotocol/clientCapabilities':{}};body=json.dumps({'jsonrpc':'2.0','id':1,'method':method,'params':params}).encode();headers={'Authorization':'Bearer '+self.descriptor['token'],'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','Mcp-Method':method};headers.update({'Mcp-Name':params['name']} if 'name' in params else {});req=urllib.request.Request(self.descriptor['url'],data=body,headers=headers)
+        params=dict(params);params['_meta']={'io.modelcontextprotocol/protocolVersion':'2026-07-28','io.modelcontextprotocol/clientCapabilities':{}};body=json.dumps({'jsonrpc':'2.0','id':1,'method':method,'params':params}).encode();headers={'Authorization':'Bearer '+self.descriptor.get('token',''),'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','Mcp-Method':method};headers.pop('Authorization',None) if not self.descriptor.get('token') else None;headers.update({'Mcp-Name':params['name']} if 'name' in params else {});req=urllib.request.Request(self.descriptor['url'],data=body,headers=headers)
         return json.load(urllib.request.urlopen(req,timeout=20))
     def tool(self,name,args={}):
         value=self.rpc('tools/call',{'name':name,'arguments':args})['result'];assert not value.get('isError'),value;return value['structuredContent']
@@ -53,7 +53,7 @@ def main():
         assert host.tool('cy_resources_grep',{'text':'fixture.mutate'})['matches']
         probe=subprocess.run([str(ROOT/'build/Release/tests/CyGameCaptureTransportProbe.exe'),host.path],capture_output=True,text=True,timeout=20);assert probe.returncode==0,(probe.stdout,probe.stderr)
         measures='\n'.join(p.read_text() for p in host.folder.glob('performance-*.jsonl'));assert measures
-        assert all(secret not in measures for secret in ['sensitive-result-never-measure','0123456789',host.descriptor['token']])
+        assert all(secret not in measures for secret in ['sensitive-result-never-measure','0123456789',host.descriptor.get('token','')] if secret)
         for line in measures.splitlines():
             record=json.loads(line);assert set(record)<={'stage','name','status','elapsed_ms','input_bytes','output_bytes','cache_hit','timestamp_ms'}
         print('PASS compact/full discovery, complete 90 KB chunk retrieval, expiry without mutation replay, native resource grep, cached discovery + live HTTP invalidation, metadata-only JSONL.',flush=True)
